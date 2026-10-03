@@ -8,21 +8,16 @@ import RevenueOverviewChart from '../components/dashboard/RevenueOverviewChart';
 import TopCourses from '../components/dashboard/TopCourses';
 import UpcomingCourses from '../components/dashboard/UpcomingCourses';
 import PaymentStatus from '../components/dashboard/PaymentStatus';
-
 import ShowHighlights from '../components/dashboard/ShowHighlights';
 import { useState,useRef } from 'react';
+
+
+
 function Dashboard (){
     const[showCalendar , setShowCalendar] = useState(false);
-    
-
     const day = new Date().toLocaleDateString('en-GB', { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric' });
-    // console.log(day);
     
-    // const totalStudents = students.length;
-    // const totalCourses = courses.length;
-    // const totalRevenue = payments.reduce((total, payment) => total + payment.amountPaid, 0);
-    // const pendingPayments = payments.reduce((total, payment) => total + payment.balance, 0);
-
+   
     
     return  <div className=" grid w-full min-w-0 grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]
                              2xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]
@@ -47,13 +42,13 @@ function Dashboard (){
                                 
                                 <CalendarDays />
                                 {day}
-                              <div className='w-full h-full absolute mt-13 'onClick={(e) => e.stopPropagation()}>
-                                 {
-                                 showCalendar &&  <div className="absolute top-5  md:right-0 z-6  w-72">
-                                    <Calendar className="w-full rounded-md" />
-                                </div>   
-                               }  
-                              </div>
+                                <div className='w-full h-full absolute mt-13 ' >
+                                    {
+                                    showCalendar &&  <div className="absolute top-5  md:right-0 z-6  w-72" onClick={(e) => e.stopPropagation()}>
+                                        <Calendar className="w-full rounded-md" />
+                                    </div>   
+                                }  
+                                </div>
                             </span>
                             {showCalendar && (
                                 <div

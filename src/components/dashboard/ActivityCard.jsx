@@ -1,9 +1,11 @@
 import { activity,activityConfig } from "../../data/data";
 import { useState } from "react";
 import { Activity , ArrowRight} from "lucide-react";
+import ActivitiesModal from "./modals/ActivitiesModal";
 function ActivityCard(){
     const [activities, setActivities] = useState(activity);
-    
+     const [showActivities, setShowActivities] = useState(false);
+
     // console.log(activities)
 
     return(
@@ -13,9 +15,16 @@ function ActivityCard(){
                     <Activity />
                      Recent Activites
                 </h3>
-                <a href="#" className="flex text-sm md:text-md gap-3  text-blue-600">
+                <button  onClick={() => setShowActivities(true)} href="#" 
+                        className="flex text-sm md:text-md gap-3 hover:cursor-pointer  text-blue-600">
                     View All Activites <ArrowRight />
-                </a>
+
+                </button>
+                {showActivities && (
+                    <ActivitiesModal
+                        onClose={() => setShowActivities(false)}
+                    />
+                    )}
             </div>
             {activities.map((activity)=>{
                     const config = activityConfig[activity.type];
