@@ -35,33 +35,34 @@ function ShowHighlights() {
   const totalSlides = slides.length;
 
   // Next slide
-  const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % totalSlides);
-  };
+        const nextSlide = () => {
+          setCurrent((prev) => (prev + 1) % totalSlides);
+        };
 
   // Previous slide
-  const previousSlide = () => {
-   setCurrent((prev)=>{
-       return prev === 0 ? totalSlides - 1 : prev - 1
-   })
-  };
+        const previousSlide = () => {
+            setCurrent((prev)=>{
+                return prev === 0 ? totalSlides - 1 : prev - 1
+            })
+        };
 
   // Auto play
-  useEffect(() => {
-    if (isPaused) return;
+        useEffect(() => {
+            if (isPaused) return;
 
-  const timer = setInterval(()=>{
-   return nextSlide()
-  },5000)
+            const timer = setInterval(()=>{
+            return nextSlide()
+        },5000)
 
     return () => clearInterval(timer);
   }, [isPaused]);
 
   return (
     <div
-      className="relative flex min-h-full w-full items-center justify-center rounded-xl bg-white p-2 shadow-sm"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+        className="relative flex h-108 w-full items-center justify-center 
+                  rounded-xl bg-white p-2 shadow-sm"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
     >
          {/* Previous button */}
         <button

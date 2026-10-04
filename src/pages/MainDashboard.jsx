@@ -81,11 +81,14 @@ function Dashboard (){
                         <div className=''>
                             <TopCourses />
                         </div>
+{/****************************************************** Payment Status ***********************************************/}
                         
                         <div>
                             <PaymentStatus />
                         </div>
-                         <div className='min-h-96 2xl:flex-1'>
+{/******************************************************ShowHigihLight Carousel***********************************************/}
+
+                         <div >
                             <ShowHighlights />
                         </div>
                     </section>
