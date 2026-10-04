@@ -15,7 +15,7 @@ function CourseDetailModal({selectedCourse,onClose}){
       onClick={onClose}
     >
       <div
-        className="relative w-[50%] max-w-3xl max-h-[95vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"
+        className="relative w-[90%] lg:w-[50%] max-w-3xl max-h-[95vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}

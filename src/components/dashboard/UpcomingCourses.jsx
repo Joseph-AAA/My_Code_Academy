@@ -3,7 +3,7 @@ import { courses } from "../../data/courseData";
 import { data } from "react-router-dom";
 import CourseCard from "../courses/CourseCard";
 import { useState } from "react";
-import CourseDetailModal from "../courses/CourseDetailModal";
+import CourseDetailModal from "./modals/CourseDetailModal";
 function UpcomingCourses (){
 
     const upcomingCourses = courses.filter((data)=> data.status=="Upcoming").slice(0,4);

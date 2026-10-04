@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {courses} from "../../data/courseData";
 import CourseCard from "./CourseCard";
-import CourseDetailModal from "./CourseDetailModal";
+import CourseDetailModal from "./../dashboard/modals/CourseDetailModal";
 
 function CoursesController(){
 
