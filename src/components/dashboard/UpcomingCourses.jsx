@@ -4,7 +4,7 @@ import { data } from "react-router-dom";
 import CourseCard from "../courses/CourseCard";
 function UpcomingCourses (){
 
-    const upcomingCourses = courses.filter((data)=> data.status=="Upcoming")
+    const upcomingCourses = courses.filter((data)=> data.status=="Upcoming").slice(0,4);
     return(
         <div className="w-full min-h-96 bg-white shadow-md rounded-2xl flex flex-col items-center justify-center">
              <div className="w-[95%]  h-16 flex items-center justify-between">

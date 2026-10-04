@@ -11,6 +11,9 @@ import nextjs from "../assets/course-icons/next.png";
 import mongo from "../assets/course-icons/mongo.png";
 import tailwindcss from "../assets/course-icons/tailwind.png";
 import express from "../assets/course-icons/express.png";
+import postgresql from "../assets/course-icons/postgreSQL.png";
+import prisma from "../assets/course-icons/prisma.png";
+import github from "../assets/course-icons/github.png";
 
 import {
   Home,
@@ -317,7 +320,80 @@ export const courses = [
       title: "Backend Developer",
       image: "https://www.loremfaces.net/96/id/5.jpg",
     },
+  },{
+  id: 105,
+  title: "PostgreSQL Essentials",
+  category: "Database",
+  level: "Intermediate",
+  duration: "7 weeks",
+  price: "RM 699",
+  students: 0,
+  icon: postgresql,
+  color: "bg-blue-600",
+  bgcolor: "bg-blue-600/30",
+  textColor: "text-blue-700",
+  status: "Upcoming",
+  releaseDate: "2026-11-12",
+  description:
+    "Learn PostgreSQL fundamentals, database design, SQL queries, relationships, indexing, and how to build reliable data-driven applications.",
+  rating: 0,
+  totalLessons: 0,
+  instructor: {
+    name: "Michael Tan",
+    title: "Database Engineer",
+    image: "https://i.pravatar.cc/150?img=3",
   },
+},
+
+{
+  id: 106,
+  title: "Prisma ORM Fundamentals",
+  category: "Backend Development",
+  level: "Intermediate",
+  duration: "6 weeks",
+  price: "RM 699",
+  students: 0,
+  icon: prisma,
+  color: "bg-black",
+  bgcolor: "bg-gray-300",
+  textColor: "text-gray-800",
+  status: "Upcoming",
+  releaseDate: "2026-11-19",
+  description:
+    "Learn Prisma ORM for modern JavaScript and TypeScript applications, including schema design, migrations, queries, relationships, and database integration.",
+  rating: 0,
+  totalLessons: 0,
+  instructor: {
+    name: "Daniel Wong",
+    title: "Full-Stack Developer",
+    image: "https://i.pravatar.cc/150?img=11",
+  },
+},
+
+{
+  id: 107,
+  title: "Git & GitHub Mastery",
+  category: "Developer Tools",
+  level: "Beginner",
+  duration: "5 weeks",
+  price: "RM 499",
+  students: 0,
+  icon: github,
+  color: "bg-gray-800",
+  bgcolor: "bg-gray-800/20",
+  textColor: "text-gray-800",
+  status: "Upcoming",
+  releaseDate: "2026-11-26",
+  description:
+    "Master Git and GitHub workflows including branching, commits, pull requests, merging, collaboration, and professional project management.",
+  rating: 0,
+  totalLessons: 0,
+  instructor: {
+    name: "Emily Chen",
+    title: "Senior Software Engineer",
+    image: "https://i.pravatar.cc/150?img=47",
+  },
+},
 ];
 
 
