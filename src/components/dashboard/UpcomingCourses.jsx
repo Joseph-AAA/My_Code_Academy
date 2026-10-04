@@ -12,8 +12,8 @@ function UpcomingCourses (){
                     <a className="flex text-lg font-medium text-blue-600" href="#">View Schedule  <ArrowRight  /></a>
             </div>
              <div className="w-[95%] h-full  grid   md:grid-cols-2
-  xl:grid-cols-1
-  2xl:grid-cols-2 gap-3 flex-wrap pb-5">
+                            xl:grid-cols-1
+                            2xl:grid-cols-2 gap-3 flex-wrap pb-5">
               
                     {
                         upcomingCourses.map((upcomingCoursesData)=>{

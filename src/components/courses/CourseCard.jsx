@@ -4,14 +4,14 @@ function CourseCard({coursesData}){
          <div className="relative rounded-xl min-h-56 bg-gray-200 border border-blue-200 shadow-sm overflow-hidden">
                                     <div key={coursesData.title} className="flex p-3">
                                         <span className="shrink-0 pr-3">
-                                            <img src={coursesData.icon} className="w-18" alt="img"/>
+                                            <img src={coursesData.icon} className="w-14" alt="img"/>
                                         </span>
                                         <div className="pt-2">
                                             <span className={`${coursesData.bgcolor} shadow-sm inline-block px-2 py-1 mb-1 rounded-md`} >
                                                 <p>{coursesData.category}</p>
                                             </span>
                                          
-                                            <h4 className="text-xl font-medium mb-5">
+                                            <h4 className="text-lg font-medium mb-5">
                                                 {coursesData.title}
                                             </h4>
                                                <span className="flex gap-2">

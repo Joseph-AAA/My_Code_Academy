@@ -7,7 +7,7 @@ function DashboardCard({ label, value, icon, Icon, change,bgColor,text}) {
             </div>
 
             <div className="flex flex-col  justify-center h-full items  px-4">
-                <h2 className="text-md md:text-xl font-bold">{value}</h2>
+                <h2 className="text-md lg:text-lg font-bold">{value}</h2>
                 <p className="text-sm text-gray-500">{label}</p>
 
                 <p className="text-sm md:text-xs">
@@ -15,7 +15,6 @@ function DashboardCard({ label, value, icon, Icon, change,bgColor,text}) {
                 </p>
             </div>
         </div>
-
   );
 }   
 export default DashboardCard;

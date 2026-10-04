@@ -1,6 +1,6 @@
 import { activity, activityConfig } from "../../../data/data";
 
-function ActivitiesModal({ onClose }) {
+function ActivitiesModal({ closeModal }) {
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 p-4">
       <div
@@ -16,7 +16,7 @@ function ActivitiesModal({ onClose }) {
                 </p>
             </div>
 
-             <button className="hover:cursor-pointer" onClick={onClose}>✕</button>
+             <button className="hover:cursor-pointer  hover:text-red-500 hover:font-extrabold" onClick={closeModal}>✕</button>
         </div>
 
 {/*********************************************************Activities******************************************************/}
@@ -57,8 +57,9 @@ function ActivitiesModal({ onClose }) {
 
         <div className="border-t p-4 text-right">
             <button
-                onClick={onClose}
-                className="rounded-lg hover:cursor-pointer bg-blue-600 px-4 py-2 text-sm font-medium text-white"
+                onClick={closeModal}
+                className="rounded-lg hover:cursor-pointer 
+                           hover:bg-blue-700 bg-blue-600 px-4 py-2 text-sm font-medium text-white"
             >
                 Close
             </button>
