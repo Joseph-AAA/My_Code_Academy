@@ -29,7 +29,7 @@ function Sidebar({sidebarOpen,setSidebarOpen}) {
                               onClick={() => setSidebarOpen(false)}
                               key={link.path}
                               to={link.path}
-                            //   className={`${(isActive)=>{isActive ? 'bg-red-600 text-white' : 'hover:bg-gray-200'}} flex  items-center gap-3 h-12  pl-3 rounded-md cursor-pointer hover:bg-(--primary-hover)`}
+                      
                             className={({ isActive }) =>isActive ? 'flex items-center gap-3 h-12 pl-3 rounded-md bg-blue-600 hover:bg-(--primary-hover) text-white' 
                                                                   : 'flex items-center gap-3 h-12 pl-3 rounded-md hover:bg-white/10'}>             
                                 <link.icon className="size-5 " />

@@ -1,0 +1,272 @@
+.code-background {
+  position: fixed;
+  inset: 0;
+
+  z-index: 0;
+
+  overflow: hidden;
+  pointer-events: none;
+
+  background: #020b2b;
+}
+
+/* Subtle glowing background */
+.code-background::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+
+  background:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(0, 170, 255, 0.12),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(140, 0, 255, 0.12),
+      transparent 25%
+    );
+
+  animation: backgroundPulse 10s ease-in-out infinite alternate;
+}
+
+/* Moving neon lines */
+.neon-grid {
+  position: absolute;
+  inset: -100%;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 45%,
+      rgba(0, 174, 255, 0.12) 50%,
+      transparent 55%
+    ),
+    linear-gradient(
+      60deg,
+      transparent 45%,
+      rgba(145, 0, 255, 0.1) 50%,
+      transparent 55%
+    );
+
+  background-size: 500px 500px;
+
+  animation: gridMove 20s linear infinite;
+}
+
+
+/* Individual floating icons */
+.floating-code {
+  position: absolute;
+
+  left: var(--x);
+  top: var(--y);
+
+  width: 70px;
+  height: 70px;
+
+  animation:
+    floatAround var(--duration) ease-in-out infinite alternate,
+    appearDisappear 7s ease-in-out infinite;
+
+  animation-delay: var(--delay);
+
+  opacity: 0.6;
+}
+
+
+/* Icon container */
+.code-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 14px;
+
+  border: 1px solid rgba(0, 200, 255, 0.45);
+
+  border-radius: 16px;
+
+  background:
+    rgba(3, 20, 65, 0.55);
+
+  box-shadow:
+    0 0 10px rgba(0, 170, 255, 0.25),
+    0 0 25px rgba(0, 120, 255, 0.15),
+    inset 0 0 15px rgba(0, 170, 255, 0.08);
+
+  backdrop-filter: blur(5px);
+
+  animation: neonFlicker 4s ease-in-out infinite;
+}
+
+
+.code-icon img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(0 0 5px rgba(0, 200, 255, 0.7))
+    drop-shadow(0 0 12px rgba(0, 100, 255, 0.35));
+}
+
+
+/* Floating movement */
+@keyframes floatAround {
+
+  0% {
+    transform:
+      translate(0, 0)
+      rotate(-5deg);
+  }
+
+  25% {
+    transform:
+      translate(var(--move-x), 40px)
+      rotate(5deg);
+  }
+
+  50% {
+    transform:
+      translate(
+        calc(var(--move-x) * -0.5),
+        var(--move-y)
+      )
+      rotate(-8deg);
+  }
+
+  75% {
+    transform:
+      translate(60px, 50px)
+      rotate(7deg);
+  }
+
+  100% {
+    transform:
+      translate(
+        calc(var(--move-x) * -1),
+        calc(var(--move-y) * -0.5)
+      )
+      rotate(-4deg);
+  }
+}
+
+
+/* Appear / disappear */
+@keyframes appearDisappear {
+
+  0% {
+    opacity: 0;
+    filter: blur(3px);
+  }
+
+  15% {
+    opacity: 0.65;
+    filter: blur(0);
+  }
+
+  45% {
+    opacity: 0.75;
+  }
+
+  70% {
+    opacity: 0.35;
+  }
+
+  85% {
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+
+/* Neon light flickering */
+@keyframes neonFlicker {
+
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px rgba(0, 200, 255, 0.25),
+      0 0 20px rgba(0, 120, 255, 0.15),
+      inset 0 0 10px rgba(0, 170, 255, 0.05);
+  }
+
+  45% {
+    box-shadow:
+      0 0 15px rgba(0, 200, 255, 0.5),
+      0 0 35px rgba(0, 120, 255, 0.25),
+      inset 0 0 18px rgba(0, 170, 255, 0.12);
+  }
+
+  50% {
+    box-shadow:
+      0 0 4px rgba(0, 200, 255, 0.15),
+      inset 0 0 5px rgba(0, 170, 255, 0.03);
+  }
+
+  55% {
+    box-shadow:
+      0 0 18px rgba(0, 200, 255, 0.6),
+      0 0 40px rgba(0, 120, 255, 0.3),
+      inset 0 0 20px rgba(0, 170, 255, 0.15);
+  }
+}
+
+
+/* Background movement */
+@keyframes gridMove {
+
+  from {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  to {
+    transform: translate(250px, 150px) rotate(5deg);
+  }
+}
+
+
+/* Background pulse */
+@keyframes backgroundPulse {
+
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .floating-code {
+    width: 50px;
+    height: 50px;
+  }
+
+  .code-icon {
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .floating-code:nth-child(n + 8) {
+    display: none;
+  }
+}
