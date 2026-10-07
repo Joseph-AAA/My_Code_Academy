@@ -1,17 +1,28 @@
 import express from "express";
 import cors from "cors";
+import prisma from "./lib/prisma.js";
 
 const app = express();
-
 const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "MyCode Academy API is running",
-  });
+app.get("/", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+
+    res.json({
+      message: "MyCode Academy API is running",
+      users,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Database connection failed",
+    });
+  }
 });
 
 app.listen(PORT, () => {
