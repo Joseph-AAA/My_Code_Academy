@@ -1,8 +1,91 @@
 
 import CodeBackground from "../../components/Background/CodeBackground";
 import "./SignIn.css";
+import { useState } from "react";
 
 const SignIn = () => {
+
+    const [input, setInput] = useState({
+        email: "",
+        password: "",
+      });
+
+
+      const [message, setMessage] = useState({
+        text: "",
+        type: "",
+      });
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setInput((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      };
+
+
+      const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Clear the previous message
+  setMessage({ text: "", type: "" });
+
+  // Validate required fields
+  if (!input.email.trim() || !input.password) {
+    setMessage({
+      text: "Please enter your email and password.",
+      type: "error",
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost:5000/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: input.email.trim(),
+          password: input.password,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    // Handle login errors
+    if (!response.ok) {
+      setMessage({
+        text: data.message || "Login failed.",
+        type: "error",
+      });
+      return;
+    }
+
+    // Login successful
+    console.log("Login successful:", data);
+    console.log("JWT token:", data.token);
+    console.log("User:", data.user);
+
+    setMessage({
+      text: "Login successful!",
+      type: "success",
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+
+    setMessage({
+      text: "Unable to connect to the server. Please try again.",
+      type: "error",
+    });
+  }
+};
+
   return (
     <div className="signin-page">
 
@@ -29,7 +112,7 @@ const SignIn = () => {
             </div>
 
             {/* Form */}
-            <form className="signin-form">
+            <form className="signin-form" onSubmit={handleSubmit}>
 
               {/* Email */}
               <div className="signin-input-group">
@@ -37,6 +120,9 @@ const SignIn = () => {
 
                 <input
                   type="email"
+                  name="email"
+                  value={input.email}
+                  onChange={handleChange}
                   placeholder="Enter your email"
                 />
               </div>
@@ -46,8 +132,11 @@ const SignIn = () => {
                 <label>Password</label>
 
                 <input
-                  type="password"
-                  placeholder="Enter your password"
+                    type="password"
+                    name="password"
+                    value={input.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
                 />
               </div>
 
@@ -62,6 +151,16 @@ const SignIn = () => {
                   Forgot password?
                 </a>
               </div>
+
+
+              {message.text && (
+                <p
+                  className={`signup-message ${message.type}`}
+                  role="alert"
+                >
+                  {message.text}
+                </p>
+              )}
 
               {/* Button */}
               <button
