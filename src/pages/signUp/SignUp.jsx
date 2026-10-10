@@ -3,7 +3,7 @@ import "./SignUp.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const SignUp = () => {
-
+    
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
   // ********************************************setup useState for input***********************
@@ -102,7 +102,9 @@ const SignUp = () => {
                   type: "error",
               });
             }finally {
+                  
                   setIsSubmitting(false);
+                  
             }
         };
 
