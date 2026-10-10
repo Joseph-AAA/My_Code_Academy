@@ -2,14 +2,14 @@
 import CodeBackground from "../../components/Background/CodeBackground";
 import "./SignIn.css";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 const SignIn = () => {
 
     const [input, setInput] = useState({
         email: "",
         password: "",
       });
-
+    const navigate = useNavigate();
 
       const [message, setMessage] = useState({
         text: "",
@@ -68,14 +68,12 @@ const SignIn = () => {
     }
 
     // Login successful
-    console.log("Login successful:", data);
-    console.log("JWT token:", data.token);
-    console.log("User:", data.user);
+    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("user", JSON.stringify(data.user));
 
-    setMessage({
-      text: "Login successful!",
-      type: "success",
-    });
+    navigate("/");
+
+
   } catch (error) {
     console.error("Login error:", error);
 
