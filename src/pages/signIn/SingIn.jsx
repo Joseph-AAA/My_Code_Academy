@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const SignIn = () => {
 
+    const [loading, setLoading] = useState(false);
     const [input, setInput] = useState({
         email: "",
         password: "",
@@ -27,45 +28,45 @@ const SignIn = () => {
 
 
       const handleSubmit = async (e) => {
-  e.preventDefault();
+          e.preventDefault();
+          if (loading) return;
+          // Clear the previous message
+          setMessage({ text: "", type: "" });
 
-  // Clear the previous message
-  setMessage({ text: "", type: "" });
+          // Validate required fields
+          if (!input.email.trim() || !input.password) {
+            setMessage({
+              text: "Please enter your email and password.",
+              type: "error",
+            });
+            return;
+          }
+              setLoading(true);
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/login`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: input.email.trim(),
+              password: input.password,
+            }),
+          }
+        );
 
-  // Validate required fields
-  if (!input.email.trim() || !input.password) {
-    setMessage({
-      text: "Please enter your email and password.",
-      type: "error",
-    });
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/auth/login`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: input.email.trim(),
-          password: input.password,
-        }),
-      }
-    );
-
-    const data = await response.json();
+      const data = await response.json();
 
     // Handle login errors
-    if (!response.ok) {
-      setMessage({
-        text: data.message || "Login failed.",
-        type: "error",
-      });
-      return;
-    }
+      if (!response.ok) {
+        setMessage({
+          text: data.message || "Login failed.",
+          type: "error",
+        });
+        return;
+      }
 
     // Login successful
     sessionStorage.setItem("token", data.token);
@@ -74,15 +75,17 @@ const SignIn = () => {
     navigate("/");
 
 
-  } catch (error) {
-    console.error("Login error:", error);
+      } catch (error) {
+        console.error("Login error:", error);
 
-    setMessage({
-      text: "Unable to connect to the server. Please try again.",
-      type: "error",
-    });
-  }
-};
+        setMessage({
+          text: "Unable to connect to the server. Please try again.",
+          type: "error",
+        });
+      }finally{
+            setLoading(false);
+      }
+    };
 
   return (
     <div className="signin-page">
@@ -163,9 +166,10 @@ const SignIn = () => {
               {/* Button */}
               <button
                 type="submit"
-                className="signin-button"
+                className="signin-button" 
+                disabled={loading}
               >
-                Sign In
+                  {loading ? "Signing In..." : "Sign In"}
               </button>
 
             </form>
