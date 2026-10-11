@@ -18,6 +18,7 @@ html {
   scroll-behavior: smooth;
 }
 
+
 :root {
 
   --sidebar: #232b63;
@@ -167,10 +168,12 @@ a {
 /* ================================
    Selection
 ================================ */
-
 ::selection {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: #2563eb;
+  color: #ffffff;
 }
 
-
+::-moz-selection {
+  background-color: #2563eb;
+  color: #ffffff;
+}
