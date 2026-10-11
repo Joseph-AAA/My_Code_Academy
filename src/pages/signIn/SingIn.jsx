@@ -6,20 +6,21 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 const SignIn = () => {
+      const navigate = useNavigate();
 
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [input, setInput] = useState({
+      const [loading, setLoading] = useState(false);
+      const [showPassword, setShowPassword] = useState(false);
+
+      const [input, setInput] = useState({
         email: "",
         password: "",
       });
-    const navigate = useNavigate();
 
-      const [message, setMessage] = useState({
-        text: "",
-        type: "",
-      });
+      const [touched, setTouched] = useState({});
+      const [errors, setErrors] = useState({});
+      const [authError, setAuthError] = useState("");
 
+  // Handle input changes
       const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -27,81 +28,113 @@ const SignIn = () => {
           ...prev,
           [name]: value,
         }));
+
+        // Clear the previous login error when the user edits a field
+        setAuthError("");
+
+        // Revalidate a field if the user has already touched it
+        if (touched[name]) {
+          setErrors((prev) => ({
+            ...prev,
+            [name]: value.trim() ? "" : "This field is required",
+          }));
+        }
       };
 
+  // Validate a field when the user leaves it
+      const handleBlur = (e) => {
+        const { name, value } = e.target;
 
-      const handleSubmit = async (e) => {
-          e.preventDefault();
-          if (loading) return;
-          // Clear the previous message
-          setMessage({ text: "", type: "" });
+        setTouched((prev) => ({
+          ...prev,
+          [name]: true,
+        }));
 
-          // Validate required fields
-          if (!input.email.trim() || !input.password) {
-            setMessage({
-              text: "Please enter your email and password.",
-              type: "error",
-            });
-            return;
-          }
-              setLoading(true);
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/auth/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: input.email.trim(),
-              password: input.password,
-            }),
-          }
-        );
+        setErrors((prev) => ({
+          ...prev,
+          [name]: value.trim() ? "" : "This field is required",
+        }));
+      };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (loading) return;
+
+    const nextErrors = {
+      email: input.email.trim()
+        ? ""
+        : "This field is required",
+      password: input.password.trim()
+        ? ""
+        : "This field is required",
+    };
+
+    // Show validation messages for both fields
+    setTouched({
+      email: true,
+      password: true,
+    });
+
+    setErrors(nextErrors);
+    setAuthError("");
+
+    // Do not call the backend if a required field is empty
+    if (nextErrors.email || nextErrors.password) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: input.email.trim(),
+            password: input.password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
-    // Handle login errors
+      // Handle incorrect credentials or other login errors
       if (!response.ok) {
-        setMessage({
-          text: data.message || "Login failed.",
-          type: "error",
-        });
+        setAuthError("Invalid email or password");
         return;
       }
 
-    // Login successful
-    sessionStorage.setItem("token", data.token);
-    sessionStorage.setItem("user", JSON.stringify(data.user));
+      // Login successful
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("user", JSON.stringify(data.user));
 
-    navigate("/");
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error);
 
-
-      } catch (error) {
-        console.error("Login error:", error);
-
-        setMessage({
-          text: "Unable to connect to the server. Please try again.",
-          type: "error",
-        });
-      }finally{
-            setLoading(false);
-      }
-    };
+      setAuthError(
+        "Unable to connect to the server. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="signin-page">
-
       {/* Animated programming background */}
       <CodeBackground />
 
       {/* Sign In Card */}
       <div className="signin-wrapper">
         <div className="signin-neon-card">
-
           <div className="signin-card">
-
             {/* Header */}
             <div className="signin-header">
               <span className="signin-badge">
@@ -116,48 +149,93 @@ const SignIn = () => {
             </div>
 
             {/* Form */}
-            <form className="signin-form" onSubmit={handleSubmit}>
-
+            <form
+              className="signin-form"
+              onSubmit={handleSubmit}
+              noValidate
+            >
               {/* Email */}
               <div className="signin-input-group">
-                <label>Email</label>
+                <div className="signin-label-row">
+                  <label htmlFor="signin-email">
+                    Email
+                  </label>
+
+                  {touched.email && errors.email && (
+                    <span className="signin-field-error">
+                      {errors.email}
+                    </span>
+                  )}
+                </div>
 
                 <input
+                  id="signin-email"
                   type="email"
                   name="email"
                   value={input.email}
                   onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="Enter your email"
+                  autoComplete="email"
+                  aria-invalid={Boolean(errors.email)}
                 />
               </div>
 
               {/* Password */}
-                          
-            <div className="signin-input-group">
-              <label>Password</label>
+              <div className="signin-input-group">
+                <div className="signin-label-row">
+                  <label htmlFor="signin-password">
+                    Password
+                  </label>
 
-              <div className="password-input-wrapper">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={input.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                />
+                  {(touched.password && errors.password) ||
+                  authError ? (
+                    <span
+                      className="signin-field-error"
+                      role="alert"
+                    >
+                      {errors.password || authError}
+                    </span>
+                  ) : null}
+                </div>
 
-                <button
+                <div className="password-input-wrapper">
+                  <input
+                    id="signin-password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={input.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    aria-invalid={Boolean(
+                      errors.password || authError
+                    )}
+                  />
+
+                  <button
                     type="button"
                     className="password-toggle"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() =>
+                      setShowPassword((prev) => !prev)
+                    }
+                    aria-label={
+                      showPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
                   >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
+                    {showPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </button>
+                </div>
               </div>
-            </div>
 
-
-              {/* Forgot password */}
+              {/* Remember Me / Forgot Password */}
               <div className="signin-options">
                 <label className="remember-me">
                   <input type="checkbox" />
@@ -169,40 +247,24 @@ const SignIn = () => {
                 </a>
               </div>
 
-
-              {message.text && (
-                <p
-                  className={`signup-message ${message.type}`}
-                  role="alert"
-                >
-                  {message.text}
-                </p>
-              )}
-
-              {/* Button */}
+              {/* Sign In Button */}
               <button
                 type="submit"
-                className="signin-button" 
+                className="signin-button"
                 disabled={loading}
               >
-                  {loading ? "Signing In..." : "Sign In"}
+                {loading ? "Signing In..." : "Sign In"}
               </button>
-
             </form>
 
-            {/* Sign Up */}
+            {/* Sign Up Link */}
             <p className="signup-text">
               Don't have an account?{" "}
-              <a href="/signup">
-                Create Account
-              </a>
+              <a href="/signup">Create Account</a>
             </p>
-
           </div>
-
         </div>
       </div>
-
     </div>
   );
 };

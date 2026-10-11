@@ -1,21 +1,17 @@
+
 /* ========================================
    PAGE
 ======================================== */
 
 .signin-page {
   position: relative;
-
   min-height: 100vh;
-
   overflow: hidden;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: #020b2b;
 }
-
 
 /* ========================================
    CARD POSITION
@@ -23,14 +19,10 @@
 
 .signin-wrapper {
   position: relative;
-
   z-index: 10;
-
   width: min(92%, 440px);
-
   perspective: 1200px;
 }
-
 
 /* ========================================
    NEON BORDER
@@ -38,13 +30,9 @@
 
 .signin-neon-card {
   position: relative;
-
   padding: 2px;
-
   border-radius: 24px;
-
   overflow: hidden;
-
   transform: rotateX(2deg);
 
   box-shadow:
@@ -52,35 +40,26 @@
     0 0 40px rgba(0, 180, 255, 0.12);
 }
 
-
 /* Moving neon light */
 
 .signin-neon-card::before {
   content: "";
-
   position: absolute;
-
   width: 200%;
   height: 200%;
-
   left: -50%;
   top: -50%;
 
   background: conic-gradient(
     from 0deg,
-
     transparent 0deg,
     transparent 40deg,
-
     #00eaff 70deg,
     #008cff 100deg,
-
     transparent 130deg,
     transparent 180deg,
-
     #a855f7 220deg,
     #ec00ff 250deg,
-
     transparent 290deg,
     transparent 360deg
   );
@@ -88,16 +67,12 @@
   animation: signinNeonRotate 5s linear infinite;
 }
 
-
 /* Neon glow */
 
 .signin-neon-card::after {
   content: "";
-
   position: absolute;
-
   inset: 0;
-
   border-radius: 24px;
 
   box-shadow:
@@ -107,53 +82,7 @@
   pointer-events: none;
 }
 
-
-.password-input-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.password-input-wrapper input {
-  display: block;
-  width: 100%;
-  height: 50px;
-  box-sizing: border-box;
-  padding: 0 45px 0 14px;
-
-  border: 1px solid #333354;
-  border-radius: 10px;
-  background-color: #0d0d2b;
-  color: #ffffff;
-  font: inherit;
-}
-
-.password-toggle {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  padding: 4px;
-  cursor: pointer;
-}
-
-.password-toggle {
-  color: #9ca3af;
-}
-
-.password-toggle:hover {
-  color: #ffffff;
-}
-
-.password-input-wrapper input {
-  user-select: text;
-  -webkit-user-select: text;
-}
-
+/* Neon animation */
 
 @keyframes signinNeonRotate {
   from {
@@ -165,26 +94,21 @@
   }
 }
 
-
 /* ========================================
    GLASS CARD
 ======================================== */
 
 .signin-card {
   position: relative;
-
   z-index: 2;
-
   border-radius: 22px;
-
   padding: 36px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(38, 30, 85, 0.94),
-      rgba(18, 24, 65, 0.96)
-    );
+  background: linear-gradient(
+    145deg,
+    rgba(38, 30, 85, 0.94),
+    rgba(18, 24, 65, 0.96)
+  );
 
   border: 1px solid rgba(150, 120, 255, 0.28);
 
@@ -197,66 +121,46 @@
     0 25px 60px rgba(0, 0, 0, 0.55);
 }
 
-
 /* ========================================
    HEADER
 ======================================== */
 
 .signin-header {
   text-align: center;
-
   margin-bottom: 30px;
 }
 
-
 .signin-badge {
   display: inline-block;
-
   margin-bottom: 12px;
-
   padding: 5px 12px;
-
   border-radius: 20px;
 
   font-size: 10px;
-
   font-weight: 700;
-
   letter-spacing: 2px;
 
   color: #67e8f9;
-
   background: rgba(0, 200, 255, 0.08);
-
   border: 1px solid rgba(0, 220, 255, 0.25);
 
-  box-shadow:
-    0 0 12px rgba(0, 220, 255, 0.1);
+  box-shadow: 0 0 12px rgba(0, 220, 255, 0.1);
 }
-
 
 .signin-header h1 {
   margin: 0;
-
   font-size: 30px;
-
   font-weight: 700;
-
   color: #ffffff;
 
-  text-shadow:
-    0 0 20px rgba(0, 200, 255, 0.25);
+  text-shadow: 0 0 20px rgba(0, 200, 255, 0.25);
 }
-
 
 .signin-header p {
   margin-top: 8px;
-
   font-size: 14px;
-
   color: rgba(203, 213, 225, 0.65);
 }
-
 
 /* ========================================
    FORM
@@ -264,54 +168,64 @@
 
 .signin-form {
   display: flex;
-
   flex-direction: column;
-
   gap: 18px;
 }
 
-
 .signin-input-group {
   display: flex;
-
   flex-direction: column;
-
   gap: 7px;
 }
 
+/* Label and error on the same row */
+
+.signin-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 18px;
+}
 
 .signin-input-group label {
   font-size: 13px;
-
   font-weight: 500;
-
   color: #cbd5e1;
 }
 
+/* ========================================
+   FIELD VALIDATION
+======================================== */
+
+.signin-field-error {
+  color: #f87171;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* ========================================
+   INPUT FIELDS
+======================================== */
 
 .signin-input-group input[type="email"],
 .signin-input-group input[type="password"],
 .signin-input-group input[type="text"] {
   width: 100%;
-
   box-sizing: border-box;
-
   padding: 12px 14px;
-
   border-radius: 10px;
-
   outline: none;
 
-  color: white;
-
+  color: #ffffff;
   font-size: 14px;
 
   background: rgba(5, 12, 35, 0.75);
-
   border: 1px solid rgba(170, 160, 220, 0.18);
 
-  box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
 
   transition:
     border-color 0.25s ease,
@@ -319,15 +233,12 @@
     background 0.25s ease;
 }
 
-
 .signin-input-group input::placeholder {
   color: rgba(148, 163, 184, 0.45);
 }
 
-
 .signin-input-group input:focus {
   border-color: rgba(0, 220, 255, 0.7);
-
   background: rgba(3, 18, 48, 0.85);
 
   box-shadow:
@@ -335,6 +246,53 @@
     0 0 18px rgba(0, 200, 255, 0.15);
 }
 
+/* ========================================
+   PASSWORD VISIBILITY
+======================================== */
+
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.signin-input-group .password-input-wrapper input {
+  display: block;
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  padding: 0 45px 0 14px;
+
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: transparent;
+  padding: 4px;
+
+  color: #9ca3af;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: #ffffff;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
 
 /* ========================================
    REMEMBER / FORGOT
@@ -342,57 +300,38 @@
 
 .signin-options {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   margin-top: -4px;
-
   font-size: 12px;
 }
 
-
 .remember-me {
   display: flex;
-
   align-items: center;
-
   gap: 7px;
 
   color: rgba(203, 213, 225, 0.65);
-
   cursor: pointer;
 }
-
 
 .remember-me input {
   width: 14px;
-
   height: 14px;
-
   accent-color: #00c6ff;
-
   cursor: pointer;
 }
 
-
 .signin-options a {
   color: #67e8f9;
-
   text-decoration: none;
-
   transition: color 0.2s ease;
 }
 
-
 .signin-options a:hover {
-  color: white;
-
-  text-shadow:
-    0 0 10px rgba(0, 220, 255, 0.7);
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 220, 255, 0.7);
 }
-
 
 /* ========================================
    SIGN IN BUTTON
@@ -400,35 +339,27 @@
 
 .signin-button {
   width: 100%;
-
   margin-top: 8px;
-
   padding: 13px;
 
   border: none;
-
   border-radius: 10px;
-
   cursor: pointer;
 
-  color: white;
-
+  color: #ffffff;
   font-size: 14px;
-
   font-weight: 700;
 
-  background:
-    linear-gradient(
-      90deg,
-      #008cff,
-      #00c6ff,
-      #7c3aed
-    );
+  background: linear-gradient(
+    90deg,
+    #008cff,
+    #00c6ff,
+    #7c3aed
+  );
 
   background-size: 200% 100%;
 
-  box-shadow:
-    0 0 15px rgba(0, 180, 255, 0.25);
+  box-shadow: 0 0 15px rgba(0, 180, 255, 0.25);
 
   transition:
     transform 0.2s ease,
@@ -436,10 +367,8 @@
     background-position 0.4s ease;
 }
 
-
-.signin-button:hover {
+.signin-button:hover:not(:disabled) {
   transform: translateY(-2px);
-
   background-position: 100% 0;
 
   box-shadow:
@@ -447,11 +376,14 @@
     0 0 40px rgba(120, 50, 255, 0.25);
 }
 
-
-.signin-button:active {
+.signin-button:active:not(:disabled) {
   transform: translateY(0);
 }
 
+.signin-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
 
 /* ========================================
    SIGN UP LINK
@@ -459,40 +391,28 @@
 
 .signup-text {
   margin-top: 22px;
-
   text-align: center;
-
   font-size: 13px;
-
   color: rgba(203, 213, 225, 0.6);
 }
 
-
 .signup-text a {
   color: #67e8f9;
-
   font-weight: 600;
-
   text-decoration: none;
-
   transition: color 0.2s ease;
 }
 
-
 .signup-text a:hover {
-  color: white;
-
-  text-shadow:
-    0 0 10px rgba(0, 220, 255, 0.7);
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 220, 255, 0.7);
 }
-
 
 /* ========================================
    MOBILE
 ======================================== */
 
 @media (max-width: 480px) {
-
   .signin-wrapper {
     width: 92%;
   }
@@ -507,5 +427,9 @@
 
   .signin-options {
     font-size: 11px;
+  }
+
+  .signin-field-error {
+    font-size: 12px;
   }
 }
