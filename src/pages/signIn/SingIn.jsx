@@ -3,9 +3,12 @@ import CodeBackground from "../../components/Background/CodeBackground";
 import "./SignIn.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
+
 const SignIn = () => {
 
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [input, setInput] = useState({
         email: "",
         password: "",
@@ -129,17 +132,30 @@ const SignIn = () => {
               </div>
 
               {/* Password */}
-              <div className="signin-input-group">
-                <label>Password</label>
+                          
+            <div className="signin-input-group">
+              <label>Password</label>
 
+              <div className="password-input-wrapper">
                 <input
-                    type="password"
-                    name="password"
-                    value={input.password}
-                    onChange={handleChange}
-                    placeholder="Enter your password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={input.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
                 />
+
+                <button
+                    type="button"
+                    className="password-toggle"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
+            </div>
+
 
               {/* Forgot password */}
               <div className="signin-options">

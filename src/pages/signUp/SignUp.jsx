@@ -2,10 +2,13 @@ import CodeBackground from "../../components/Background/CodeBackground";
 import "./SignUp.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 const SignUp = () => {
     
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
+     const [showPassword, setShowPassword] = useState(false);
+     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // ********************************************setup useState for input***********************
 
       const [input, setInput] = useState({
@@ -164,26 +167,48 @@ const SignUp = () => {
 {/*************************************************Password*************************************/}
               <div className="input-group">
                 <label>Password</label>
-                <input
-                      type="password"
+                  <div className="password-input-wrapper">
+                    <input
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       value={input.password}
                       onChange={handleChange}
-                      placeholder="Confirm your password"
-                />
+                      placeholder="Enter your password"
+                    />
+
+                    <button
+                        type="button"
+                        className="password-toggle"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
               </div>
 
 
 {/**********************************************Confirm Passwork**********************************/}
               <div className="input-group">
                 <label>Confirm Password</label>
-                <input
-                      type="password"
+                <div className="password-input-wrapper">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={input.confirmPassword}
                       onChange={handleChange}
                       placeholder="Confirm your password"
-                />
+                    />
+
+                    <button
+                        type="button"
+                        className="password-toggle"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      >
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
               </div>
                 
 
