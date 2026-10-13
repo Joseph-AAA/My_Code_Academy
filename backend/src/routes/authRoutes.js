@@ -1,6 +1,6 @@
 
 import express from "express";
-import prisma from "../lib/prisma.js";
+import prisma from "../lib/prisma.js"; //creates the connection and client that your backend uses to work with the database.
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -66,7 +66,7 @@ router.post("/signup", async (req, res) => {
 // ********************************************For Sign in **************************************
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     // 1. Validate required fields
     if (!email?.trim() || !password) {
@@ -102,10 +102,12 @@ router.post("/login", async (req, res) => {
     }
 
     // 5. Generate a JWT
+    const expiresIn = rememberMe ? "2min" : "1min";  
+    
     const token = jwt.sign(
       { userId: user.id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+        process.env.JWT_SECRET,
+      { expiresIn }
     );
 
     // 6. Send a safe response
@@ -130,7 +132,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({    //finding inside databse current user
       where: { id: req.user.userId },
       select: {
         id: true,
@@ -147,11 +149,11 @@ router.get("/profile", authMiddleware, async (req, res) => {
     }
 
     return res.status(200).json({ user });
-  } catch (error) {
-    console.error("Profile error:", error);
-    return res.status(500).json({
-      message: "Server error",
-    });
+      } catch (error) {
+        console.error("Profile error:", error);
+        return res.status(500).json({
+          message: "Server error",
+        });
   }
 });
 
