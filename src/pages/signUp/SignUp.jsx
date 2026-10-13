@@ -9,14 +9,15 @@ import { Eye, EyeOff } from "lucide-react";
 
 const SignUp = () => {
 
-  const [touched, setTouched] = useState({});
-  const [errors, setErrors] = useState({});
-  const [formError, setFormError] = useState("");
+      const [touched, setTouched] = useState({});
+      const [errors, setErrors] = useState({});
+      const [formError, setFormError] = useState("");
       
-    const navigate = useNavigate();
-    const [isSubmitting, setIsSubmitting] = useState(false);
-     const [showPassword, setShowPassword] = useState(false);
-     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+      const navigate = useNavigate();
+      const [isSubmitting, setIsSubmitting] = useState(false);
+      const [showPassword, setShowPassword] = useState(false);
+      const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   // ********************************************setup useState for input***********************
 
       const [input, setInput] = useState({
@@ -26,11 +27,7 @@ const SignUp = () => {
           confirmPassword : ""
       });
 
-
-
-    
-
-// ********************************************Password Validation*********************************
+// ********************************************Input Validation*********************************
 
       const isStrongPassword = (password) =>
           password.length >= 6 &&
@@ -50,7 +47,6 @@ const SignUp = () => {
               if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) {
                 return "Email is not valid";
               }
-
               return "";
 
             case "password":
@@ -72,7 +68,7 @@ const SignUp = () => {
 
 // ********************************************To receive input values***********************
 
-      const handleChange = (e) => {
+       const handleChange = (e) => {
           const { name, value } = e.target;
 
           const updatedInput = {
@@ -104,7 +100,10 @@ const SignUp = () => {
           }
         };
 
-        const handleBlur = (e) => {
+
+// **************** Update input state and revalidate touched fields on change.***************
+      
+       const handleBlur = (e) => {
           const { name, value } = e.target;
 
           setTouched((prev) => ({
@@ -138,7 +137,7 @@ const SignUp = () => {
                   confirmPassword: true,
                 });
 
-                const nextErrors = {};
+                const nextErrors = {};  //stores the result under the corresponding field name.
 
                 fieldNames.forEach((name) => {
                   nextErrors[name] = validateField(name, input[name]);
@@ -150,7 +149,6 @@ const SignUp = () => {
                 if (fieldNames.some((name) => nextErrors[name])) {
                   return;
                 }
-
                 setFormError("");
                 setIsSubmitting(true);
 
@@ -162,7 +160,7 @@ const SignUp = () => {
                       headers: {
                         "Content-Type": "application/json",
                       },
-                      body: JSON.stringify({
+                        body: JSON.stringify({
                         name: input.name.trim(),
                         email: input.email.trim(),
                         password: input.password,
@@ -173,13 +171,24 @@ const SignUp = () => {
                   const data = await response.json();
 
                   if (!response.ok) {
-                    setFormError(
-                      data.message || "Signup failed. Please try again."
-                    );
-                    return;
-                  }
+                      if (data.message === "Email already exists") {
+                        setErrors((prev) => ({
+                          ...prev,
+                          email: "Email already exists",
+                        }));
+                        setTouched((prev) => ({
+                          ...prev,
+                          email: true,
+                        }));
+                      } else {
+                        setFormError(data.message || "Signup failed. Please try again.");
+                      }
+
+                      return;
+                    }
 
                   navigate("/signin");
+                  
                 } catch (error) {
                   console.error("Signup error:", error);
                   setFormError(

@@ -7,7 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 const SignIn = () => {
       const navigate = useNavigate();
-
+      const [rememberMe, setRememberMe] = useState(false);
       const [loading, setLoading] = useState(false);
       const [showPassword, setShowPassword] = useState(false);
 
@@ -98,10 +98,10 @@ const SignIn = () => {
           body: JSON.stringify({
             email: input.email.trim(),
             password: input.password,
+            rememberMe,
           }),
         }
       );
-
       const data = await response.json();
 
       // Handle incorrect credentials or other login errors
@@ -111,8 +111,23 @@ const SignIn = () => {
       }
 
       // Login successful
-      sessionStorage.setItem("token", data.token);
-      sessionStorage.setItem("user", JSON.stringify(data.user));
+     if (rememberMe) {
+  // Remove old credentials from the other storage
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      } else {
+        // Remove old persistent credentials
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      navigate("/");
 
       navigate("/");
     } catch (error) {
@@ -238,7 +253,11 @@ const SignIn = () => {
               {/* Remember Me / Forgot Password */}
               <div className="signin-options">
                 <label className="remember-me">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
                   <span>Remember me</span>
                 </label>
 
