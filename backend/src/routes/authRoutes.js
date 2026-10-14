@@ -101,7 +101,7 @@ router.post("/forgot-password", async (req, res) => {
     const { token, hashedToken } = generateResetToken();
 
     // 3. Set token expiry to 15 minutes
-    const expiry = new Date(Date.now() + 1 * 60 * 1000);
+    const expiry = new Date(Date.now() + 15 * 60 * 1000);
 
     // 4. Save the hash and expiry in the database
     await prisma.user.update({
