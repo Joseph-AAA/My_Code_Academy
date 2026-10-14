@@ -14,6 +14,8 @@ import SignIn from "./pages/signIn/SingIn"
 import SignUp from "./pages/signUp/SignUp"
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ForgotPassword from "./pages/signIn/ForgotPassword";
+import ResetPassword from "./pages/signIn/ResetPassword";
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -29,6 +31,12 @@ function App() {
       {/* Sign In - full screen */}
       <Route path="/signin" element={<SignIn />} />
 
+      {/* forget password - full screen */}
+      <Route path="/forgot-password"element={<ForgotPassword />}/>
+
+      <Route path="/reset-password/:token" element={<ResetPassword />}/>
+
+      
       {/* Dashboard routes */}
       <Route
         path="*"
@@ -84,6 +92,7 @@ function App() {
                     <Route path="/setting" element={<Setting />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
+              
                   </Routes>
                 </main>
 
