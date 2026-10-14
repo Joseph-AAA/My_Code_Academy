@@ -4,7 +4,7 @@ import "./SignIn.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-
+import ForgotPassword from "./ForgotPassword";
 const SignIn = () => {
       const navigate = useNavigate();
       const [rememberMe, setRememberMe] = useState(false);
@@ -57,28 +57,28 @@ const SignIn = () => {
       };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    if (loading) return;
+        if (loading) return;
 
-    const nextErrors = {
-      email: input.email.trim()
-        ? ""
-        : "This field is required",
-      password: input.password.trim()
-        ? ""
-        : "This field is required",
-    };
+        const nextErrors = {
+          email: input.email.trim()
+            ? ""
+            : "This field is required",
+          password: input.password.trim()
+            ? ""
+            : "This field is required",
+        };
 
     // Show validation messages for both fields
-    setTouched({
-      email: true,
-      password: true,
-    });
+        setTouched({
+          email: true,
+          password: true,
+        });
 
-    setErrors(nextErrors);
-    setAuthError("");
+        setErrors(nextErrors);
+        setAuthError("");
 
     // Do not call the backend if a required field is empty
     if (nextErrors.email || nextErrors.password) {
@@ -87,21 +87,21 @@ const SignIn = () => {
 
     setLoading(true);
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: input.email.trim(),
-            password: input.password,
-            rememberMe,
-          }),
-        }
-      );
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/api/auth/login`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: input.email.trim(),
+                password: input.password,
+                rememberMe,
+              }),
+            }
+          );
       const data = await response.json();
 
       // Handle incorrect credentials or other login errors
@@ -129,7 +129,7 @@ const SignIn = () => {
 
       navigate("/");
 
-      navigate("/");
+     
     } catch (error) {
       console.error("Login error:", error);
 
