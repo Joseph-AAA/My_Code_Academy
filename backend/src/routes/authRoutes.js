@@ -8,7 +8,7 @@ const router = express.Router();
 import { generateResetToken } from "../../utils/resetToken.js";
 import crypto from "node:crypto";
 import resend from "../lib/email.js";
-
+import { sendEmail } from "../lib/sendEmail.js";
 // ********************************************For Sign up **************************************
 
   router.post("/signup", async (req, res) => {
@@ -70,40 +70,39 @@ import resend from "../lib/email.js";
 
 /* Forgot Password */
 
+
 router.post("/forgot-password", async (req, res) => {
   try {
-        console.log("Forgot password request received");
+    console.log("Forgot password request received");
 
-        const email = req.body.email?.trim().toLowerCase();
+    const email = req.body.email?.trim().toLowerCase();
 
-        if (!email) {
-          return res.status(400).json({
-            message: "Email is required",
-          });
-        }
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
 
-    // 1. Find the user
+    // 1. Find the registered user
     const user = await prisma.user.findUnique({
       where: { email },
     });
 
-    console.log("User found:", Boolean(user));
-
-    // Return the same message whether or not the account exists
     const message =
       "If an account exists for this email, password reset instructions will be sent.";
 
+    // Return the same message if the account doesn't exist
     if (!user) {
       return res.status(200).json({ message });
     }
 
-    // 2. Generate a secure token and its hash
+    // 2. Generate a secure reset token and its hash
     const { token, hashedToken } = generateResetToken();
 
     // 3. Set token expiry to 15 minutes
     const expiry = new Date(Date.now() + 15 * 60 * 1000);
 
-    // 4. Save the hash and expiry in the database
+    // 4. Save the hashed token and expiry in the database
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -112,14 +111,14 @@ router.post("/forgot-password", async (req, res) => {
       },
     });
 
-    // TEMPORARY: local development testing only
-    
-const resetLink =
-  `${process.env.FRONTEND_URL}/reset-password/${token}`;
+    // 5. Create the password-reset link
+    const resetLink =
+      `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
-      const { data, error } = await resend.emails.send({
-        from: "MyCode Academy <onboarding@resend.dev>",
-        to: ["jj.joseph.aaa@gmail.com"],
+    // 6. Send the reset email using Gmail
+    try {
+      await sendEmail({
+        to: user.email,
         subject: "Reset Your MyCode Academy Password",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
@@ -136,20 +135,26 @@ const resetLink =
           </div>
         `,
       });
+    } catch (emailError) {
+      console.error("Gmail email error:", emailError.message);
 
-    if (error) {
-      console.error("Resend email error:", error);
+      // Invalidate the token if email sending fails
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetPasswordToken: null,
+          resetPasswordTokenExpiry: null,
+        },
+      });
+
       return res.status(500).json({
         message: "Unable to send reset email. Please try again.",
       });
     }
 
-    return res.status(200).json({
-      message: "If an account exists for this email, password reset instructions will be sent.",
-    });
+    // 7. Return success
+    return res.status(200).json({ message });
 
-
-    
   } catch (error) {
     console.error("Forgot password error:", error);
 
@@ -158,6 +163,7 @@ const resetLink =
     });
   }
 });
+
 
 //********************************************Reset Password **************************************/
 
