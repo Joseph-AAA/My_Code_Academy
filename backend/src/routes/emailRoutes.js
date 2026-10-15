@@ -1,7 +1,7 @@
 import express from "express";
 import {
   sendEmail,
-  verifyEmailConnection,
+  
 } from "../lib/sendEmail.js";
 
 const router = express.Router();
