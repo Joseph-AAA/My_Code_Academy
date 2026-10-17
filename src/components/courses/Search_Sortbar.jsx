@@ -5,14 +5,17 @@ import {
   MoreVertical, Trash2, Pencil, CalendarDays
 } from "lucide-react";
 import { useState } from "react";
-function Search_Sortbar({searchQuery, setSearchQuery}){
+function Search_Sortbar({sortBy, setSortBy, searchQuery, setSearchQuery}){
 
     const [viewMode, setViewMode] = useState("grid");
-
+    
+ 
 
     return(
         <div>
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
+
+{/* *************************************************Search Bar******************************************/}
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
@@ -25,18 +28,20 @@ function Search_Sortbar({searchQuery, setSearchQuery}){
                     />
                 </div>
 
+{/* ************************************************* Sorting ******************************************/}
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                    <select
-                        // value={sortBy}
-                        // onChange={(e) => setSortBy(e.target.value)}
-                        className="appearance-none bg-white border border-(--border) rounded-lg px-4 py-2.5 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    >
-                        <option value="newest">Sort by: Newest</option>
-                        <option value="oldest">Sort by: Oldest</option>
-                        <option value="price">Sort by: Price</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-2.5 text-gray-400" size={16} />
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="appearance-none bg-white border border-(--border) rounded-lg px-4 py-2.5 pr-8 
+                                       focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                        >
+                            <option value="newest">Sort by: Newest</option>
+                            <option value="oldest">Sort by: Oldest</option>
+                            <option value="price">Sort by: Price</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-2.5 text-gray-400" size={16} />
                     </div>
                     {/* <div className="flex border border-(--border) rounded-lg overflow-hidden">
                     <button onClick={() => setViewMode("grid")} className={`p-2.5 ${viewMode === "grid" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"}`}>
@@ -47,6 +52,8 @@ function Search_Sortbar({searchQuery, setSearchQuery}){
                     </button>
                     </div> */}
                 </div>
+
+{/* *************************************************** Grid ******************************************/}
 
                 <div className="flex border border-(--border) rounded-lg overflow-hidden">
                     <button onClick={() => setViewMode("grid")} className={`p-2.5 ${viewMode === "grid" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"}`}>

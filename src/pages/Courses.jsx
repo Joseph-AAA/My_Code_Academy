@@ -11,7 +11,7 @@ import { useState } from "react";
 function Courses(){
 
       const [searchQuery, setSearchQuery] = useState("");
-
+       const [sortBy, setSortBy] = useState("");
 
 
 
@@ -57,10 +57,10 @@ function Courses(){
               })}
         </div>
         
-        <Search_Sortbar searchQuery = {searchQuery} setSearchQuery = {setSearchQuery}/>
+         <Search_Sortbar searchQuery = {searchQuery} setSearchQuery = {setSearchQuery} sortBy={sortBy} setSortBy = {setSortBy}/>
 
          <div>
-            <CoursesController searchQuery = {searchQuery} />
+            <CoursesController searchQuery = {searchQuery} sortBy={sortBy} />
          </div>
       </section>
 
