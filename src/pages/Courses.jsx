@@ -7,7 +7,15 @@ import {stats} from "../data/courseData"
 import Search_Sortbar from "../components/courses/Search_Sortbar"
 import CoursesController from "../components/courses/CoursesController";
 import CoursesRightSidebar from "../components/courses/CoursesRightSidebar";
+import { useState } from "react";
 function Courses(){
+
+      const [searchQuery, setSearchQuery] = useState("");
+
+
+
+
+
   return(
     <div className=" w-full flex flex-col md:flex-row gap-6 ">
 
@@ -49,10 +57,10 @@ function Courses(){
               })}
         </div>
         
-        <Search_Sortbar />
+        <Search_Sortbar searchQuery = {searchQuery} setSearchQuery = {setSearchQuery}/>
 
          <div>
-            <CoursesController />
+            <CoursesController searchQuery = {searchQuery} />
          </div>
       </section>
 
