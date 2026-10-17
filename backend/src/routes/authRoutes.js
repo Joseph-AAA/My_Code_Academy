@@ -7,7 +7,6 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const router = express.Router();
 import { generateResetToken } from "../../utils/resetToken.js";
 import crypto from "node:crypto";
-import resend from "../lib/email.js";
 import { sendEmail } from "../lib/sendEmail.js";
 // ********************************************For Sign up **************************************
 
@@ -292,7 +291,7 @@ router.post("/login", async (req, res) => {
     }
 
     // 5. Generate a JWT
-    const expiresIn = rememberMe ? "2min" : "1min";  //2min for lacal - 1min for seesion
+    const expiresIn = rememberMe ? "15min" : "3min";  //15min for lacal - 1min for seesion
     
     const token = jwt.sign(
       { userId: user.id },
