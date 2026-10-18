@@ -11,10 +11,26 @@ import { useState } from "react";
 function Courses(){
 
       const [searchQuery, setSearchQuery] = useState("");
-       const [sortBy, setSortBy] = useState("");
+      const [sortBy, setSortBy] = useState("");
 
+      const initialFilters = {
+            category: "",
+            level: "",
+            status: "",
+            priceRange: "",
+          };
 
+          const [draftFilters, setDraftFilters] = useState(initialFilters);
+          const [appliedFilters, setAppliedFilters] = useState(initialFilters);
 
+          const handleApplyFilters = () => {
+            setAppliedFilters({ ...draftFilters });
+          };
+
+          const handleClearFilters = () => {
+            setDraftFilters({ ...initialFilters });
+            setAppliedFilters({ ...initialFilters });
+          };
 
   return(
     <div className=" w-full flex flex-col md:flex-row gap-6 ">
@@ -60,14 +76,17 @@ function Courses(){
          <Search_Sortbar searchQuery = {searchQuery} setSearchQuery = {setSearchQuery} sortBy={sortBy} setSortBy = {setSortBy}/>
 
          <div>
-            <CoursesController searchQuery = {searchQuery} sortBy={sortBy} />
+            <CoursesController   appliedFilters={appliedFilters} searchQuery = {searchQuery} sortBy={sortBy} />
          </div>
       </section>
 
 {/***************************************Rgiht Sidebar************************************************/}
 
         <section className="md:w-88 shrink-0 pb-5 ">
-                <CoursesRightSidebar />
+                <CoursesRightSidebar    draftFilters={draftFilters}
+                                        setDraftFilters={setDraftFilters}
+                                        onApply={handleApplyFilters}
+                                        onClear={handleClearFilters} />
         </section>
     </div>
   )
