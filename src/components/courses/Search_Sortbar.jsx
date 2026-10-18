@@ -4,12 +4,9 @@ import {
   Plus, ChevronDown, LayoutGrid, List, X, Star, Users, 
   MoreVertical, Trash2, Pencil, CalendarDays
 } from "lucide-react";
-import { useState } from "react";
-function Search_Sortbar({sortBy, setSortBy, searchQuery, setSearchQuery}){
 
-    const [viewMode, setViewMode] = useState("grid");
-    
- 
+function Search_Sortbar({setViewMode, viewMode, sortBy, setSortBy, searchQuery, setSearchQuery}){
+
 
     return(
         <div>
@@ -43,23 +40,15 @@ function Search_Sortbar({sortBy, setSortBy, searchQuery, setSearchQuery}){
                         </select>
                         <ChevronDown className="absolute right-3 top-2.5 text-gray-400" size={16} />
                     </div>
-                    {/* <div className="flex border border-(--border) rounded-lg overflow-hidden">
-                    <button onClick={() => setViewMode("grid")} className={`p-2.5 ${viewMode === "grid" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"}`}>
-                        <LayoutGrid size={18} />
-                    </button>
-                    <button onClick={() => setViewMode("list")} className={`p-2.5 ${viewMode === "list" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"}`}>
-                        <List size={18} />
-                    </button>
-                    </div> */}
                 </div>
 
 {/* *************************************************** Grid ******************************************/}
 
                 <div className="flex border border-(--border) rounded-lg overflow-hidden">
-                    <button onClick={() => setViewMode("grid")} className={`p-2.5 ${viewMode === "grid" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"}`}>
+                    <button onClick={() => setViewMode("grid")} className={`p-2.5 ${viewMode === "grid" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"} hover:cursor-pointer`}>
                         <LayoutGrid size={18} />
                     </button>
-                    <button onClick={() => setViewMode("list")} className={`p-2.5 ${viewMode === "list" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"}`}>
+                    <button  onClick={() => setViewMode("list")} className={`p-2.5 ${viewMode === "list" ? "bg-blue-50 text-blue-600" : "text-gray-400 hover:bg-gray-50"} hover:cursor-pointer`}>
                         <List size={18} />
                     </button>
                 </div>
