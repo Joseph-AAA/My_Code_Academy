@@ -9,65 +9,65 @@ import {coursesData} from "../data/data";
 
 
 export default function Courses() {
-  const [courses, setCourses] = useState(coursesData);
-  const [searchQuery, setSearchQuery] = useState("");
-  // const [viewMode, setViewMode] = useState("grid");
-  const [showAddCourse, setShowAddCourse] = useState(false);
-  const [showCourseModal, setShowCourseModal] = useState(false);
-  const [modalCourse, setModalCourse] = useState(null);
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [editingCourse, setEditingCourse] = useState(null);
+  // const [courses, setCourses] = useState(coursesData);
+  // const [searchQuery, setSearchQuery] = useState("");
+  // // const [viewMode, setViewMode] = useState("grid");
+  // const [showAddCourse, setShowAddCourse] = useState(false);
+  // const [showCourseModal, setShowCourseModal] = useState(false);
+  // const [modalCourse, setModalCourse] = useState(null);
+  // const [openMenuId, setOpenMenuId] = useState(null);
+  // const [editingCourse, setEditingCourse] = useState(null);
 
-  const [draftFilters, setDraftFilters] = useState({ 
-    category: "All Categories", level: "All Levels", status: "All Status", priceRange: "Select price range" 
-  });
-  const [appliedFilters, setAppliedFilters] = useState(draftFilters);
-  const [sortBy, setSortBy] = useState("newest");
+  // const [draftFilters, setDraftFilters] = useState({ 
+  //   category: "All Categories", level: "All Levels", status: "All Status", priceRange: "Select price range" 
+  // });
+  // const [appliedFilters, setAppliedFilters] = useState(draftFilters);
+  // const [sortBy, setSortBy] = useState("newest");
 
-  const [formData, setFormData] = useState({ 
-    title: "", category: "Web Development", level: "Beginner", duration: "8 weeks", price: "", description: "" 
-  });
+  // const [formData, setFormData] = useState({ 
+  //   title: "", category: "Web Development", level: "Beginner", duration: "8 weeks", price: "", description: "" 
+  // });
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (openMenuId && !event.target.closest(".relative")) setOpenMenuId(null);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [openMenuId]);
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (openMenuId && !event.target.closest(".relative")) setOpenMenuId(null);
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, [openMenuId]);
 
-  const stats = [
-    { label: "Total Courses", value: courses.length, change: "+2 this month", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50" },
-    { label: "Published", value: courses.filter(c => c.status === "Published").length, change: "75% of total", icon: CheckCircle, color: "text-green-500", bg: "bg-green-50" },
-    { label: "In Progress", value: courses.filter(c => c.status === "In Progress").length, change: "21% of total", icon: Clock, color: "text-yellow-500", bg: "bg-yellow-50" },
-    { label: "Draft", value: courses.filter(c => c.status === "Draft").length, change: "4% of total", icon: FileText, color: "text-purple-500", bg: "bg-purple-50" },
-  ];
+  // const stats = [
+  //   { label: "Total Courses", value: courses.length, change: "+2 this month", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50" },
+  //   { label: "Published", value: courses.filter(c => c.status === "Published").length, change: "75% of total", icon: CheckCircle, color: "text-green-500", bg: "bg-green-50" },
+  //   { label: "In Progress", value: courses.filter(c => c.status === "In Progress").length, change: "21% of total", icon: Clock, color: "text-yellow-500", bg: "bg-yellow-50" },
+  //   { label: "Draft", value: courses.filter(c => c.status === "Draft").length, change: "4% of total", icon: FileText, color: "text-purple-500", bg: "bg-purple-50" },
+  // ];
 
   const filteredCourses = useMemo(() => {
-    let result = courses.filter((course) => {
-      if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      if (appliedFilters.category !== "All Categories" && course.category !== appliedFilters.category) return false;
-      if (appliedFilters.level !== "All Levels" && course.level !== appliedFilters.level) return false;
-      if (appliedFilters.status !== "All Status" && course.status !== appliedFilters.status) return false;
-      if (appliedFilters.priceRange !== "Select price range") {
-        const priceNum = parseInt(course.price.replace("RM ", ""));
-        if (appliedFilters.priceRange === "RM 0 - RM 500" && priceNum > 500) return false;
-        if (appliedFilters.priceRange === "RM 500 - RM 1000" && (priceNum < 500 || priceNum > 1000)) return false;
-        if (appliedFilters.priceRange === "RM 1000+" && priceNum < 1000) return false;
-      }
-      return true;
-    });
+  //   let result = courses.filter((course) => {
+  //     if (searchQuery && !course.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+  //     if (appliedFilters.category !== "All Categories" && course.category !== appliedFilters.category) return false;
+  //     if (appliedFilters.level !== "All Levels" && course.level !== appliedFilters.level) return false;
+  //     if (appliedFilters.status !== "All Status" && course.status !== appliedFilters.status) return false;
+  //     if (appliedFilters.priceRange !== "Select price range") {
+  //       const priceNum = parseInt(course.price.replace("RM ", ""));
+  //       if (appliedFilters.priceRange === "RM 0 - RM 500" && priceNum > 500) return false;
+  //       if (appliedFilters.priceRange === "RM 500 - RM 1000" && (priceNum < 500 || priceNum > 1000)) return false;
+  //       if (appliedFilters.priceRange === "RM 1000+" && priceNum < 1000) return false;
+  //     }
+  //     return true;
+  //   });
     
-    if (sortBy === "newest") result = [...result].sort((a, b) => b.id - a.id);
-    if (sortBy === "oldest") result = [...result].sort((a, b) => a.id - b.id);
-    if (sortBy === "price") result = [...result].sort((a, b) => parseInt(a.price.replace("RM ", "")) - parseInt(b.price.replace("RM ", "")));
-    return result;
-  }, [courses, searchQuery, appliedFilters, sortBy]);
+  //   if (sortBy === "newest") result = [...result].sort((a, b) => b.id - a.id);
+  //   if (sortBy === "oldest") result = [...result].sort((a, b) => a.id - b.id);
+  //   if (sortBy === "price") result = [...result].sort((a, b) => parseInt(a.price.replace("RM ", "")) - parseInt(b.price.replace("RM ", "")));
+  //   return result;
+  // }, [courses, searchQuery, appliedFilters, sortBy]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
 
   const handleAddCourse = (e) => {
     e.preventDefault();
@@ -270,7 +270,7 @@ export default function Courses() {
 
    
       <div className="md:w-72 shrink-0 pb-5">
-        <div className="bg-white border border-(--border) rounded-xl p-4">
+        {/* <div className="bg-white border border-(--border) rounded-xl p-4">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-semibold text-gray-800">Filters</h3>
             <button onClick={handleClearFilters} className="text-blue-500 text-xs hover:underline">Clear all</button>
@@ -314,7 +314,7 @@ export default function Courses() {
             </div>
             <button onClick={handleApplyFilters} className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm font-medium">Apply Filters</button>
           </div>
-        </div>
+        </div> */}
 
     
         <div className="bg-white border border-(--border) rounded-xl p-4 mt-4">

@@ -7,11 +7,12 @@ import {stats} from "../data/courseData"
 import Search_Sortbar from "../components/courses/Search_Sortbar"
 import CoursesController from "../components/courses/CoursesController";
 import CoursesRightSidebar from "../components/courses/CoursesRightSidebar";
-import { useState } from "react";
+import { useState, version } from "react";
 function Courses(){
 
       const [searchQuery, setSearchQuery] = useState("");
       const [sortBy, setSortBy] = useState("");
+      const [viewMode, setViewMode] = useState("grid");
 
       const initialFilters = {
             category: "",
@@ -73,10 +74,13 @@ function Courses(){
               })}
         </div>
         
-         <Search_Sortbar searchQuery = {searchQuery} setSearchQuery = {setSearchQuery} sortBy={sortBy} setSortBy = {setSortBy}/>
+         <Search_Sortbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} 
+                         sortBy={sortBy} setSortBy={setSortBy} 
+                        viewMode={viewMode} setViewMode={setViewMode}/>
 
          <div>
-            <CoursesController   appliedFilters={appliedFilters} searchQuery = {searchQuery} sortBy={sortBy} />
+            <CoursesController   appliedFilters={appliedFilters} searchQuery={searchQuery} 
+                                 sortBy={sortBy} viewMode={viewMode} />
          </div>
       </section>
 
