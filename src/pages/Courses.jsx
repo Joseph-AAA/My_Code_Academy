@@ -1,99 +1,140 @@
-import { 
-  Search, BookOpen, Clock, CheckCircle, FileText, 
-  Plus, ChevronDown, LayoutGrid, List, X, Star, Users, 
-  MoreVertical, Trash2, Pencil, CalendarDays
-} from "lucide-react";
-import {stats} from "../data/courseData" 
-import Search_Sortbar from "../components/courses/Search_Sortbar"
+
+import { Plus } from "lucide-react";
+import { useState } from "react";
+
+import { stats } from "../data/courseData";
+import Search_Sortbar from "../components/courses/Search_Sortbar";
 import CoursesController from "../components/courses/CoursesController";
-import CoursesRightSidebar from "../components/courses/CoursesRightSidebar";
-import { useState, version } from "react";
-function Courses(){
+import CoursesFilter from "../components/courses/CoursesFilter";
 
-      const [searchQuery, setSearchQuery] = useState("");
-      const [sortBy, setSortBy] = useState("");
-      const [viewMode, setViewMode] = useState("grid");
+function Courses() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState("newest");
+    const [viewMode, setViewMode] = useState("grid");
 
-      const initialFilters = {
-            category: "",
-            level: "",
-            status: "",
-            priceRange: "",
-          };
 
-          const [draftFilters, setDraftFilters] = useState(initialFilters);
-          const [appliedFilters, setAppliedFilters] = useState(initialFilters);
+    const initialFilters = {
+      category: "",
+      level: "",
+      priceRange: "",
+      duration: "",
+    };
 
-          const handleApplyFilters = () => {
-            setAppliedFilters({ ...draftFilters });
-          };
+    const [draftFilters, setDraftFilters] = useState(initialFilters);
+    const [appliedFilters, setAppliedFilters] = useState(initialFilters);
 
-          const handleClearFilters = () => {
-            setDraftFilters({ ...initialFilters });
-            setAppliedFilters({ ...initialFilters });
-          };
+    const handleApplyFilters = () => {
+      setAppliedFilters({ ...draftFilters });
+    };
 
-  return(
-    <div className=" w-full flex flex-col md:flex-row gap-6 ">
+    const handleClearFilters = () => {
+      setDraftFilters({ ...initialFilters });
+      setAppliedFilters({ ...initialFilters });
+    };
 
-{/***************************************Course Section************************************************/}
-      <section className="flex-1 mb-6">
+  return (
+    <div className="w-full min-w-0">
 
-{/***************************************Header************************************************/}
-        <div className="flex justify-between mb-3">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">Courses</h2>
-              <p className="text-md text-gray-500 mt-1">Manage and organize all courses</p>
-            </div>
-            <button
-              //onClick={() => { setEditingCourse(null); setFormData({ title: "", category: "Web Development", level: "Beginner", duration: "8 weeks", price: "", description: "" }); setShowAddCourse(true); }}
-              className="bg-blue-600 h-12 text-white px-5 py-2.5 rounded-lg
-                         hover:bg-blue-700 hover:cursor-pointer flex items-center gap-2 font-medium">
-              <Plus size={18} /> Add Course
-            </button>
+{/*********************************************************** Page Header ****************************/}
+      <div className="flex justify-between items-center gap-4 mb-4">
+        <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Courses
+            </h2>
+            <p className="text-md text-gray-500 mt-1">
+              Manage and organize all courses
+            </p>
         </div>
-            
-{/******************************************Stats************************************************/}        
 
-        <div className="grid grid-cols-2 2xl:grid-cols-4 gap-4 mb-4">
-              {stats.map((stat, idx) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={idx} className="bg-white border border-(--border) rounded-xl p-4 
-                                            flex items-center gap-4">
-                    <div className={`p-3 rounded-lg ${stat.bg}`}>
+        <button
+          className="bg-blue-600 h-11 text-white px-5 py-2.5 rounded-lg
+                     hover:bg-blue-700 flex items-center gap-2 font-medium
+                     shrink-0"
+        >
+          <Plus size={18} />
+          Add Course
+        </button>
+      </div>
+
+{/*********************************************************** Stats *************************************/}
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
+          {stats.map((stat, idx) => {
+            const Icon = stat.icon;
+
+            return (
+                <div
+                  key={idx}
+                  className="bg-white border border-(--border) rounded-xl p-4
+                            flex items-center gap-4"
+                >
+                  <div className={`p-3 rounded-lg ${stat.bg}`}>
                       <Icon size={24} className={stat.color} />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-                      <p className="text-xs text-gray-500">{stat.label}</p>
-                      <p className="text-xs text-gray-400 mt-1">{stat.change}</p>
-                    </div>
                   </div>
-                );
-              })}
+
+                  <div>
+                      <p className="text-2xl font-bold text-gray-800">
+                        {stat.value}
+                      </p>
+                      <p className="text-xs text-gray-500">{stat.label}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {stat.change}
+                      </p>
+                  </div>
+              </div>
+            );
+          })}
+      </div>
+
+
+{/***************************************Search, Sort, and Grid/List toggle ****************************/}
+      
+      <Search_Sortbar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+      
+      />
+
+
+{/**************************************************** Filter Card **************************************/}
+
+        <div className="mt-3 mb-4 bg-white border border-(--border)
+                        rounded-xs p-4">
+          <div className="flex justify-between items-center mb-4">
+              <h3 className="font-semibold text-gray-800">Filters</h3>
+
+              <button
+                type="button"
+                onClick={handleClearFilters}
+                className="text-sm text-blue-600 hover:text-blue-700"
+              >
+                Clear all
+              </button>
+          </div>
+
+          <CoursesFilter
+            draftFilters={draftFilters}
+            setDraftFilters={setDraftFilters}
+            onApply={handleApplyFilters}
+            onClear={handleClearFilters}
+          />
         </div>
-        
-         <Search_Sortbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} 
-                         sortBy={sortBy} setSortBy={setSortBy} 
-                        viewMode={viewMode} setViewMode={setViewMode}/>
+      
 
-         <div>
-            <CoursesController   appliedFilters={appliedFilters} searchQuery={searchQuery} 
-                                 sortBy={sortBy} viewMode={viewMode} />
-         </div>
-      </section>
-
-{/***************************************Rgiht Sidebar************************************************/}
-
-        <section className="md:w-88 shrink-0 pb-5 ">
-                <CoursesRightSidebar    draftFilters={draftFilters}
-                                        setDraftFilters={setDraftFilters}
-                                        onApply={handleApplyFilters}
-                                        onClear={handleClearFilters} />
-        </section>
+{/******************************************************* Displayed Courses ****************************/}
+        <div className="mt-4">
+          <CoursesController
+            appliedFilters={appliedFilters}
+            searchQuery={searchQuery}
+            sortBy={sortBy}
+            viewMode={viewMode}
+          />
+        </div>
     </div>
-  )
-
+  );
 }
+
 export default Courses;

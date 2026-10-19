@@ -11,7 +11,7 @@ function CourseListView({ courses, onCourseClick }) {
           className="bg-white border border-(--border) rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer"
         >
           <div
-            className={`${course.color} h-12 w-12 flex items-center justify-center rounded-lg shrink-0`}
+            className={`${course.color} shadow-md h-12 w-12 flex items-center justify-center rounded-lg shrink-0`}
           >
             <img
               className="w-8"
