@@ -9,6 +9,8 @@ function CoursesController({viewMode, sortBy, searchQuery, appliedFilters}){
     const publishedCourses = courses.filter((data)=> data.status === "Published");
     const [selectedCourse, setSelectedCourse] = useState(null);
 
+{/*********************************************** Filter and sort courses ***********************************/}
+
     const filteredCourses = publishedCourses.filter((course) => {
             const query = searchQuery.trim().toLowerCase();
 
@@ -80,19 +82,6 @@ function CoursesController({viewMode, sortBy, searchQuery, appliedFilters}){
         <>
  
 {/*********************************************** Dispaly Sorted Courses ***********************************/}
-
-            {/* {
-               sortedCourses.map((coursesData)=>{
-                    
-                    return <div key={coursesData.id} onClick={()=>setSelectedCourse(coursesData)}>
-                                <CourseCard coursesData={coursesData} />
-                             
-                           </div> 
-                })
-            } */}
-
-
-
 
             {viewMode === "grid" ? (
             <div className="w-full grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-3 h-full">
