@@ -1,23 +1,21 @@
 
 import { ChevronDown } from "lucide-react";
-function CoursesFilter({
-  draftFilters,
-  setDraftFilters,
-  onApply,
-  onClear,
-}) {
-  const handleChange = (field, value) => {
-    setDraftFilters((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-const selectClass =
-  "w-full appearance-none relative rounded-lg border border-(--border) bg-white pl-3 pr-10 py-2 text-sm outline-none focus:border-blue-500 hover:cursor-pointer";
+function CoursesFilter({draftFilters,setDraftFilters,onApply,onClear}) {
+            
   
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+  
+          const handleChange = (field, value) => {
+              setDraftFilters((prev) => ({
+                ...prev,
+                [field]: value,
+              }));
+            };
+
+      const selectClass =
+        "w-full appearance-none relative rounded-lg border border-(--border) bg-white pl-3 pr-10 py-2 text-sm outline-none focus:border-blue-500 hover:cursor-pointer";
+  
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
 
 {/******************************************* Category ***********************************************/}
         <div>
@@ -126,7 +124,7 @@ const selectClass =
         <button
           type="button"
           onClick={onClear}
-          className="px-4 py-2 rounded-lg border border-(--border)
+          className="hover:cursor-pointer px-4 py-2 rounded-lg border border-(--border)
                      text-sm text-gray-700 hover:bg-gray-50"
         >
           Reset
@@ -135,7 +133,7 @@ const selectClass =
         <button
           type="button"
           onClick={onApply}
-          className="px-5 py-2 rounded-lg bg-blue-600 text-white
+          className="hover:cursor-pointer px-5 py-2 rounded-lg bg-blue-600 text-white
                      text-sm font-medium hover:bg-blue-700"
         >
           Apply Filters

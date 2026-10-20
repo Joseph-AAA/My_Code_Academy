@@ -4,10 +4,12 @@ import prisma from "../lib/prisma.js"; //creates the connection and client that 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import authMiddleware from "../middleware/authMiddleware.js";
-const router = express.Router();
 import { generateResetToken } from "../../utils/resetToken.js";
 import crypto from "node:crypto";
 import { sendEmail } from "../lib/sendEmail.js";
+
+
+const router = express.Router();
 // ********************************************For Sign up **************************************
 
   router.post("/signup", async (req, res) => {

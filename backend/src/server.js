@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
 
 const app = express();  
 const PORT = process.env.PORT || 5000;
@@ -10,6 +11,7 @@ app.use(cors());                //middleware that allows your frontend and backe
 app.use(express.json());         //convert to JSON incoming obj data from frontend
 app.use("/api/auth", authRoutes); //
 app.use("/api", emailRoutes);
+app.use("/api/courses", courseRoutes);
 
 app.get("/", (req, res) => {
   res.json({
