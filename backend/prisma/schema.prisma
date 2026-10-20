@@ -6,6 +6,8 @@ datasource db {
   provider = "postgresql"
 }
 
+//====================================== for User Aunthentication =======================================
+
 model User {
   id                       String    @id @default(cuid())
   name                     String
@@ -17,3 +19,41 @@ model User {
   updatedAt                DateTime  @updatedAt
 }
 
+//======================================For Courses Page =======================================
+//================== Instructor ==============
+
+model Instructor {
+  id        String   @id @default(cuid())
+  name      String
+  title     String
+  imageUrl  String?
+  courses   Course[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//================== Course ==============
+
+model Course {
+  id          String  @id @default(cuid())
+  title       String
+  category    String
+  level       String
+  duration    String
+  price       Decimal @db.Decimal(10, 2)
+  description String  @db.Text
+
+  status      String    @default("Draft")
+  students    Int       @default(0)
+  releaseDate DateTime?
+
+  imageUrl String?
+  icon     String?
+  color    String?
+
+  instructorId String?
+  instructor   Instructor? @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -6,12 +6,15 @@ import { stats } from "../data/courseData";
 import Search_Sortbar from "../components/courses/Search_Sortbar";
 import CoursesController from "../components/courses/CoursesController";
 import CoursesFilter from "../components/courses/CoursesFilter";
+import AddCourseModal from "../components/courses/AddCourseModal";
 
 function Courses() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [viewMode, setViewMode] = useState("grid");
 
+    const [showAddCourse, setShowAddCourse] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const initialFilters = {
       category: "",
@@ -47,9 +50,10 @@ function Courses() {
         </div>
 
         <button
+          onClick={() => setShowAddCourse(true)}
           className="bg-blue-600 h-11 text-white px-5 py-2.5 rounded-lg
                      hover:bg-blue-700 flex items-center gap-2 font-medium
-                     shrink-0"
+                     shrink-0 hover:cursor-pointer"
         >
           <Plus size={18} />
           Add Course
@@ -102,17 +106,9 @@ function Courses() {
 {/**************************************************** Filter Card **************************************/}
 
         <div className="mt-3 mb-4 bg-white border border-(--border)
-                        rounded-xs p-4">
+                        rounded-2xl p-4">
           <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-800">Filters</h3>
-
-              <button
-                type="button"
-                onClick={handleClearFilters}
-                className="text-sm text-blue-600 hover:text-blue-700"
-              >
-                Clear all
-              </button>
+              <h3 className="hover: font-semibold text-gray-800">Filters</h3>
           </div>
 
           <CoursesFilter
@@ -131,8 +127,16 @@ function Courses() {
             searchQuery={searchQuery}
             sortBy={sortBy}
             viewMode={viewMode}
+            refreshKey={refreshKey}
           />
         </div>
+
+        {showAddCourse && (
+  <AddCourseModal
+    onClose={() => setShowAddCourse(false)}
+    onCreated={() => setRefreshKey((prev) => prev + 1)}
+  />
+)}
     </div>
   );
 }

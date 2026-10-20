@@ -1,87 +1,145 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   MoreVertical,
   Pencil,
   Trash2,
   Clock3,
   BookOpen,
+  Code2,
 } from "lucide-react";
+import { getCourseBackground } from "../../components/courses/CourseColor";
 function CourseCard({coursesData}){
 
         const [showMenu, setShowMenu] = useState(false);
+        const menuRef = useRef(null);
+        const menuButtonRef = useRef(null);
+
+        useEffect(() => {
+  const handleOutsideClick = (event) => {
+    if (
+      menuRef.current?.contains(event.target) ||
+      menuButtonRef.current?.contains(event.target)
+    ) {
+      return;
+    }
+
+    setShowMenu(false);
+  };
+
+  document.addEventListener("mousedown", handleOutsideClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideClick);
+  };
+}, []);
+
+ // Support both database prices and old courseData.js prices.
+
+ const price = Number(
+    String(coursesData.price ?? "").replace(/[^0-9.-]/g, "")
+  );
+
+  const formattedPrice = Number.isFinite(price)
+    ? price.toLocaleString("en-MY", {
+        style: "currency",
+        currency: "MYR",
+        maximumFractionDigits: 2,
+      })
+    : "Price unavailable";
+
+
 
     return(
          <div className="relative w-full overflow-visible rounded-2xl bg-white shadow-md cursor-pointer">
 
 {/*************************************************************  Image / Header ********************************************************/}
 
-                <div className={`${coursesData.bgcolor} flex justify-center overflow-visible 
-                                items-center shadow-sm relative h-32 rounded-t-2xl bg-black`}>
-                    <img
-                        src={coursesData.icon}
-                        alt={coursesData.title}
-                        className="w-25 object-cover"
-                    />
+{/* Image / Header */}
 
+{/* Image / Header */}
+<div
+  style={{
+    backgroundColor: getCourseBackground(coursesData.color),
+  }}
+  className="relative flex h-32 items-center justify-center overflow-visible rounded-t-2xl"
+>
+  {/* Course image or fallback icon */}
+{coursesData.imageUrl ? (
+  <img
+    src={coursesData.imageUrl}
+    alt={coursesData.title}
+    className="h-25 w-25 rounded-xl object-contain"
+  />
+) : typeof coursesData.icon === "string" ? (
+  <img
+    src={coursesData.icon}
+    alt={coursesData.title}
+    className="h-25 w-25 object-contain"
+  />
+) : (
+  (() => {
+    const Icon = coursesData.icon || Code2;
 
-{/************************************************************* Three-dot button  ********************************************************/}
-    
-                    <button
-                        type="button"
-                        aria-label="Course options"
-                        onClick={(e) => 
-                            {setShowMenu((prev) => !prev); 
-                             e.stopPropagation();      
-                            }}
-                        className="absolute right-3 top-3 z-40 cursor-pointer 
-                                    rounded-full p-1 text-white transition hover:bg-white/10"
-                    >
-                        <MoreVertical size={24} />
-                    </button>
+    return (
+      <Icon
+        size={48}
+        strokeWidth={1.5}
+        className={coursesData.textColor}
+        aria-hidden="true"
+      />
+    );
+  })()
+)}
 
-{/******************************************************************* Dropdown ************************************************************/}
-               
-                    {showMenu && (
-                    <div className="absolute right-3 top-12 z-30 w-48 
-                                    rounded-2xl bg-white py-2 shadow-xl">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                console.log("Edit", coursesData.id);
-                                setShowMenu(false);
-                             
-                                 }}
-                            className="flex w-full cursor-pointer items-center gap-4 px-5 py-3 text-left 
-                                        text-lg text-gray-700 transition hover:bg-gray-100"
-                        >
-                            <Pencil size={20} />
-                            <span>Edit</span>
-                        </button>
+  {/* Three-dot button */}
+  <button
+  ref={menuButtonRef}
+  type="button"
+  aria-label="Course options"
+  onClick={(e) => {
+    e.stopPropagation();
+    setShowMenu((prev) => !prev);
+  }}
+  className="absolute right-3 top-3 z-50 cursor-pointer rounded-full bg-white/80 p-1 text-gray-700 shadow-sm transition hover:bg-white"
+>
+  <MoreVertical size={22} />
+</button>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                console.log("Delete", coursesData.id);
-                                setShowMenu(false);
-                            }}
-                            className="flex w-full cursor-pointer items-center gap-4 px-5 py-3 text-left 
-                                        text-lg text-red-500 transition hover:bg-red-50"
-                        >
-                                <Trash2 size={20} />
-                                 <span>Delete</span>
-                        </button>
-                    </div>
-                    )}
-                       {showMenu && (
-                                 <div
-                                    className="fixed inset-0 z-30"
-                                    onClick={(e) => {
-                                    e.stopPropagation();
-                                    setShowMenu(false);
-                                    }}
-                                />
-                        )}
-                </div>
+  {/* Dropdown */}
+{showMenu && (
+  <div
+    ref={menuRef}
+    className="absolute right-3 top-12 z-[70] w-48 rounded-xl bg-white py-2 shadow-xl"
+  >
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        console.log("Edit", coursesData.id);
+        setShowMenu(false);
+      }}
+      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-100"
+    >
+      <Pencil size={18} />
+      <span>Edit</span>
+    </button>
+
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        console.log("Delete", coursesData.id);
+        setShowMenu(false);
+      }}
+      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50"
+    >
+      <Trash2 size={18} />
+      <span>Delete</span>
+    </button>
+  </div>
+)}
+</div>
+
 
 {/******************************************************************* Course information ************************************************************/}
         
@@ -119,9 +177,10 @@ function CourseCard({coursesData}){
                                         </div>
 
                                     {/* Price */}
-                                        <span className="font-medium text-gray-700">
-                                            {coursesData.price}
-                                        </span>
+                                      {/* Price */}
+          <span className="font-medium text-gray-700">
+            {formattedPrice}
+          </span>
 
                                     {/* Students */}
                                         <div className="flex items-center gap-2">

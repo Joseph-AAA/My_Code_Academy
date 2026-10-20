@@ -1,13 +1,31 @@
+
 import {
   X,
   Clock3,
   UsersRound,
   Star,
   BookOpen,
+  Code2,
 } from "lucide-react";
+import { getCourseBackground } from "../../courses/CourseColor";
 
-function CourseDetailModal({selectedCourse,onClose}){
-//    if (!selectedCourse) return null;
+function CourseDetailModal({ selectedCourse, onClose }) {
+  // Support prices from both the database and courseData.js.
+  const price = Number(
+    String(selectedCourse.price ?? "").replace(/[^0-9.-]/g, "")
+  );
+
+  const formattedPrice = Number.isFinite(price)
+    ? `RM ${price.toLocaleString("en-MY", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}`
+    : "Price unavailable";
+
+  // Support both instructor image properties.
+  const instructorImage =
+    selectedCourse.instructor?.imageUrl ||
+    selectedCourse.instructor?.image;
 
   return (
     <div
@@ -30,15 +48,38 @@ function CourseDetailModal({selectedCourse,onClose}){
 
         {/* Course header */}
         <div className="flex items-center gap-5 pr-10">
-          {/* Course icon */}
+          {/* Course image or icon */}
           <div
-            className={`flex h-36 w-36 shrink-0 items-center justify-center rounded-2xl ${selectedCourse.color}`}
+            style={{
+              backgroundColor: getCourseBackground(selectedCourse.color),
+            }}
+            className="flex h-36 w-36 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
           >
-            <img
-              src={selectedCourse.icon}
-              alt={selectedCourse.title}
-              className="h-24 w-24 object-contain"
-            />
+            {selectedCourse.imageUrl ? (
+              <img
+                src={selectedCourse.imageUrl}
+                alt={selectedCourse.title}
+                className="h-25 w-25 rounded-xl object-contain"
+              />
+            ) : typeof selectedCourse.icon === "string" ? (
+              <img
+                src={selectedCourse.icon}
+                alt={selectedCourse.title}
+                className="h-25 w-25 object-contain"
+              />
+            ) : (
+              (() => {
+                const Icon = selectedCourse.icon || Code2;
+
+                return (
+                  <Icon
+                    size={48}
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                );
+              })()
+            )}
           </div>
 
           {/* Title */}
@@ -57,46 +98,26 @@ function CourseDetailModal({selectedCourse,onClose}){
         <div className="mt-5 grid grid-cols-2 gap-y-5 sm:grid-cols-2">
           {/* Duration */}
           <div className="flex items-center gap-3 text-gray-600">
-            <Clock3
-              size={21}
-              className="text-blue-500"
-            />
-            <span>
-              Duration: {selectedCourse.duration}
-            </span>
+            <Clock3 size={21} className="text-blue-500" />
+            <span>Duration: {selectedCourse.duration}</span>
           </div>
 
           {/* Students */}
           <div className="flex items-center gap-3 text-gray-600">
-            <UsersRound
-              size={21}
-              className="text-purple-500"
-            />
-            <span>
-              Students: {selectedCourse.students}
-            </span>
+            <UsersRound size={21} className="text-purple-500" />
+            <span>Students: {selectedCourse.students}</span>
           </div>
 
           {/* Rating */}
           <div className="flex items-center gap-3 text-gray-600">
-            <Star
-              size={21}
-              className="text-yellow-500"
-            />
-            <span>
-              Rating: {selectedCourse.rating}
-            </span>
+            <Star size={21} className="text-yellow-500" />
+            <span>Rating: {selectedCourse.rating ?? "N/A"}</span>
           </div>
 
           {/* Lessons */}
           <div className="flex items-center gap-3 text-gray-600">
-            <BookOpen
-              size={21}
-              className="text-green-500"
-            />
-            <span>
-              Lessons: {selectedCourse.totalLessons}
-            </span>
+            <BookOpen size={21} className="text-green-500" />
+            <span>Lessons: {selectedCourse.totalLessons ?? "N/A"}</span>
           </div>
         </div>
 
@@ -112,25 +133,25 @@ function CourseDetailModal({selectedCourse,onClose}){
           </h3>
 
           <div className="flex items-center gap-4">
-            {selectedCourse.instructor?.image ? (
+            {instructorImage ? (
               <img
-                src={selectedCourse.instructor.image}
-                alt={selectedCourse.instructor.name}
+                src={instructorImage}
+                alt={selectedCourse.instructor?.name || "Instructor"}
                 className="h-12 w-12 rounded-full object-cover"
               />
             ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 font-semibold text-white">
-                {selectedCourse.instructor?.name?.charAt(0)}
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-500 font-semibold text-white">
+                {selectedCourse.instructor?.name?.charAt(0) || "?"}
               </div>
             )}
 
             <div>
               <p className="font-medium text-gray-800">
-                {selectedCourse.instructor?.name}
+                {selectedCourse.instructor?.name || "Instructor not assigned"}
               </p>
 
               <p className="text-sm text-gray-500">
-                {selectedCourse.instructor?.title}
+                {selectedCourse.instructor?.title || ""}
               </p>
             </div>
           </div>
@@ -139,7 +160,7 @@ function CourseDetailModal({selectedCourse,onClose}){
         {/* Bottom section */}
         <div className="mt-5 flex items-center justify-between gap-4">
           <p className="text-2xl font-bold text-gray-800">
-            {selectedCourse.price}
+            {formattedPrice}
           </p>
 
           <button

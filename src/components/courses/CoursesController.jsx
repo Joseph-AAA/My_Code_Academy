@@ -1,127 +1,388 @@
-import { useState } from "react";
-import {courses} from "../../data/courseData";
+
+
+import { useEffect, useState } from "react";
+import {
+  Code2,
+  Globe,
+  Database,
+  Monitor,
+  BookOpen,
+} from "lucide-react";
+
 import CourseCard from "./CourseCard";
 import CourseDetailModal from "./../dashboard/modals/CourseDetailModal";
 import CourseListView from "./CourseListView";
 
-function CoursesController({viewMode, sortBy, searchQuery, appliedFilters}){
+const API_URL = import.meta.env.VITE_API_URL;
 
-    const publishedCourses = courses.filter((data)=> data.status === "Published");
-    const [selectedCourse, setSelectedCourse] = useState(null);
+const iconMap = {
+  Code2,
+  Globe,
+  Database,
+  Monitor,
+  BookOpen,
+};
 
-{/*********************************************** Filter and sort courses ***********************************/}
+function getCourseStyle(category) {
+  switch (category) {
+    case "Backend Development":
+      return {
+        color: "bg-green-400",
+        bgcolor: "bg-green-400/30",
+        textColor: "text-green-600",
+      };
 
-    const filteredCourses = publishedCourses.filter((course) => {
-            const query = searchQuery.trim().toLowerCase();
+    case "Web Development":
+      return {
+        color: "bg-blue-400",
+        bgcolor: "bg-blue-400/30",
+        textColor: "text-blue-600",
+      };
 
-            const matchesSearch =
-                course.title.toLowerCase().includes(query) ||
-                course.category.toLowerCase().includes(query);
+    default:
+      return {
+        color: "bg-purple-400",
+        bgcolor: "bg-purple-400/30",
+        textColor: "text-purple-600",
+      };
+  }
+}
 
-            const matchesCategory =
-                !appliedFilters.category ||
-                course.category === appliedFilters.category;
+function CoursesController({
+  viewMode,
+  sortBy,
+  searchQuery,
+  appliedFilters,
+    refreshKey,
+}) {
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-            const matchesLevel =
-                !appliedFilters.level ||
-                course.level === appliedFilters.level;
+  // Fetch courses from the Express backend
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-            const matchesStatus =
-                !appliedFilters.status ||
-                course.status === appliedFilters.status;
+        const response = await fetch(`${API_URL}/api/courses`);
 
-            const price = Number(course.price.replace("RM ", ""));
+        if (!response.ok) {
+          throw new Error("Failed to fetch courses");
+        }
 
-            const matchesPrice =
-                !appliedFilters.priceRange ||
-                (appliedFilters.priceRange === "0-500" &&
-                price >= 0 && price <= 500) ||
-                (appliedFilters.priceRange === "500-1000" &&
-                price > 500 && price <= 1000) ||
-                (appliedFilters.priceRange === "1000+" &&
-                price > 1000);
+        const data = await response.json();
 
-            return (
-                matchesSearch &&
-                matchesCategory &&
-                matchesLevel &&
-                matchesStatus &&
-                matchesPrice
-            );
-            });
+        // Convert API data into the shape expected by the UI
+        
 
-        const sortedCourses = [...filteredCourses].sort((a, b) => {
-            switch (sortBy) {
-                case "newest":
-                return new Date(b.releaseDate) - new Date(a.releaseDate);
+const normalizedCourses = data.courses.map((course) => ({
+  ...course,
+  price: Number(course.price),
+  icon: iconMap[course.icon] || Code2,
 
-                case "oldest":
-                return new Date(a.releaseDate) - new Date(b.releaseDate);
+  // Category-based styles
+  ...getCourseStyle(course.category),
 
-                case "price":
-                return (
-                    Number(a.price.replace("RM ", "")) -
-                    Number(b.price.replace("RM ", ""))
-                );
+  // Override the category color with the saved background color
+  color: course.color || "#DBEAFE",
+}));
 
-                default:
-                return 0;
-            }
-        });
 
-        console.log("sortBy:", sortBy);
-            console.log(
-            "Sorted courses:",
-            sortedCourses.map((course) => ({
-                title: course.title,
-                releaseDate: course.releaseDate,
-            }))
-            );
+        setCourses(normalizedCourses);
+      } catch (err) {
+        console.error("Fetch courses error:", err);
+        setError("Unable to load courses. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return(
-        <>
- 
-{/*********************************************** Dispaly Sorted Courses ***********************************/}
+    fetchCourses();
+  }, [refreshKey]);
 
-            {viewMode === "grid" ? (
-            <div className="w-full grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-3 h-full">
-                {sortedCourses.map((coursesData) => (
-                <div
-                    key={coursesData.id}
-                    onClick={() => setSelectedCourse(coursesData)}
-                >
-                    <CourseCard coursesData={coursesData} />
-                </div>
-                ))}
+  // Show only published courses
+  const publishedCourses = courses.filter(
+    (course) => course.status === "Published"
+  );
+
+  // Filter courses
+  const filteredCourses = publishedCourses.filter((course) => {
+    const query = searchQuery.trim().toLowerCase();
+
+    const matchesSearch =
+      course.title.toLowerCase().includes(query) ||
+      course.category.toLowerCase().includes(query);
+
+    const matchesCategory =
+      !appliedFilters.category ||
+      course.category === appliedFilters.category;
+
+    const matchesLevel =
+      !appliedFilters.level ||
+      course.level === appliedFilters.level;
+
+    const matchesPrice =
+      !appliedFilters.priceRange ||
+      (appliedFilters.priceRange === "0-500" &&
+        course.price >= 0 &&
+        course.price <= 500) ||
+      (appliedFilters.priceRange === "500-1000" &&
+        course.price > 500 &&
+        course.price <= 1000) ||
+      (appliedFilters.priceRange === "1000+" &&
+        course.price > 1000);
+
+    const durationWeeks = Number.parseInt(course.duration, 10);
+
+    const matchesDuration =
+      !appliedFilters.duration ||
+      (appliedFilters.duration === "0-4" &&
+        durationWeeks <= 4) ||
+      (appliedFilters.duration === "5-8" &&
+        durationWeeks >= 5 &&
+        durationWeeks <= 8) ||
+      (appliedFilters.duration === "9+" &&
+        durationWeeks >= 9);
+
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesLevel &&
+      matchesPrice &&
+      matchesDuration
+    );
+  });
+
+  // Sort courses
+  const sortedCourses = [...filteredCourses].sort((a, b) => {
+    switch (sortBy) {
+      case "newest":
+        return (
+          new Date(b.releaseDate || b.createdAt) -
+          new Date(a.releaseDate || a.createdAt)
+        );
+
+      case "oldest":
+        return (
+          new Date(a.releaseDate || a.createdAt) -
+          new Date(b.releaseDate || b.createdAt)
+        );
+
+      case "price":
+        return a.price - b.price;
+
+      default:
+        return 0;
+    }
+  });
+
+  if (loading) {
+    return (
+      <p className="py-8 text-center text-gray-500">
+        Loading courses...
+      </p>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="py-8 text-center text-red-500">
+        {error}
+      </p>
+    );
+  }
+
+  return (
+    <>
+      {sortedCourses.length === 0 ? (
+        <p className="col-span-full py-8 text-center text-2xl font-bold text-gray-500">
+          No courses found.
+        </p>
+      ) : viewMode === "grid" ? (
+        <div className="grid h-full w-full grid-cols-1 gap-3 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+          {sortedCourses.map((course) => (
+            <div
+              key={course.id}
+              onClick={() => setSelectedCourse(course)}
+            >
+              <CourseCard coursesData={course} />
             </div>
-            ) : (
-            <CourseListView
-                courses={sortedCourses}
-                onCourseClick={setSelectedCourse}
-            />
-            )}
+          ))}
+        </div>
+      ) : (
+        <CourseListView
+          courses={sortedCourses}
+          onCourseClick={setSelectedCourse}
+        />
+      )}
 
-{/*****************************************************No Courses Found *****************************************/}
-
-            {   filteredCourses.length === 0 && (
-                    <p className="col-span-full py-8 text-center font-bold text-2xl text-gray-500">
-                        No courses found.
-                    </p>
-            )}
-
-{/*********************************************** Selected Course Modal*****************************************/}
-
-            {
-                selectedCourse && (
-                        <CourseDetailModal
-                            selectedCourse={selectedCourse}
-                            onClose={() => setSelectedCourse(null)}
-                        />
-                )
-            }
-           
-        </>
-    )
+      {selectedCourse && (
+        <CourseDetailModal
+          selectedCourse={selectedCourse}
+          onClose={() => setSelectedCourse(null)}
+        />
+      )}
+    </>
+  );
 }
 
 export default CoursesController;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { useState } from "react";
+// import {courses} from "../../data/courseData";
+// import CourseCard from "./CourseCard";
+// import CourseDetailModal from "./../dashboard/modals/CourseDetailModal";
+// import CourseListView from "./CourseListView";
+
+// function CoursesController({viewMode, sortBy, searchQuery, appliedFilters}){
+
+//     const publishedCourses = courses.filter((data)=> data.status === "Published");
+//     const [selectedCourse, setSelectedCourse] = useState(null);
+
+
+
+
+
+
+    
+// {/*********************************************** Filter and sort courses ***********************************/}
+
+//     const filteredCourses = publishedCourses.filter((course) => {
+//             const query = searchQuery.trim().toLowerCase();
+
+//             const matchesSearch =
+//                 course.title.toLowerCase().includes(query) ||
+//                 course.category.toLowerCase().includes(query);
+
+//             const matchesCategory =
+//                 !appliedFilters.category ||
+//                 course.category === appliedFilters.category;
+
+//             const matchesLevel =
+//                 !appliedFilters.level ||
+//                 course.level === appliedFilters.level;
+
+//             const matchesStatus =
+//                 !appliedFilters.status ||
+//                 course.status === appliedFilters.status;
+
+//             const price = Number(course.price.replace("RM ", ""));
+
+//             const matchesPrice =
+//                 !appliedFilters.priceRange ||
+//                 (appliedFilters.priceRange === "0-500" &&
+//                 price >= 0 && price <= 500) ||
+//                 (appliedFilters.priceRange === "500-1000" &&
+//                 price > 500 && price <= 1000) ||
+//                 (appliedFilters.priceRange === "1000+" &&
+//                 price > 1000);
+
+//             return (
+//                 matchesSearch &&
+//                 matchesCategory &&
+//                 matchesLevel &&
+//                 matchesStatus &&
+//                 matchesPrice
+//             );
+//             });
+
+//         const sortedCourses = [...filteredCourses].sort((a, b) => {
+//             switch (sortBy) {
+//                 case "newest":
+//                 return new Date(b.releaseDate) - new Date(a.releaseDate);
+
+//                 case "oldest":
+//                 return new Date(a.releaseDate) - new Date(b.releaseDate);
+
+//                 case "price":
+//                 return (
+//                     Number(a.price.replace("RM ", "")) -
+//                     Number(b.price.replace("RM ", ""))
+//                 );
+
+//                 default:
+//                 return 0;
+//             }
+//         });
+
+//         console.log("sortBy:", sortBy);
+//             console.log(
+//             "Sorted courses:",
+//             sortedCourses.map((course) => ({
+//                 title: course.title,
+//                 releaseDate: course.releaseDate,
+//             }))
+//             );
+
+//     return(
+//         <>
+ 
+// {/*********************************************** Dispaly Sorted Courses ***********************************/}
+
+//             {viewMode === "grid" ? (
+//             <div className="w-full grid grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-3 h-full">
+//                 {sortedCourses.map((coursesData) => (
+//                 <div
+//                     key={coursesData.id}
+//                     onClick={() => setSelectedCourse(coursesData)}
+//                 >
+//                     <CourseCard coursesData={coursesData} />
+//                 </div>
+//                 ))}
+//             </div>
+//             ) : (
+//             <CourseListView
+//                 courses={sortedCourses}
+//                 onCourseClick={setSelectedCourse}
+//             />
+//             )}
+
+// {/*****************************************************No Courses Found *****************************************/}
+
+//             {   filteredCourses.length === 0 && (
+//                     <p className="col-span-full py-8 text-center font-bold text-2xl text-gray-500">
+//                         No courses found.
+//                     </p>
+//             )}
+
+// {/*********************************************** Selected Course Modal*****************************************/}
+
+//             {
+//                 selectedCourse && (
+//                         <CourseDetailModal
+//                             selectedCourse={selectedCourse}
+//                             onClose={() => setSelectedCourse(null)}
+//                         />
+//                 )
+//             }
+           
+//         </>
+//     )
+// }
+
+// export default CoursesController;
