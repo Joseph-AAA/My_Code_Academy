@@ -13,11 +13,11 @@ function CourseListView({ courses, onCourseClick }) {
           <div
             className={`${course.color} shadow-md h-12 w-12 flex items-center justify-center rounded-lg shrink-0`}
           >
-            <img
-              className="w-8"
-              src={course.icon}
-              alt={course.title}
-            />
+           <img
+  src={course.imageUrl}
+  alt={course.title}
+  className="h-12 w-12 rounded-lg object-cover"
+/>
           </div>
 
           <div className="flex-1 min-w-0">

@@ -1,4 +1,3 @@
-
 import express from "express";
 import prisma from "../lib/prisma.js";
 import cloudinary from "../lib/cloudinary.js";
@@ -6,21 +5,21 @@ import upload from "../lib/upload.js";
 
 const router = express.Router();
 
-// Upload an image buffer to Cloudinary
+//************************************** Upload an image buffer to Cloudinary *****************
 const uploadToCloudinary = (file, folder) => {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder,
-        resource_type: "image",
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
+     const stream = cloudinary.uploader.upload_stream(
+        {
+          folder,
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
         }
-      }
     );
 
     stream.end(file.buffer);
@@ -38,7 +37,7 @@ router.get("/", async (req, res) => {
         instructor: true,
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: "desc",   // newest course first / asc => oldest course first
       },
     });
 
@@ -59,9 +58,7 @@ router.get("/", async (req, res) => {
 // POST /api/courses
 // Create a course and upload its images
 // ==========================================
-router.post(
-  "/",
-  upload.fields([
+router.post( "/", upload.fields([
     { name: "courseImage", maxCount: 1 },
     { name: "instructorImage", maxCount: 1 },
   ]),
@@ -87,7 +84,7 @@ router.post(
         instructorTitle,
       } = req.body;
 
-      // Validate required course fields
+//************************************/ Validate required course fields ******************
       if (
         !title?.trim() ||
         !category?.trim() ||
@@ -103,7 +100,8 @@ router.post(
         });
       }
 
-      // Validate price
+//************************************************* Validate price ************************
+    
       const numericPrice = Number(price);
 
       if (
@@ -117,7 +115,8 @@ router.post(
         });
       }
 
-      // Validate status
+//********************************************** Validate status *****************************
+
       const allowedStatuses = ["Draft", "Published", "Upcoming"];
 
       if (status && !allowedStatuses.includes(status)) {
@@ -126,7 +125,7 @@ router.post(
         });
       }
 
-      // Validate release date
+//********************************************* Validate release date *************************
       let parsedReleaseDate;
 
       if (releaseDate) {
@@ -139,7 +138,8 @@ router.post(
         }
       }
 
-      // Validate instructor details when creating a new instructor
+//***************************** Validate instructor details when creating a new instructor *****
+
       if (!instructorId && (instructorName || instructorTitle)) {
         if (!instructorName?.trim() || !instructorTitle?.trim()) {
           return res.status(400).json({
@@ -151,7 +151,7 @@ router.post(
       const courseImageFile = req.files?.courseImage?.[0];
       const instructorImageFile = req.files?.instructorImage?.[0];
 
-      // Upload course image
+//***************************************** Upload course image *******************************
       if (courseImageFile) {
         uploadedCourseImage = await uploadToCloudinary(
           courseImageFile,
@@ -159,7 +159,7 @@ router.post(
         );
       }
 
-      // Upload instructor profile image
+//************************************** Upload instructor profile image **********************
       if (instructorImageFile) {
         uploadedInstructorImage = await uploadToCloudinary(
           instructorImageFile,
@@ -167,7 +167,7 @@ router.post(
         );
       }
 
-      // Prepare course data
+//****************************************** Prepare course data *******************************
       const courseData = {
         title: title.trim(),
         category: category.trim(),
@@ -182,13 +182,14 @@ router.post(
         color: color || null,
       };
 
-      // Connect an existing instructor or create a new one
+//****************************  Connect an existing instructor or create a new one *************
       if (instructorId) {
         courseData.instructor = {
           connect: { id: instructorId },
         };
 
-        // Update the existing instructor's photo if a new one was uploaded
+//********************  Update the existing instructor's photo if a new one was uploaded *******
+
         if (uploadedInstructorImage) {
           await prisma.instructor.update({
             where: { id: instructorId },
@@ -231,7 +232,8 @@ router.post(
     } catch (error) {
       console.error("Create course error:", error);
 
-      // Remove uploaded files from Cloudinary if course creation fails
+//******************* Remove uploaded files from Cloudinary if course creation fails **********
+
       const uploadedFiles = [
         uploadedCourseImage,
         uploadedInstructorImage,
