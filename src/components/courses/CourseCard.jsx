@@ -8,7 +8,7 @@ import {
   Code2,
 } from "lucide-react";
 import { getCourseBackground } from "../../components/courses/CourseColor";
-function CourseCard({coursesData}){
+function CourseCard({ coursesData, onDelete }){
 
         const [showMenu, setShowMenu] = useState(false);
         const menuRef = useRef(null);
@@ -99,6 +99,7 @@ function CourseCard({coursesData}){
   onClick={(e) => {
     e.stopPropagation();
     setShowMenu((prev) => !prev);
+   
   }}
   className="absolute right-3 top-3 z-50 cursor-pointer rounded-full bg-white/80 p-1 text-gray-700 shadow-sm transition hover:bg-white"
 >
@@ -109,13 +110,13 @@ function CourseCard({coursesData}){
 {showMenu && (
   <div
     ref={menuRef}
-    className="absolute right-3 top-12 z-[70] w-48 rounded-xl bg-white py-2 shadow-xl"
+    className="absolute right-3 top-12 z-70 w-48 rounded-xl bg-white py-2 shadow-xl"
   >
     <button
       type="button"
       onClick={(e) => {
         e.stopPropagation();
-        console.log("Edit", coursesData.id);
+        
         setShowMenu(false);
       }}
       className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-100"
@@ -125,17 +126,17 @@ function CourseCard({coursesData}){
     </button>
 
     <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        console.log("Delete", coursesData.id);
-        setShowMenu(false);
-      }}
-      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50"
-    >
-      <Trash2 size={18} />
-      <span>Delete</span>
-    </button>
+    type="button"
+    onClick={(e) => {
+      e.stopPropagation();
+      setShowMenu(false);
+       onDelete(coursesData);
+    }}
+    className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50"
+  >
+    <Trash2 size={18} />
+    <span>Delete</span>
+</button>
   </div>
 )}
 </div>

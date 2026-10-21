@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import {
   Code2,
@@ -12,16 +10,19 @@ import {
 import CourseCard from "./CourseCard";
 import CourseDetailModal from "./../dashboard/modals/CourseDetailModal";
 import CourseListView from "./CourseListView";
+import DeleteCourseConfirmationModal from "./DeleteCourseConfirmationModal";
+
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const iconMap = {
-  Code2,
-  Globe,
-  Database,
-  Monitor,
-  BookOpen,
-};
+                  Code2,
+                  Globe,
+                  Database,
+                  Monitor,
+                  BookOpen,
+                };
 
 function getCourseStyle(category) {
   switch (category) {
@@ -55,10 +56,20 @@ function CoursesController({
   appliedFilters,
     refreshKey,
 }) {
+
+  
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+    // Delete course states
+  const [courseToDelete, setCourseToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
+
+  
 
   // Fetch courses from the Express backend
   useEffect(() => {
@@ -195,6 +206,44 @@ const normalizedCourses = data.courses.map((course) => ({
     );
   }
 
+const handleDeleteCourse = async (courseId) => {
+  try {
+    setIsDeleting(true);
+    setDeleteError("");
+
+    const response = await fetch(
+      `${API_URL}/api/courses/${courseId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete course");
+    }
+
+    // Remove the deleted course from the list
+    setCourses((prevCourses) =>
+      prevCourses.filter((course) => course.id !== courseId)
+    );
+
+    // Close the detail modal if it shows the deleted course
+    setSelectedCourse((prevCourse) =>
+      prevCourse?.id === courseId ? null : prevCourse
+    );
+
+    // Show success message inside the confirmation modal
+    setDeleteSuccess(true);
+  } catch (error) {
+    console.error("Delete course error:", error);
+    setDeleteError(error.message || "Failed to delete course");
+  } finally {
+    setIsDeleting(false);
+  }
+};
+
   return (
     <>
       {sortedCourses.length === 0 ? (
@@ -208,7 +257,14 @@ const normalizedCourses = data.courses.map((course) => ({
               key={course.id}
               onClick={() => setSelectedCourse(course)}
             >
-              <CourseCard coursesData={course} />
+           <CourseCard
+  coursesData={course}
+  onDelete={(course) => {
+    setCourseToDelete(course);
+    setDeleteError("");
+    setDeleteSuccess(false);
+  }}
+/>
             </div>
           ))}
         </div>
@@ -225,6 +281,25 @@ const normalizedCourses = data.courses.map((course) => ({
           onClose={() => setSelectedCourse(null)}
         />
       )}
+<DeleteCourseConfirmationModal
+  isOpen={Boolean(courseToDelete)}
+  courseTitle={courseToDelete?.title}
+  onCancel={() => {
+    if (!isDeleting) {
+      setCourseToDelete(null);
+      setDeleteError("");
+      setDeleteSuccess(false);
+    }
+  }}
+  onConfirm={() => {
+    if (courseToDelete && !isDeleting) {
+      handleDeleteCourse(courseToDelete.id);
+    }
+  }}
+  isDeleting={isDeleting}
+  error={deleteError}
+  isSuccess={deleteSuccess}
+/>
     </>
   );
 }

@@ -21,14 +21,13 @@ const uploadToCloudinary = (file, folder) => {
           }
         }
     );
-
-    stream.end(file.buffer);
+         stream.end(file.buffer);
   });
 };
 
 // ==========================================
 // GET /api/courses
-// Fetch all courses with instructor details
+//******************************** Fetch all courses with instructor details *********************
 // ==========================================
 router.get("/", async (req, res) => {
   try {
@@ -56,7 +55,7 @@ router.get("/", async (req, res) => {
 
 // ==========================================
 // POST /api/courses
-// Create a course and upload its images
+//*************************************** Create a course and upload its images ****************
 // ==========================================
 router.post( "/", upload.fields([
     { name: "courseImage", maxCount: 1 },
@@ -255,5 +254,39 @@ router.post( "/", upload.fields([
     }
   }
 );
+
+
+//************************************************** DELETE a course **************************
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check whether the course exists
+    const course = await prisma.course.findUnique({
+      where: { id },
+    });
+
+    if (!course) {
+      return res.status(404).json({
+        message: "Course not found",
+      });
+    }
+
+    // Delete the course from the database
+    await prisma.course.delete({
+      where: { id },
+    });
+
+    return res.status(200).json({
+      message: "Course deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete course error:", error);
+
+    return res.status(500).json({
+      message: "Failed to delete course",
+    });
+  }
+});
 
 export default router;
