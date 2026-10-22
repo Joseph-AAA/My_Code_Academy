@@ -2,12 +2,17 @@
 import { useEffect, useState } from "react";
 import { ImagePlus, X } from "lucide-react";
 
-function ImageUpload({ label, value, onChange }) {
+function ImageUpload({
+  label,
+  value,
+  onChange,
+  existingImageUrl = "",
+}) {
   const [preview, setPreview] = useState("");
 
   useEffect(() => {
     if (!value) {
-      setPreview("");
+      setPreview(existingImageUrl || "");
       return;
     }
 
@@ -15,7 +20,7 @@ function ImageUpload({ label, value, onChange }) {
     setPreview(objectUrl);
 
     return () => URL.revokeObjectURL(objectUrl);
-  }, [value]);
+  }, [value, existingImageUrl]);
 
   const handleChange = (event) => {
     const file = event.target.files?.[0];
@@ -37,55 +42,56 @@ function ImageUpload({ label, value, onChange }) {
     onChange(file);
   };
 
+  const handleRemove = () => {
+    onChange(null);
+  };
+
   return (
     <div>
-      <p className="mb-2 text-sm font-medium text-gray-700">{label}</p>
+      <p className="mb-2 text-sm font-medium text-gray-700">
+        {label}
+      </p>
 
       <div className="flex items-center gap-4">
-        
-{/*********************************************** Preview image ***********************************/}
- 
-          <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50">
-              {preview ? (
-                <img
-                  src={preview}
-                  alt={`${label} preview`}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <ImagePlus className="text-gray-400" size={30} />
-              )}
-          </div>
+        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50">
+          {preview ? (
+            <img
+              src={preview}
+              alt={`${label} preview`}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <ImagePlus className="text-gray-400" size={30} />
+          )}
+        </div>
 
-{/***********************************************Choose image***********************************/}
-  
-          <div className="flex flex-col items-start gap-2">
-              <label className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
-                Choose Image
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  className="hidden"
-                  onChange={handleChange}
-                />
-              </label>
+        <div className="flex flex-col items-start gap-2">
+          <label className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
+            Choose Image
 
-              <p className="text-xs text-gray-500">
-                PNG, JPG or WebP · Max 5 MB
-              </p>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={handleChange}
+            />
+          </label>
 
-  {/***********************************************Remove image***********************************/}
-              {value && (
-                <button
-                  type="button"
-                  onClick={() => onChange(null)}
-                  className="hover:cursor-pointer flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
-                >
-                  <X size={14} />
-                  Remove image
-                </button>
-              )}
-          </div>
+          <p className="text-xs text-gray-500">
+            PNG, JPG or WebP · Max 5 MB
+          </p>
+
+          {value && (
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
+            >
+              <X size={14} />
+              Remove selected image
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

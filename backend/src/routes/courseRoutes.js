@@ -289,4 +289,225 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+
+
+ // ==========================================
+ // PUT /api/courses/:id
+ // Update an existing course
+ // ==========================================
+router.put(
+  "/:id",
+  upload.fields([
+    { name: "courseImage", maxCount: 1 },
+    { name: "instructorImage", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    let uploadedCourseImage;
+    let uploadedInstructorImage;
+
+    try {
+      const { id } = req.params;
+
+      const {
+        title,
+        category,
+        level,
+        duration,
+        price,
+        description,
+        status,
+        releaseDate,
+        icon,
+        color,
+        instructorName,
+        instructorTitle,
+      } = req.body;
+
+      // 1. Check whether the course exists
+      const existingCourse = await prisma.course.findUnique({
+        where: { id },
+        include: { instructor: true },
+      });
+
+      if (!existingCourse) {
+        return res.status(404).json({
+          message: "Course not found",
+        });
+      }
+
+      // 2. Validate required fields
+      if (
+        !title?.trim() ||
+        !category?.trim() ||
+        !level?.trim() ||
+        !duration?.trim() ||
+        price === undefined ||
+        price === null ||
+        price === "" ||
+        !description?.trim()
+      ) {
+        return res.status(400).json({
+          message: "Please provide all required course fields",
+        });
+      }
+
+      // 3. Validate price
+      const numericPrice = Number(price);
+
+      if (
+        !Number.isFinite(numericPrice) ||
+        numericPrice < 0 ||
+        !/^\d+(\.\d{1,2})?$/.test(String(price).trim())
+      ) {
+        return res.status(400).json({
+          message:
+            "Price must be a valid number with up to 2 decimal places",
+        });
+      }
+
+      // 4. Validate status
+      const allowedStatuses = ["Draft", "Published", "Upcoming"];
+
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          message: "Invalid course status",
+        });
+      }
+
+      // 5. Validate release date
+      let parsedReleaseDate = null;
+
+      if (releaseDate) {
+        parsedReleaseDate = new Date(releaseDate);
+
+        if (Number.isNaN(parsedReleaseDate.getTime())) {
+          return res.status(400).json({
+            message: "Invalid release date",
+          });
+        }
+      }
+
+      const courseImageFile = req.files?.courseImage?.[0];
+      const instructorImageFile = req.files?.instructorImage?.[0];
+
+      // 6. Upload replacement course image, if selected
+      if (courseImageFile) {
+        uploadedCourseImage = await uploadToCloudinary(
+          courseImageFile,
+          "mycode-academy/courses"
+        );
+      }
+
+      // 7. Upload replacement instructor image, if selected
+      if (instructorImageFile) {
+        uploadedInstructorImage = await uploadToCloudinary(
+          instructorImageFile,
+          "mycode-academy/instructors"
+        );
+      }
+
+      // 8. Update instructor details, if provided
+      const hasInstructorDetails =
+        Boolean(instructorName?.trim()) ||
+        Boolean(instructorTitle?.trim()) ||
+        Boolean(instructorImageFile);
+
+      let instructorRelation;
+
+      if (existingCourse.instructorId) {
+        if (hasInstructorDetails) {
+          const instructorData = {};
+
+          if (instructorName?.trim()) {
+            instructorData.name = instructorName.trim();
+          }
+
+          if (instructorTitle?.trim()) {
+            instructorData.title = instructorTitle.trim();
+          }
+
+          if (uploadedInstructorImage) {
+            instructorData.imageUrl =
+              uploadedInstructorImage.secure_url;
+          }
+
+          await prisma.instructor.update({
+            where: { id: existingCourse.instructorId },
+            data: instructorData,
+          });
+        }
+      } else if (hasInstructorDetails) {
+        if (!instructorName?.trim() || !instructorTitle?.trim()) {
+          return res.status(400).json({
+            message: "Instructor name and title are required",
+          });
+        }
+
+        instructorRelation = {
+          create: {
+            name: instructorName.trim(),
+            title: instructorTitle.trim(),
+            imageUrl: uploadedInstructorImage?.secure_url || null,
+          },
+        };
+      }
+
+      // 9. Prepare updated course fields
+      const courseData = {
+        title: title.trim(),
+        category: category.trim(),
+        level: level.trim(),
+        duration: duration.trim(),
+        price: numericPrice,
+        description: description.trim(),
+        status,
+        releaseDate: parsedReleaseDate,
+        icon: icon || null,
+        color: color || null,
+      };
+
+      // Keep the existing image if no replacement was uploaded
+      if (uploadedCourseImage) {
+        courseData.imageUrl = uploadedCourseImage.secure_url;
+      }
+
+      if (instructorRelation) {
+        courseData.instructor = instructorRelation;
+      }
+
+      // 10. Save the updated course
+      const updatedCourse = await prisma.course.update({
+        where: { id },
+        data: courseData,
+        include: { instructor: true },
+      });
+
+      return res.status(200).json({
+        message: "Course updated successfully",
+        course: updatedCourse,
+      });
+    } catch (error) {
+      console.error("Update course error:", error);
+
+      // Clean up newly uploaded images if the operation fails
+      const uploadedFiles = [
+        uploadedCourseImage,
+        uploadedInstructorImage,
+      ].filter(Boolean);
+
+      await Promise.all(
+        uploadedFiles.map((file) =>
+          cloudinary.uploader.destroy(file.public_id).catch((cleanupError) => {
+            console.error("Cloudinary cleanup error:", cleanupError);
+          })
+        )
+      );
+
+      return res.status(500).json({
+        message: "Failed to update course",
+      });
+    }
+  }
+);
+
 export default router;

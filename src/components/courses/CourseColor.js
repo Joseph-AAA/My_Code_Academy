@@ -12,17 +12,17 @@ const courseColors = {
 };
 
 export function getCourseBackground(color) {
-  if (!color) return "#DBEAFE";
+      if (!color) return "#DBEAFE";
 
-  // Convert existing Tailwind color names to hex values
-  if (courseColors[color]) {
-    return courseColors[color];
-  }
+      //********************************* Convert existing Tailwind color names to hex values *************
+      if (courseColors[color]) {
+        return courseColors[color];
+      }
 
-  // Support colors selected with the HTML color picker
-  if (/^#[0-9a-fA-F]{6}$/.test(color)) {
-    return color;
-  }
+      //********************************** Support colors selected with the HTML color picker ******************
+      if (/^#[0-9a-fA-F]{6}$/.test(color)) {
+        return color;
+      }
 
-  return "#DBEAFE";
-}
+      return "#DBEAFE";
+    }
