@@ -211,11 +211,12 @@ router.post( "/", upload.fields([
             imageUrl: uploadedInstructorImage?.secure_url || null,
           },
         };
-      } else if (uploadedInstructorImage) {
-        return res.status(400).json({
-          message: "Provide instructor name and title for the uploaded photo",
-        });
-      }
+      } 
+      // else if (uploadedInstructorImage) {
+      //   return res.status(400).json({
+      //     message: "Provide instructor name and title for the uploaded photo",
+      //   });
+      // }
 
       const course = await prisma.course.create({
         data: courseData,
