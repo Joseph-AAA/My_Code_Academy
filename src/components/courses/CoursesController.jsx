@@ -24,179 +24,139 @@ const iconMap = {
                   BookOpen,
                 };
 
-function getCourseStyle(category) {
-  switch (category) {
-    case "Backend Development":
-      return {
-        color: "bg-green-400",
-        bgcolor: "bg-green-400/30",
-        textColor: "text-green-600",
-      };
-
-    case "Web Development":
-      return {
-        color: "bg-blue-400",
-        bgcolor: "bg-blue-400/30",
-        textColor: "text-blue-600",
-      };
-
-    default:
-      return {
-        color: "bg-purple-400",
-        bgcolor: "bg-purple-400/30",
-        textColor: "text-purple-600",
-      };
-  }
-}
-
-function CoursesController({
-  viewMode,
-  sortBy,
-  searchQuery,
-  appliedFilters,
-    refreshKey,
-}) {
-
+function CoursesController({viewMode,sortBy,searchQuery,appliedFilters,refreshKey}){
   
-  const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+          const [courses, setCourses] = useState([]);
+          const [selectedCourse, setSelectedCourse] = useState(null);
+          const [loading, setLoading] = useState(true);
+          const [error, setError] = useState("");
 
-    // Delete course states
-  const [courseToDelete, setCourseToDelete] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState("");
-  const [deleteSuccess, setDeleteSuccess] = useState(false);
+    //******************************  Delete course states *************************
+          const [courseToDelete, setCourseToDelete] = useState(null);
+          const [isDeleting, setIsDeleting] = useState(false);
+          const [deleteError, setDeleteError] = useState("");
+          const [deleteSuccess, setDeleteSuccess] = useState(false);
 
-  
+  //*************************** Fetch courses from the Express backend *************************
+          useEffect(() => {
+            const fetchCourses = async () => {
+              try {
+                setLoading(true);
+                setError("");
 
-  // Fetch courses from the Express backend
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        setError("");
+                const response = await fetch(`${API_URL}/api/courses`);
 
-        const response = await fetch(`${API_URL}/api/courses`);
+                if (!response.ok) {
+                  throw new Error("Failed to fetch courses");
+                }
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch courses");
-        }
+                const data = await response.json();
+           
+//************************* Convert API data into the shape expected by the UI *************************
+                  
+        const normalizedCourses = data.courses.map((course) => ({
+          ...course,
+          price: Number(course.price),
+          icon: iconMap[course.icon] || Code2,
 
-        const data = await response.json();
+//****************** Override the category color with the saved background color ***********************
+          color: course.color || "#DBEAFE",
+        }));
+                setCourses(normalizedCourses);
+              } catch (err) {
+                console.error("Fetch courses error:", err);
+                setError("Unable to load courses. Please try again.");
+              } finally {
+                setLoading(false);
+              }
+            };
 
-        // Convert API data into the shape expected by the UI
-        
+            fetchCourses();
+          }, [refreshKey]);
 
-const normalizedCourses = data.courses.map((course) => ({
-  ...course,
-  price: Number(course.price),
-  icon: iconMap[course.icon] || Code2,
-
-  // Category-based styles
-  ...getCourseStyle(course.category),
-
-  // Override the category color with the saved background color
-  color: course.color || "#DBEAFE",
-}));
-
-
-        setCourses(normalizedCourses);
-      } catch (err) {
-        console.error("Fetch courses error:", err);
-        setError("Unable to load courses. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, [refreshKey]);
-
-  // Show only published courses
+//************************************ Show only published courses ***************************************
   const publishedCourses = courses.filter(
     (course) => course.status === "Published"
   );
 
-  // Filter courses
+//******************************************* Filter courses *********************************************
   const filteredCourses = publishedCourses.filter((course) => {
-    const query = searchQuery.trim().toLowerCase();
+            const query = searchQuery.trim().toLowerCase();
 
-    const matchesSearch =
-      course.title.toLowerCase().includes(query) ||
-      course.category.toLowerCase().includes(query);
+            const matchesSearch =
+              course.title.toLowerCase().includes(query) ||
+              course.category.toLowerCase().includes(query);
 
-    const matchesCategory =
-      !appliedFilters.category ||
-      course.category === appliedFilters.category;
+            const matchesCategory =
+              !appliedFilters.category ||
+              course.category === appliedFilters.category;
 
-    const matchesLevel =
-      !appliedFilters.level ||
-      course.level === appliedFilters.level;
+            const matchesLevel =
+              !appliedFilters.level ||
+              course.level === appliedFilters.level;
 
-    const matchesPrice =
-      !appliedFilters.priceRange ||
-      (appliedFilters.priceRange === "0-500" &&
-        course.price >= 0 &&
-        course.price <= 500) ||
-      (appliedFilters.priceRange === "500-1000" &&
-        course.price > 500 &&
-        course.price <= 1000) ||
-      (appliedFilters.priceRange === "1000+" &&
-        course.price > 1000);
+            const matchesPrice =
+              !appliedFilters.priceRange ||
+              (appliedFilters.priceRange === "0-500" &&
+                course.price >= 0 &&
+                course.price <= 500) ||
+              (appliedFilters.priceRange === "500-1000" &&
+                course.price > 500 &&
+                course.price <= 1000) ||
+              (appliedFilters.priceRange === "1000+" &&
+                course.price > 1000);
 
-    const durationWeeks = Number.parseInt(course.duration, 10);
+            const durationWeeks = Number.parseInt(course.duration, 10);
 
-    const matchesDuration =
-      !appliedFilters.duration ||
-      (appliedFilters.duration === "0-4" &&
-        durationWeeks <= 4) ||
-      (appliedFilters.duration === "5-8" &&
-        durationWeeks >= 5 &&
-        durationWeeks <= 8) ||
-      (appliedFilters.duration === "9+" &&
-        durationWeeks >= 9);
+            const matchesDuration =
+              !appliedFilters.duration ||
+              (appliedFilters.duration === "0-4" &&
+                durationWeeks <= 4) ||
+              (appliedFilters.duration === "5-8" &&
+                durationWeeks >= 5 &&
+                durationWeeks <= 8) ||
+              (appliedFilters.duration === "9+" &&
+                durationWeeks >= 9);
 
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesLevel &&
-      matchesPrice &&
-      matchesDuration
-    );
-  });
+              return (
+                matchesSearch &&
+                matchesCategory &&
+                matchesLevel &&
+                matchesPrice &&
+                matchesDuration
+              );
+          });
 
-  // Sort courses
+//********************************************* Sort Courses *********************************************
   const sortedCourses = [...filteredCourses].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return (
-          new Date(b.releaseDate || b.createdAt) -
-          new Date(a.releaseDate || a.createdAt)
-        );
+        switch (sortBy) {
+          case "newest":
+            return (
+              new Date(b.releaseDate || b.createdAt) -
+              new Date(a.releaseDate || a.createdAt)
+            );
 
-      case "oldest":
-        return (
-          new Date(a.releaseDate || a.createdAt) -
-          new Date(b.releaseDate || b.createdAt)
-        );
+          case "oldest":
+            return (
+              new Date(a.releaseDate || a.createdAt) -
+              new Date(b.releaseDate || b.createdAt)
+            );
 
-      case "price":
-        return a.price - b.price;
+          case "price":
+            return a.price - b.price;
 
-      default:
-        return 0;
+          default:
+            return 0;
+        }
+      });
+
+    if (loading) {
+      return (
+        <p className="py-8 text-center text-gray-500">
+          Loading courses...
+        </p>
+      );
     }
-  });
-
-  if (loading) {
-    return (
-      <p className="py-8 text-center text-gray-500">
-        Loading courses...
-      </p>
-    );
-  }
 
   if (error) {
     return (
@@ -206,17 +166,18 @@ const normalizedCourses = data.courses.map((course) => ({
     );
   }
 
+//******************************************* Fetch to Detle Courses *************************************
 const handleDeleteCourse = async (courseId) => {
-  try {
-    setIsDeleting(true);
-    setDeleteError("");
+    try {
+      setIsDeleting(true);
+      setDeleteError("");
 
-    const response = await fetch(
-      `${API_URL}/api/courses/${courseId}`,
-      {
-        method: "DELETE",
-      }
-    );
+      const response = await fetch(
+        `${API_URL}/api/courses/${courseId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
     const data = await response.json();
 
@@ -224,7 +185,7 @@ const handleDeleteCourse = async (courseId) => {
       throw new Error(data.message || "Failed to delete course");
     }
 
-    // Remove the deleted course from the list
+//************************************ Remove the deleted course from the list *****************************
     setCourses((prevCourses) =>
       prevCourses.filter((course) => course.id !== courseId)
     );
