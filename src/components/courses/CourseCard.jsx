@@ -8,7 +8,7 @@ import {
   Code2,
 } from "lucide-react";
 import { getCourseBackground } from "../../components/courses/CourseColor";
-function CourseCard({ coursesData, onDelete }){
+function CourseCard({ coursesData, onDelete, onEdit }){
 
         const [showMenu, setShowMenu] = useState(false);
         const menuRef = useRef(null);
@@ -114,13 +114,13 @@ function CourseCard({ coursesData, onDelete }){
             ref={menuRef}
             className="absolute right-3 top-12 z-70 w-48 rounded-xl bg-white py-2 shadow-xl"
           >
-        {/************************************************** Edit*********************************************/}
+{/************************************************** Edit*********************************************/}
                   <button
-                    type="button"
+                      type="button"
                       onClick={(e) => {
-                      e.stopPropagation();
-                        
+                        e.stopPropagation();
                         setShowMenu(false);
+                        onEdit(coursesData);
                       }}
                       className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-100"
                     >
@@ -128,7 +128,7 @@ function CourseCard({ coursesData, onDelete }){
                       <span>Edit</span>
                   </button>
 
-        {/********************************************* Delete Button***************************************/}
+{/********************************************* Delete Button***************************************/}
                   <button
                     type="button"
                     onClick={(e) => {
