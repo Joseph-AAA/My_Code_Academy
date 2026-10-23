@@ -8,7 +8,7 @@ import {
   Code2,
 } from "lucide-react";
 import { getCourseBackground } from "../../components/courses/CourseColor";
-function CourseCard({ coursesData, onDelete, onEdit }){
+function CourseCard({ coursesData, onDelete, onEdit,  isAdmin = true }){
 
         const [showMenu, setShowMenu] = useState(false);
         const menuRef = useRef(null);
@@ -94,19 +94,24 @@ function CourseCard({ coursesData, onDelete, onEdit }){
         )}
 
 {/************************************************ Three-dot button *********************************/}
-        <button
-            ref={menuButtonRef}
-            type="button"
-            aria-label="Course options"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowMenu((prev) => !prev);
-            
-            }}
-            className="absolute right-3 top-3 z-10 cursor-pointer rounded-full bg-white/80 p-1 text-gray-700 shadow-sm transition hover:bg-white"
-            >
-            <MoreVertical size={22} />
-         </button>
+        {
+          isAdmin && (
+              <button
+                ref={menuButtonRef}
+                type="button"
+                aria-label="Course options"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMenu((prev) => !prev);
+                
+                }}
+                className="absolute right-3 top-3 z-10 cursor-pointer rounded-full bg-white/80 p-1 text-gray-700 shadow-sm transition hover:bg-white"
+                >
+                <MoreVertical size={22} />
+            </button>
+          )
+        }
+       
 
 {/**************************************************** Dropdown *************************************/}
         {showMenu && (
