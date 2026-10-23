@@ -29,7 +29,7 @@ import { courses } from "./courseData";
 export const sidebarLinks = [
   {
     label: "Dashboard",
-    path: "/",
+    path: "/dashboard",
     icon: Home,
   },
   {

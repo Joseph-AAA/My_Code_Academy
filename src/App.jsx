@@ -39,12 +39,15 @@ function App() {
       <Route path="/reset-password/:token" element={<ResetPassword />}/>
 
       {/* Public website */}
-       <Route element={<PublicLayout />}>
+      <Route element={<PublicLayout />}>
+          <Route path="/" element={<PublicCourses />} />
           <Route
             path="/public/courses"
             element={<PublicCourses />}
           />
       </Route>
+
+
       {/* Dashboard routes */}
       <Route
         path="*"
@@ -93,7 +96,7 @@ function App() {
 
                 <main className="main-container min-w-0 w-full flex">
                   <Routes>
-                    <Route path="/" element={<MainDashboard />} />
+                    <Route path="/dashboard" element={<MainDashboard />} />
                     <Route path="/students" element={<Students />} />
                     <Route path="/courses" element={<Courses />} />
                     <Route path="/payments" element={<Payments />} />
