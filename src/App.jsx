@@ -16,6 +16,8 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ForgotPassword from "./pages/signIn/ForgotPassword";
 import ResetPassword from "./pages/signIn/ResetPassword";
+import PublicLayout from "./components/layout/PublicLayout";
+import PublicCourses from "./components/courses/PublicCourses";
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -36,7 +38,13 @@ function App() {
 
       <Route path="/reset-password/:token" element={<ResetPassword />}/>
 
-      
+      {/* Public website */}
+       <Route element={<PublicLayout />}>
+          <Route
+            path="/public/courses"
+            element={<PublicCourses />}
+          />
+      </Route>
       {/* Dashboard routes */}
       <Route
         path="*"
