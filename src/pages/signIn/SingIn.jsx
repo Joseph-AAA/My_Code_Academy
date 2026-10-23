@@ -127,7 +127,7 @@ const SignIn = () => {
         sessionStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      navigate("/");
+      navigate("/dashboard");
 
      
     } catch (error) {

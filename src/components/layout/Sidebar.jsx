@@ -5,7 +5,7 @@ import { NavLink,Link } from "react-router-dom";
 function Sidebar({sidebarOpen,setSidebarOpen}) {
   return <div className="flex flex-col w-[89%] min-h-80  gap-1">
 
-                      <Link to="/" className="flex items-center gap-2 h-20 
+                      <Link to="/dashboard" className="flex items-center gap-2 h-20 
                                     justify-between lg:justify-center ">
                         <div className="flex items-center gap-5">
                           <GraduationCap className="size-16 " />

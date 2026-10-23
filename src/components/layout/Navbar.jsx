@@ -36,7 +36,7 @@ useEffect(() => {
       if (response.status === 401) {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
-        navigate("/signin", { replace: true });
+        navigate("/");
         return;
       }
 
