@@ -29,30 +29,225 @@ const uploadToCloudinary = (file, folder) => {
 // GET /api/courses
 //******************************** Fetch all courses with instructor details *********************
 // ==========================================
-router.get("/", async (req, res) => {
-  try {
-    const courses = await prisma.course.findMany({
-      include: {
-        instructor: true,
-      },
-      orderBy: {
-        createdAt: "desc",   // newest course first / asc => oldest course first
-      },
+// router.get("/", async (req, res) => {
+//   try {
+//     const courses = await prisma.course.findMany({
+//       include: {
+//         instructor: true,
+//       },
+//       orderBy: {
+//         createdAt: "desc",   // newest course first / asc => oldest course first
+//       },
+//     });
+
+//     return res.status(200).json({
+//       message: "Courses fetched successfully",
+//       courses,
+//     });
+//   } catch (error) {
+//     console.error("Fetch courses error:", error);
+
+//     return res.status(500).json({
+//       message: "Failed to fetch courses",
+//     });
+//   }
+// });
+
+//******************************** Fetch 6 courses/page for admin *********************
+    router.get("/", async (req, res) => {
+      try {
+        // 1. Pagination
+        const page = Math.max(
+          1,
+          Number.parseInt(req.query.page, 10) || 1
+        );
+
+        const limit = Math.min(
+          100,
+          Math.max(1, Number.parseInt(req.query.limit, 10) || 6)
+        );
+
+        const skip = (page - 1) * limit;
+
+        // 2. Read filters and sorting from the request
+        const {
+          status,
+          category,
+          level,
+          priceRange,
+          search,
+          sortBy,
+        } = req.query;
+
+        // 3. Build the database filters
+        const where = {};
+
+        if (status) {
+          where.status = status;
+        }
+
+        if (category) {
+          where.category = category;
+        }
+
+        if (level) {
+          where.level = level;
+        }
+
+        if (search?.trim()) {
+          where.OR = [
+            {
+              title: {
+                contains: search.trim(),
+                mode: "insensitive",
+              },
+            },
+            {
+              category: {
+                contains: search.trim(),
+                mode: "insensitive",
+              },
+            },
+          ];
+        }
+
+        // 4. Price range
+        if (priceRange === "0-500") {
+          where.price = {
+            gte: 0,
+            lte: 500,
+          };
+        } else if (priceRange === "500-1000") {
+          where.price = {
+            gt: 500,
+            lte: 1000,
+          };
+        } else if (priceRange === "1000+") {
+          where.price = {
+            gt: 1000,
+          };
+        }
+
+        // 5. Sorting
+        let orderBy = { createdAt: "desc" };
+
+        if (sortBy === "oldest") {
+          orderBy = { createdAt: "asc" };
+        } else if (sortBy === "price") {
+          orderBy = { price: "asc" };
+        }
+
+        // 6. Filter and count BEFORE pagination
+        const [courses, totalCourses] = await prisma.$transaction([
+          prisma.course.findMany({
+            where,
+            skip,
+            take: limit,
+            include: {
+              instructor: true,
+            },
+            orderBy,
+          }),
+
+          prisma.course.count({
+            where,
+          }),
+        ]);
+
+        // 7. Return results and pagination information
+        return res.status(200).json({
+          message: "Courses fetched successfully",
+          courses,
+          currentPage: page,
+          totalPages: Math.ceil(totalCourses / limit),
+          totalCourses,
+        });
+      } catch (error) {
+        console.error("Fetch courses error:", error);
+
+        return res.status(500).json({
+          message: "Failed to fetch courses",
+        });
+      }
     });
 
-    return res.status(200).json({
-      message: "Courses fetched successfully",
-      courses,
-    });
-  } catch (error) {
-    console.error("Fetch courses error:", error);
 
-    return res.status(500).json({
-      message: "Failed to fetch courses",
-    });
-  }
+//*************************************** */ GET /api/courses/stats ******************************/
+router.get("/stats", async (req, res) => {
+   try {
+        const [totalCourses, publishedCourses, draftCourses, upcomingCourses] =
+          await Promise.all([
+            prisma.course.count(),
+            prisma.course.count({
+              where: { status: "Published" },
+            }),
+            prisma.course.count({
+              where: { status: "Draft" },
+            }),
+            prisma.course.count({
+              where: { status: "Upcoming" },
+            }),
+          ]);
+
+        return res.status(200).json({
+          totalCourses,
+          publishedCourses,
+          draftCourses,
+          upcomingCourses,
+        });
+      } catch (error) {
+        console.error("Fetch course statistics error:", error);
+
+        return res.status(500).json({
+          message: "Failed to fetch course statistics",
+        });
+      }
 });
 
+//******************************** Fetch 6 courses/page for publicCourse page *********************
+
+    router.get("/public", async (req, res) => {
+      try {
+        const page = Math.max(
+          1,
+          Number.parseInt(req.query.page, 10) || 1
+        );
+
+        const limit = Math.min(
+          100,
+          Math.max(1, Number.parseInt(req.query.limit, 10) || 6)
+        );
+
+        const skip = (page - 1) * limit;
+
+        const [courses, totalCourses] = await prisma.$transaction([
+          prisma.course.findMany({
+            where: { status: "Published" },
+            skip,
+            take: limit,
+            include: { instructor: true },
+            orderBy: { createdAt: "desc" },
+          }),
+          prisma.course.count({
+            where: { status: "Published" },
+          }),
+        ]);
+
+        return res.status(200).json({
+          message: "Published courses fetched successfully",
+          courses,
+          currentPage: page,
+          totalPages: Math.ceil(totalCourses / limit),
+          totalCourses,
+        });
+      } catch (error) {
+        console.error("Fetch public courses error:", error);
+
+        return res.status(500).json({
+          message: "Failed to fetch published courses",
+        });
+      }
+    });
 // ==========================================
 // POST /api/courses
 //*************************************** Create a course and upload its images ****************
@@ -83,7 +278,7 @@ router.post( "/", upload.fields([
         instructorTitle,
       } = req.body;
 
-//************************************/ Validate required course fields ******************
+//************************************ Validate required course fields ******************
       if (
         !title?.trim() ||
         !category?.trim() ||

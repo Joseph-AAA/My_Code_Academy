@@ -15,113 +15,116 @@ import CourseDetailModal from "../dashboard/modals/CourseDetailModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const COURSES_PER_PAGE = 9;
+const COURSES_PER_PAGE = 6;
 const MAX_GUEST_PAGES = 2;
 
-const iconMap = {
-  Code2,
-  Globe,
-  Database,
-  Monitor,
-  BookOpen,
-};
+  const iconMap = {
+    Code2,
+    Globe,
+    Database,
+    Monitor,
+    BookOpen,
+  };
 
-function PublicCourses() {
-  const [courses, setCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  function PublicCourses() {
+    const [courses, setCourses] = useState([]);
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0); 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        setError("");
+// ************************************ Fetching Courses from DB ********************************
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-        const response = await fetch(`${API_URL}/api/courses`);
+      const response = await fetch(
+        `${API_URL}/api/courses/public?page=${currentPage}&limit=${COURSES_PER_PAGE}`
+      );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch courses.");
-        }
-
-        const data = await response.json();
-
-        const publishedCourses = (data.courses || [])
-          .filter((course) => course.status === "Published")
-          .map((course) => ({
-            ...course,
-            price: Number(course.price),
-            icon: iconMap[course.icon] || Code2,
-            color: course.color || "#DBEAFE",
-            students: course.students ?? 0,
-          }));
-
-        setCourses(publishedCourses);
-      } catch (err) {
-        console.error("Fetch public courses error:", err);
-        setError("Unable to load courses. Please try again later.");
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to fetch courses.");
       }
-    };
 
-    fetchCourses();
-  }, []);
+      const data = await response.json();
 
-  const totalPages = Math.ceil(
-    courses.length / COURSES_PER_PAGE
-  );
+      const normalizedCourses = (data.courses || []).map((course) => ({
+        ...course,
+        price: Number(course.price),
+        icon: iconMap[course.icon] || Code2,
+        color: course.color || "#DBEAFE",
+        students: course.students ?? 0,
+      }));
+
+      setCourses(normalizedCourses);
+      setTotalPages(data.totalPages ?? 0);
+    } catch (err) {
+      console.error("Fetch public courses error:", err);
+      setError("Unable to load courses. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchCourses();
+}, [currentPage]);
+  // ************************************** Setting up for Pagination *************************
 
   const guestLimitReached =
     totalPages > MAX_GUEST_PAGES &&
     currentPage > MAX_GUEST_PAGES;
+    
+const visibleCourses = courses;
 
-  const visibleCourses = courses.slice(
-    (currentPage - 1) * COURSES_PER_PAGE,
-    currentPage * COURSES_PER_PAGE
-  );
+const handlePageChange = (page) => {
+  if (page < 1 || page > totalPages) return;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  setCurrentPage(page);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+
 
   return (
     <section className="mx-auto w-full max-w-[1920px] px-8 py-10">
-      {/* Page heading */}
+     
+{/*********************************************** Page heading *******************************/}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-          Explore Our Courses
-        </h1>
+          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+            Explore Our Courses
+          </h1>
 
-        <p className="mt-3 text-gray-600">
-          Build your skills with practical programming courses.
-        </p>
+          <p className="mt-3 text-gray-600">
+            Build your skills with practical programming courses.
+          </p>
       </div>
 
-      {/* Loading */}
+{/********************************************* Loading Courses ******************************/}
       {loading && (
         <p className="py-16 text-center text-gray-500">
           Loading courses...
         </p>
       )}
 
-      {/* Error */}
+{/********************************************** Error *****************************************/}
       {!loading && error && (
         <p className="py-16 text-center text-red-600">
           {error}
         </p>
       )}
 
-      {/* Empty state */}
+      
+{/****************************************** Empty state ***************************************/}
       {!loading && !error && courses.length === 0 && (
         <p className="py-16 text-center text-gray-500">
           No published courses available yet.
         </p>
       )}
 
-      {/* Sign-up prompt for page 3 and beyond */}
+{/************************************ Sign-up prompt for page 3 and beyond *********************/}
       {!loading &&
         !error &&
         courses.length > 0 &&
@@ -163,7 +166,7 @@ function PublicCourses() {
           </div>
         )}
 
-      {/* Course grid and pagination */}
+{/*********************************** Course grid and pagination ********************************/}
       {!loading &&
         !error &&
         courses.length > 0 &&
@@ -183,23 +186,27 @@ function PublicCourses() {
               ))}
             </div>
 
-            {/* Pagination */}
+{/********************************************* Pagination **************************************/}
+            
             {totalPages > 1 && (
               <nav
                 aria-label="Course pagination"
                 className="mt-10 flex flex-wrap items-center justify-center gap-2"
               >
-                <button
+
+{/************************************************ Previoous Button ****************************/}
+              <button
                   type="button"
                   onClick={() =>
                     handlePageChange(currentPage - 1)
                   }
                   disabled={currentPage === 1}
                   className="hover:cursor-pointer rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
-                >
+              >
                   Previous
-                </button>
+              </button>
 
+{/****************************************** Page Number Button *******************************/}
                 {Array.from(
                   {
                     length: Math.min(
@@ -226,6 +233,7 @@ function PublicCourses() {
                   </button>
                 ))}
 
+{/************************************** Next Button ****************************************/}
                 <button
                   type="button"
                   onClick={() =>
@@ -243,8 +251,7 @@ function PublicCourses() {
             )}
           </>
         )}
-
-      {/* Selected course details */}
+{/**************************************** Selected course details ****************************/}
       {selectedCourse && (
         <CourseDetailModal
           selectedCourse={selectedCourse}

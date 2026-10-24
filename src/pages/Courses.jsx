@@ -1,6 +1,6 @@
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { stats } from "../data/courseData";
 import Search_Sortbar from "../components/courses/Search_Sortbar";
@@ -8,7 +8,21 @@ import CoursesController from "../components/courses/CoursesController";
 import CoursesFilter from "../components/courses/CoursesFilter";
 import AddCourseModal from "../components/courses/AddCourseModal";
 
+
 function Courses() {
+    const API_URL = import.meta.env.VITE_API_URL;
+
+// ******************************************** Stats State ********************************************
+
+    const [courseStats, setCourseStats] = useState({
+        totalCourses: 0,
+        publishedCourses: 0,
+        draftCourses: 0,
+        upcomingCourses: 0,
+      });
+
+ // ***************************************** fot filter / search /viewmode state *********************     
+    
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("newest");
     const [viewMode, setViewMode] = useState("grid");
@@ -20,7 +34,7 @@ function Courses() {
       category: "",
       level: "",
       priceRange: "",
-      duration: "",
+      status: "",
     };
 
     const [draftFilters, setDraftFilters] = useState(initialFilters);
@@ -34,6 +48,25 @@ function Courses() {
       setDraftFilters({ ...initialFilters });
       setAppliedFilters({ ...initialFilters });
     };
+
+    useEffect(() => {
+      const fetchCourseStats = async () => {
+        try {
+          const response = await fetch(`${API_URL}/api/courses/stats`);
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch course statistics");
+          }
+
+          const data = await response.json();
+          setCourseStats(data);
+        } catch (error) {
+          console.error("Fetch course statistics error:", error);
+        }
+    };
+
+  fetchCourseStats();
+}, [refreshKey]);
 
   return (
     <div className="w-full min-w-0">
@@ -61,34 +94,32 @@ function Courses() {
       </div>
 
 {/*********************************************************** Stats *************************************/}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-4">
-          {stats.map((stat, idx) => {
+     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+          {stats.map((stat) => {
             const Icon = stat.icon;
 
             return (
-                <div
-                  key={idx}
-                  className="bg-white border border-(--border) rounded-xl p-4
-                            flex items-center gap-4"
-                >
-                  <div className={`p-3 rounded-lg ${stat.bg}`}>
+              <div
+                key={stat.key}
+                className="min-w-0 bg-white border border-(--border) rounded-xl p-5 flex items-center gap-4"
+              >
+                    <div className={`p-3 rounded-xl shrink-0 ${stat.bg}`}>
                       <Icon size={24} className={stat.color} />
-                  </div>
+                    </div>
 
-                  <div>
-                      <p className="text-2xl font-bold text-gray-800">
-                        {stat.value}
+                  <div className="min-w-0">
+                      <p className="text-2xl font-bold text-gray-800 leading-tight">
+                        {courseStats[stat.key]}
                       </p>
-                      <p className="text-xs text-gray-500">{stat.label}</p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {stat.change}
+
+                      <p className="text-sm text-gray-500 mt-1">
+                        {stat.label}
                       </p>
                   </div>
               </div>
             );
           })}
-      </div>
-
+     </div>
 
 {/***************************************Search, Sort, and Grid/List toggle ****************************/}
       
