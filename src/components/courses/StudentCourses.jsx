@@ -1,0 +1,230 @@
+
+import { useEffect, useState } from "react";
+import { Code2 } from "lucide-react";
+
+import CourseCard from "../courses/CourseCard";
+import StudentCourseFilter from "../courses/StudentCourseFilter";
+import CourseDetailModal from "../dashboard/modals/CourseDetailModal";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const initialFilters = {
+  category: "",
+  level: "",
+  priceRange: "",
+  duration: "",
+};
+
+function StudentCourses() {
+  const [courses, setCourses] = useState([]);
+  const [draftFilters, setDraftFilters] = useState(initialFilters);
+  const [appliedFilters, setAppliedFilters] = useState(initialFilters);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        // Fetch published courses. The student page will filter
+        // the courses locally, without changing the admin page.
+        const response = await fetch(
+          `${API_URL}/api/courses/public?page=1&limit=1000`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch courses.");
+        }
+
+        const data = await response.json();
+
+        const normalizedCourses = (data.courses || []).map((course) => ({
+          ...course,
+          price: Number(course.price),
+          icon: course.icon || Code2,
+          color: course.color || "#DBEAFE",
+          students: course.students ?? 0,
+        }));
+
+        setCourses(normalizedCourses);
+      } catch (err) {
+        console.error("Fetch student courses error:", err);
+        setError("Unable to load courses. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+  const filteredCourses = courses.filter((course) => {
+    const { category, level, priceRange, duration } = appliedFilters;
+    const price = Number(course.price);
+
+    const matchesCategory =
+      !category || course.category === category;
+
+    const matchesLevel =
+      !level || course.level === level;
+
+    const matchesPrice =
+      !priceRange ||
+      (priceRange === "0-500" && price >= 0 && price <= 500) ||
+      (priceRange === "500-1000" && price > 500 && price <= 1000) ||
+      (priceRange === "1000+" && price > 1000);
+
+    // Supports durations stored as "8 weeks", "3 months", etc.
+    const durationText = String(course.duration || "").toLowerCase();
+    const durationNumber = Number(durationText.match(/\d+(\.\d+)?/)?.[0]);
+    const durationIsMonths = durationText.includes("month");
+    const durationInWeeks = durationIsMonths
+      ? durationNumber * 4.345
+      : durationNumber;
+
+    const matchesDuration =
+      !duration ||
+      (duration === "under-4" && durationInWeeks < 4) ||
+      (duration === "4-8" && durationInWeeks >= 4 && durationInWeeks <= 8) ||
+      (duration === "9-12" && durationInWeeks >= 9 && durationInWeeks <= 12) ||
+      (duration === "over-12" && durationInWeeks > 12);
+
+    return (
+      matchesCategory &&
+      matchesLevel &&
+      matchesPrice &&
+      matchesDuration
+    );
+  });
+
+  const COURSES_PER_PAGE = 6;
+  const filteredTotalPages = Math.ceil(
+    filteredCourses.length / COURSES_PER_PAGE
+  );
+
+  const safeCurrentPage = Math.min(
+    currentPage,
+    Math.max(filteredTotalPages, 1)
+  );
+
+  const visibleCourses = filteredCourses.slice(
+    (safeCurrentPage - 1) * COURSES_PER_PAGE,
+    safeCurrentPage * COURSES_PER_PAGE
+  );
+
+  const handleApply = () => {
+    setAppliedFilters(draftFilters);
+    setCurrentPage(1);
+  };
+
+  const handleClear = () => {
+    setDraftFilters(initialFilters);
+    setAppliedFilters(initialFilters);
+    setCurrentPage(1);
+  };
+
+  return (
+    <section className="w-full min-w-0 p-5 sm:p-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Explore Courses
+        </h1>
+        <p className="mt-2 text-gray-600">
+          Find the right course for your learning journey.
+        </p>
+      </div>
+
+      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-5">
+        <StudentCourseFilter
+          draftFilters={draftFilters}
+          setDraftFilters={setDraftFilters}
+          onApply={handleApply}
+          onClear={handleClear}
+        />
+      </div>
+
+      {loading && (
+        <p className="py-12 text-center text-gray-500">
+          Loading courses...
+        </p>
+      )}
+
+      {!loading && error && (
+        <p className="py-12 text-center text-red-600">
+          {error}
+        </p>
+      )}
+
+      {!loading && !error && visibleCourses.length === 0 && (
+        <p className="py-12 text-center text-gray-500">
+          No courses match your filters.
+        </p>
+      )}
+
+      {!loading && !error && visibleCourses.length > 0 && (
+        <>
+          <div className="mb-5 text-sm text-gray-500">
+            Showing {visibleCourses.length} of {filteredCourses.length} courses
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {visibleCourses.map((course) => (
+              <div
+                key={course.id}
+                onClick={() => setSelectedCourse(course)}
+              >
+                <CourseCard
+                  coursesData={course}
+                  isAdmin={false}
+                />
+              </div>
+            ))}
+          </div>
+
+          {filteredTotalPages > 1 && (
+            <nav
+              aria-label="Course pagination"
+              className="mt-8 flex items-center justify-center gap-3"
+            >
+              <button
+                type="button"
+                disabled={safeCurrentPage === 1}
+                onClick={() => setCurrentPage((page) => page - 1)}
+                className="cursor-pointer rounded-lg border px-4 py-2 disabled:opacity-40"
+              >
+                Previous
+              </button>
+
+              <span className="text-sm text-gray-600">
+                Page {safeCurrentPage} of {filteredTotalPages}
+              </span>
+
+              <button
+                type="button"
+                disabled={safeCurrentPage >= filteredTotalPages}
+                onClick={() => setCurrentPage((page) => page + 1)}
+                className="cursor-pointer rounded-lg border px-4 py-2 disabled:opacity-40"
+              >
+                Next
+              </button>
+            </nav>
+          )}
+        </>
+      )}
+
+      {selectedCourse && (
+        <CourseDetailModal
+          selectedCourse={selectedCourse}
+          onClose={() => setSelectedCourse(null)}
+        />
+      )}
+    </section>
+  );
+}
+
+export default StudentCourses;

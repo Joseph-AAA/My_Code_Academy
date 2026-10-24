@@ -8,16 +8,24 @@ datasource db {
 
 //====================================== for User Aunthentication =======================================
 
+
+enum UserRole {
+  ADMIN
+  STUDENT
+}
+
 model User {
   id                       String    @id @default(cuid())
   name                     String
   email                    String    @unique
   password                 String
+  role                     UserRole  @default(STUDENT)
   resetPasswordToken       String?   @unique
   resetPasswordTokenExpiry DateTime?
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
 }
+
 
 //======================================For Courses Page =======================================
 //================== Instructor ==============

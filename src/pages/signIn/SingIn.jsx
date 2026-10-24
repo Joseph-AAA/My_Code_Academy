@@ -127,7 +127,13 @@ const SignIn = () => {
         sessionStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      navigate("/dashboard");
+      if (data.user.role === "ADMIN") {
+        navigate("/dashboard", { replace: true });
+      } else if (data.user.role === "STUDENT") {
+        navigate("/courses", { replace: true });
+      } else {
+        setAuthError("Your account role is not recognized.");
+      }
 
      
     } catch (error) {
