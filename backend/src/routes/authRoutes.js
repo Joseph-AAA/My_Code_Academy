@@ -55,6 +55,7 @@ const router = express.Router();
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -296,7 +297,9 @@ router.post("/login", async (req, res) => {
     const expiresIn = rememberMe ? "15min" : "3min";  //15min for lacal - 1min for seesion
     
     const token = jwt.sign(
-      { userId: user.id },
+      { userId: user.id ,
+        role: user.role,
+      },
         process.env.JWT_SECRET,
       { expiresIn }
     );
@@ -309,6 +312,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -329,6 +333,7 @@ router.get("/profile", authMiddleware, async (req, res) => {
         id: true,
         name: true,
         email: true,
+            role: true,
         createdAt: true,
       },
     });

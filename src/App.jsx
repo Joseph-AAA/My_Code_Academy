@@ -18,6 +18,34 @@ import ForgotPassword from "./pages/signIn/ForgotPassword";
 import ResetPassword from "./pages/signIn/ResetPassword";
 import PublicLayout from "./components/layout/PublicLayout";
 import PublicCourses from "./components/courses/PublicCourses";
+import StudentCourses from "./components/courses/StudentCourses";
+
+    function RoleBasedCourses() {
+      const storedUser =
+        localStorage.getItem("user") ||
+        sessionStorage.getItem("user");
+
+      let user = null;
+
+      try {
+        user = storedUser ? JSON.parse(storedUser) : null;
+      } catch {
+        user = null;
+      }
+
+      if (user?.role === "ADMIN") {
+        return <Courses />;
+      }
+
+      if (user?.role === "STUDENT") {
+        return <StudentCourses />;
+      }
+
+      return null;
+    }
+
+
+
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -95,17 +123,73 @@ function App() {
                 </nav>
 
                 <main className="main-container min-w-0 w-full flex">
-                  <Routes>
-                    <Route path="/dashboard" element={<MainDashboard />} />
-                    <Route path="/students" element={<Students />} />
-                    <Route path="/courses" element={<Courses />} />
-                    <Route path="/payments" element={<Payments />} />
-                    <Route path="/setting" element={<Setting />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
-              
-                  </Routes>
-                </main>
+  <Routes>
+    {/* Admin-only pages */}
+    <Route
+      path="/dashboard"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <MainDashboard />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/students"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN"]}>
+          <Students />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/courses"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+          <RoleBasedCourses />
+        </ProtectedRoute>
+      }
+    />
+
+    {/* Shared pages */}
+    <Route
+      path="/payments"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+          <Payments />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/setting"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+          <Setting />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/about"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+          <About />
+        </ProtectedRoute>
+      }
+    />
+
+    <Route
+      path="/contact"
+      element={
+        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+          <Contact />
+        </ProtectedRoute>
+      }
+    />
+  </Routes>
+</main>
 
                 <div className="bg-(--footer) w-full">
                   <Footer />

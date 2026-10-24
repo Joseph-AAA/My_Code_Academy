@@ -1,8 +1,31 @@
 
-import {sidebarLinks} from "../../data/data.js";  
+import {
+  adminSidebarLinks,
+  studentSidebarLinks,
+} from "../../data/data.js";
 import { GraduationCap, X } from "lucide-react";
 import { NavLink,Link } from "react-router-dom";
 function Sidebar({sidebarOpen,setSidebarOpen}) {
+
+
+    const storedUser =
+      localStorage.getItem("user") ||
+      sessionStorage.getItem("user");
+
+    let user = null;
+
+    try {
+      user = storedUser ? JSON.parse(storedUser) : null;
+    } catch {
+      user = null;
+    }
+
+    const sidebarLinks =
+      user?.role === "ADMIN"
+        ? adminSidebarLinks
+        : studentSidebarLinks;
+
+
   return <div className="flex flex-col w-[89%] min-h-80  gap-1">
 
                       <Link to="/dashboard" className="flex items-center gap-2 h-20 

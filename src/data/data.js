@@ -26,37 +26,55 @@ import { courses } from "./courseData";
 /******************************************************Data for sidebarLink**********************************/
 
 
-export const sidebarLinks = [
-  {
-    label: "Dashboard",
-    path: "/dashboard",
-    icon: Home,
-  },
-  {
-    label: "Courses",
-    path: "/courses",
-    icon: BookOpen,
-  },
-  {
-    label: "Students",
-    path: "/students",
-    icon: Users,
-  },
-  {
-    label: "Payments",
-    path: "/payments",
-    icon: CreditCard,
-  },
-  {
-    label: "Setting",
-    path: "/setting",
-    icon: Settings,
-  },
-  {
-    label: "About",
-    path: "/about",
-    icon: Info,
-  },
+// export const sidebarLinks = [
+//   {
+//     label: "Dashboard",
+//     path: "/dashboard",
+//     icon: Home,
+//   },
+//   {
+//     label: "Courses",
+//     path: "/courses",
+//     icon: BookOpen,
+//   },
+//   {
+//     label: "Students",
+//     path: "/students",
+//     icon: Users,
+//   },
+//   {
+//     label: "Payments",
+//     path: "/payments",
+//     icon: CreditCard,
+//   },
+//   {
+//     label: "Setting",
+//     path: "/setting",
+//     icon: Settings,
+//   },
+//   {
+//     label: "About",
+//     path: "/about",
+//     icon: Info,
+//   },
+// ];
+
+
+export const adminSidebarLinks = [
+  { label: "Dashboard", path: "/dashboard", icon: Home },
+  { label: "Courses", path: "/courses", icon: BookOpen },
+  { label: "Students", path: "/students", icon: Users },
+  { label: "Payments", path: "/payments", icon: CreditCard },
+  { label: "Setting", path: "/setting", icon: Settings },
+  { label: "About", path: "/about", icon: Info },
+];
+
+export const studentSidebarLinks = [
+  { label: "Courses", path: "/courses", icon: BookOpen },
+  { label: "My Enrollments", path: "/my-enrollments", icon: BookOpen },
+  { label: "Payments", path: "/payments", icon: CreditCard },
+  { label: "Setting", path: "/setting", icon: Settings },
+  { label: "About", path: "/about", icon: Info },
 ];
 
 

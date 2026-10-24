@@ -8,8 +8,39 @@ import {
   Code2,
 } from "lucide-react";
 import { getCourseBackground } from "../../courses/CourseColor";
+import { useNavigate } from "react-router-dom";
 
 function CourseDetailModal({ selectedCourse, onClose }) {
+
+    const navigate = useNavigate();
+
+    const storedUser =
+      localStorage.getItem("user") ||
+      sessionStorage.getItem("user");
+
+    let user = null;
+
+    try {
+      user = storedUser ? JSON.parse(storedUser) : null;
+    } catch {
+      user = null;
+    }
+
+    const handleEnroll = () => {
+      if (!user) {
+        navigate("/signin");
+        return;
+      }
+
+      if (user.role === "STUDENT") {
+        onClose();
+        navigate("/payment/checkout", {
+          state: { course: selectedCourse },
+        });
+      }
+    };
+
+
   // Support prices from both the database and courseData.js.
   const price = Number(
     String(selectedCourse.price ?? "").replace(/[^0-9.-]/g, "")
@@ -163,15 +194,13 @@ function CourseDetailModal({ selectedCourse, onClose }) {
             {formattedPrice}
           </p>
 
-          <button
-            type="button"
-            onClick={() => {
-              console.log("Enroll:", selectedCourse.title);
-            }}
-            className="cursor-pointer rounded-2xl bg-blue-600 px-7 py-3 text-white transition hover:bg-blue-700"
-          >
-            Enroll Now
-          </button>
+            <button
+                  type="button"
+                  onClick={handleEnroll}
+                  className="cursor-pointer rounded-2xl bg-blue-600 px-7 py-3 text-white transition hover:bg-blue-700"
+                >
+                  Enroll Now
+            </button>
         </div>
       </div>
     </div>
