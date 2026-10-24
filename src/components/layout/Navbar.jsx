@@ -36,7 +36,8 @@ useEffect(() => {
       if (response.status === 401) {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
-        navigate("/");
+        navigate("/signin", { replace: true });
+
         return;
       }
 
@@ -62,7 +63,7 @@ useEffect(() => {
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
-    navigate("/signin", { replace: true });
+    navigate("/", { replace: true });
   };
 
 

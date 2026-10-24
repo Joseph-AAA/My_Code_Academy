@@ -7,11 +7,11 @@ import {
   BookOpen,
 } from "lucide-react";
 
-import CourseCard from "./CourseCard";
-import CourseDetailModal from "./../dashboard/modals/CourseDetailModal";
-import CourseListView from "./CourseListView";
-import DeleteCourseConfirmationModal from "./DeleteCourseConfirmationModal";
-import EditCourseModal from "./EditCourseModal";
+      import CourseCard from "./CourseCard";
+      import CourseDetailModal from "./../dashboard/modals/CourseDetailModal";
+      import CourseListView from "./CourseListView";
+      import DeleteCourseConfirmationModal from "./DeleteCourseConfirmationModal";
+      import EditCourseModal from "./EditCourseModal";
 
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -39,134 +39,90 @@ function CoursesController({viewMode,sortBy,searchQuery,appliedFilters,refreshKe
           const [deleteError, setDeleteError] = useState("");
           const [deleteSuccess, setDeleteSuccess] = useState(false);
 
+   
+    //******************************  Pagination states *************************
+
+          const [currentPage, setCurrentPage] = useState(1);
+          const [totalPages, setTotalPages] = useState(0);
+          const [totalCourses, setTotalCourses] = useState(0);
+          const COURSES_PER_PAGE = 6;
+
   //*************************** Fetch courses from the Express backend *************************
           useEffect(() => {
-            const fetchCourses = async () => {
-              try {
-                setLoading(true);
-                setError("");
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-                const response = await fetch(`${API_URL}/api/courses`);
-
-                if (!response.ok) {
-                  throw new Error("Failed to fetch courses");
-                }
-
-                const data = await response.json();
-           
-//************************* Convert API data into the shape expected by the UI *************************
-                  
-        const normalizedCourses = data.courses.map((course) => ({
-          ...course,
-          price: Number(course.price),
-          icon: iconMap[course.icon] || Code2,
-
-//****************** Override the category color with the saved background color ***********************
-          color: course.color || "#DBEAFE",
-        }));
-                setCourses(normalizedCourses);
-              } catch (err) {
-                console.error("Fetch courses error:", err);
-                setError("Unable to load courses. Please try again.");
-              } finally {
-                setLoading(false);
-              }
-            };
-
-            fetchCourses();
-          }, [refreshKey]);
-
-//************************************ Show only published courses ***************************************
-  const publishedCourses = courses.filter(
-        (course) => course.status === "Published"
-      );
-
-//******************************************* Filter courses *********************************************
-  const filteredCourses = publishedCourses.filter((course) => {
-            const query = searchQuery.trim().toLowerCase();
-
-            const matchesSearch =
-              course.title.toLowerCase().includes(query) ||
-              course.category.toLowerCase().includes(query);
-
-            const matchesCategory =
-              !appliedFilters.category ||
-              course.category === appliedFilters.category;
-
-            const matchesLevel =
-              !appliedFilters.level ||
-              course.level === appliedFilters.level;
-
-            const matchesPrice =
-              !appliedFilters.priceRange ||
-              (appliedFilters.priceRange === "0-500" &&
-                course.price >= 0 &&
-                course.price <= 500) ||
-              (appliedFilters.priceRange === "500-1000" &&
-                course.price > 500 &&
-                course.price <= 1000) ||
-              (appliedFilters.priceRange === "1000+" &&
-                course.price > 1000);
-
-            const durationWeeks = Number.parseInt(course.duration, 10);
-
-            const matchesDuration =
-              !appliedFilters.duration ||
-              (appliedFilters.duration === "0-4" &&
-                durationWeeks <= 4) ||
-              (appliedFilters.duration === "5-8" &&
-                durationWeeks >= 5 &&
-                durationWeeks <= 8) ||
-              (appliedFilters.duration === "9+" &&
-                durationWeeks >= 9);
-
-              return (
-                matchesSearch &&
-                matchesCategory &&
-                matchesLevel &&
-                matchesPrice &&
-                matchesDuration
-              );
-          });
-
-//********************************************* Sort Courses *********************************************
-  const sortedCourses = [...filteredCourses].sort((a, b) => {
-        switch (sortBy) {
-          case "newest":
-            return (
-              new Date(b.releaseDate || b.createdAt) -
-              new Date(a.releaseDate || a.createdAt)
-            );
-
-          case "oldest":
-            return (
-              new Date(a.releaseDate || a.createdAt) -
-              new Date(b.releaseDate || b.createdAt)
-            );
-
-          case "price":
-            return a.price - b.price;
-
-          default:
-            return 0;
-        }
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        limit: String(COURSES_PER_PAGE),
+        sortBy,
       });
 
-        if (loading) {
-          return (
-            <p className="py-8 text-center text-gray-500">
-              Loading courses...
-            </p>
-          );
-        }
-
-      if (error) {
-        return (
-          <p className="py-8 text-center text-red-500">
-            {error}
-          </p>
-        );
+      if (searchQuery.trim()) {
+        params.set("search", searchQuery.trim());
       }
+
+      if (appliedFilters.category) {
+        params.set("category", appliedFilters.category);
+      }
+
+      if (appliedFilters.level) {
+        params.set("level", appliedFilters.level);
+      }
+
+      if (appliedFilters.priceRange) {
+        params.set("priceRange", appliedFilters.priceRange);
+      }
+
+      if (appliedFilters.status) {
+        params.set("status", appliedFilters.status);
+      }
+
+      const response = await fetch(
+        `${API_URL}/api/courses?${params.toString()}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch courses");
+      }
+
+      const data = await response.json();
+
+      const normalizedCourses = (data.courses || []).map((course) => ({
+        ...course,
+        price: Number(course.price),
+        icon: iconMap[course.icon] || Code2,
+        color: course.color || "#DBEAFE",
+      }));
+
+        setCourses(normalizedCourses);
+        setTotalPages(data.totalPages ?? 0);
+        setTotalCourses(data.totalCourses ?? 0);
+        } catch (err) {
+          console.error("Fetch courses error:", err);
+          setError("Unable to load courses. Please try again.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+  fetchCourses();
+}, [
+  currentPage,
+  refreshKey,
+  searchQuery,
+  sortBy,
+  appliedFilters,
+]);
+
+
+useEffect(() => {
+  setCurrentPage(1);
+}, [searchQuery, sortBy, appliedFilters]);
+
+
 
 //******************************************* Fetch to Detle Courses *************************************
 const handleDeleteCourse = async (courseId) => {
@@ -181,67 +137,68 @@ const handleDeleteCourse = async (courseId) => {
         }
       );
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to delete course");
-    }
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to delete course");
+        }
 
 //************************************ Remove the deleted course from the list *****************************
-    setCourses((prevCourses) =>
-      prevCourses.filter((course) => course.id !== courseId)
-    );
+        setCourses((prevCourses) =>
+          prevCourses.filter((course) => course.id !== courseId)
+        );
 
-    // Close the detail modal if it shows the deleted course
-    setSelectedCourse((prevCourse) =>
-      prevCourse?.id === courseId ? null : prevCourse
-    );
+          // Close the detail modal if it shows the deleted course
+          setSelectedCourse((prevCourse) =>
+            prevCourse?.id === courseId ? null : prevCourse
+          );
 
-    // Show success message inside the confirmation modal
-    setDeleteSuccess(true);
-  } catch (error) {
-    console.error("Delete course error:", error);
-    setDeleteError(error.message || "Failed to delete course");
-  } finally {
-    setIsDeleting(false);
-  }
-};
+            // Show success message inside the confirmation modal
+            setDeleteSuccess(true);
+          } catch (error) {
+            console.error("Delete course error:", error);
+            setDeleteError(error.message || "Failed to delete course");
+          } finally {
+            setIsDeleting(false);
+          }
+        };
 
   return (
     <>
 
 {/**************************************** Course Grid and List View **********************************/}
-          {sortedCourses.length === 0 ? (
-            <p className="col-span-full py-8 text-center text-2xl font-bold text-gray-500">
-              No courses found.
-            </p>
-          ) : viewMode === "grid" ? (
-            <div className="grid h-full w-full grid-cols-1 gap-3 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-              {sortedCourses.map((course) => (
-                <div
-                  key={course.id}
-                  onClick={() => setSelectedCourse(course)}
-                >
-                  <CourseCard
-                      coursesData={course}
-                      onEdit={(course) => {
-                        setCourseToEdit(course);
-                      }}
-                      onDelete={(course) => {
-                        setCourseToDelete(course);
-                        setDeleteError("");
-                        setDeleteSuccess(false);
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <CourseListView
-              courses={sortedCourses}
-              onCourseClick={setSelectedCourse}
-            />
-          )}
+             
+{/* Course Grid and List View */}
+{courses.length === 0 ? (
+  <p className="col-span-full py-8 text-center text-2xl font-bold text-gray-500">
+    No courses found.
+  </p>
+) : viewMode === "grid" ? (
+          <div className="grid h-full w-full grid-cols-1 gap-3 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+            {courses.map((course) => (
+              <div
+                key={course.id}
+                onClick={() => setSelectedCourse(course)}
+              >
+                <CourseCard
+                  coursesData={course}
+                  onEdit={(course) => setCourseToEdit(course)}
+                  onDelete={(course) => {
+                    setCourseToDelete(course);
+                    setDeleteError("");
+                    setDeleteSuccess(false);
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <CourseListView
+            courses={courses}
+            onCourseClick={setSelectedCourse}
+          />
+        )}
+
 
 {/**********************************************  Course Detail Modal *********************************/}
 
@@ -304,6 +261,56 @@ const handleDeleteCourse = async (courseId) => {
               }}
             />
           )}
+          {totalPages > 1 && (
+          <nav
+            aria-label="Course pagination"
+            className="mt-8 flex flex-wrap items-center justify-center gap-2"
+          >
+{/******************************************* Previous Button *****************************************/}
+        <button
+          type="button"
+          onClick={() => setCurrentPage((page) => page - 1)}
+          disabled={currentPage === 1}
+          className="hover:cursor-pointer  rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-40"
+        >
+          Previous
+        </button>
+
+{/************************************************** Pagination ************************************* */}
+
+            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+              (page) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => setCurrentPage(page)}
+                  aria-current={currentPage === page ? "page" : undefined}
+                  className={`hover:cursor-pointer rounded-lg border px-4 py-2 text-sm ${
+                    currentPage === page
+                      ? "border-blue-600 bg-blue-600 text-white"
+                      : "border-gray-300 hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              )
+          )}
+
+{/*************************************************** Next Button **************************************/}
+          <button
+            type="button"
+            onClick={() => setCurrentPage((page) => page + 1)}
+            disabled={currentPage === totalPages}
+            className="hover:cursor-pointer rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-40"
+          >
+            Next
+          </button>
+        </nav>
+    )}
+
+        <p className="mt-3 text-center text-sm text-gray-500">
+          {totalCourses} courses in total
+        </p>
     </>
   );
 }

@@ -406,9 +406,33 @@ export const courses = [
   },
 ];
 
-  export const stats = [
-    { label: "Total Courses", value: courses.length, change: "+2 this month", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-50" },
-    { label: "Published", value: courses.filter(c => c.status === "Published").length, change: "75% of total", icon: CheckCircle, color: "text-green-500", bg: "bg-green-50" },
-    { label: "In Progress", value: courses.filter(c => c.status === "In Progress").length, change: "21% of total", icon: Clock, color: "text-yellow-500", bg: "bg-yellow-50" },
-    { label: "Draft", value: courses.filter(c => c.status === "Draft").length, change: "4% of total", icon: FileText, color: "text-purple-500", bg: "bg-purple-50" },
-  ];
+ export const stats = [
+  {
+    label: "Total Courses",
+    key: "totalCourses",
+    icon: BookOpen,
+    color: "text-blue-500",
+    bg: "bg-blue-50",
+  },
+  {
+    label: "Published",
+    key: "publishedCourses",
+    icon: CheckCircle,
+    color: "text-green-500",
+    bg: "bg-green-50",
+  },
+  {
+    label: "Upcoming",
+    key: "upcomingCourses",
+    icon: Clock,
+    color: "text-yellow-500",
+    bg: "bg-yellow-50",
+  },
+  {
+    label: "Draft",
+    key: "draftCourses",
+    icon: FileText,
+    color: "text-purple-500",
+    bg: "bg-purple-50",
+  },
+];

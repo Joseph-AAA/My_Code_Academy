@@ -94,30 +94,31 @@ function CoursesFilter({draftFilters,setDraftFilters,onApply,onClear}) {
       </div>
 
 
-{/******************************************* Duration ***********************************************/}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Duration
-        </label>
-          <div className="relative">
-            <select
-              className={selectClass}
-              value={draftFilters.duration}
-              onChange={(e) => handleChange("duration", e.target.value)}
-            >
-              <option value="">All Durations</option>
-              <option value="under-4">Under 4 weeks</option>
-              <option value="4-8">4–8 weeks</option>
-              <option value="9-12">9–12 weeks</option>
-              <option value="over-12">More than 12 weeks</option>
-            </select>
-            <ChevronDown
-                        size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-              />
-          </div>
-      </div>
+{/********************************************** Status ***********************************************/}
+   
+        <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Status
+            </label>
 
+            <div className="relative">
+              <select
+                className={selectClass}
+                value={draftFilters.status}
+                onChange={(e) => handleChange("status", e.target.value)}
+              >
+                <option value="">All Statuses</option>
+                <option value="Published">Published</option>
+                <option value="Draft">Draft</option>
+                <option value="Upcoming">Upcoming</option>
+              </select>
+
+              <ChevronDown
+                size={16}
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              />
+            </div>
+        </div>
 
 {/******************************************* Action ***********************************************/}
       <div className="sm:col-span-2 xl:col-span-4 flex justify-end gap-2">
