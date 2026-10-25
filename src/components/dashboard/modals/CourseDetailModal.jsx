@@ -41,17 +41,17 @@ function CourseDetailModal({ selectedCourse, onClose }) {
     };
 
 
-  // Support prices from both the database and courseData.js.
-  const price = Number(
-    String(selectedCourse.price ?? "").replace(/[^0-9.-]/g, "")
-  );
+//*************************** Support prices from both the database and courseData.js.*******************
+    const price = Number(
+      String(selectedCourse.price ?? "").replace(/[^0-9.-]/g, "")
+    );
 
-  const formattedPrice = Number.isFinite(price)
-    ? `RM ${price.toLocaleString("en-MY", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      })}`
-    : "Price unavailable";
+    const formattedPrice = Number.isFinite(price)
+      ? `RM ${price.toLocaleString("en-MY", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        })}`
+      : "Price unavailable";
 
   // Support both instructor image properties.
   const instructorImage =

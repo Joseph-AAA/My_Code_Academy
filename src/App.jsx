@@ -20,29 +20,36 @@ import PublicLayout from "./components/layout/PublicLayout";
 import PublicCourses from "./components/courses/PublicCourses";
 import StudentCourses from "./components/courses/StudentCourses";
 
-    function RoleBasedCourses() {
-      const storedUser =
-        localStorage.getItem("user") ||
-        sessionStorage.getItem("user");
+function RoleBasedCourses() {
+    const storedUser =
+      localStorage.getItem("user") ||
+      sessionStorage.getItem("user");
 
-      let user = null;
+    let user = null;
 
-      try {
-        user = storedUser ? JSON.parse(storedUser) : null;
-      } catch {
-        user = null;
-      }
-
-      if (user?.role === "ADMIN") {
-        return <Courses />;
-      }
-
-      if (user?.role === "STUDENT") {
-        return <StudentCourses />;
-      }
-
-      return null;
+    try {
+      user = storedUser ? JSON.parse(storedUser) : null;
+    } catch {
+      user = null;
     }
+
+    console.log("RoleBasedCourses is running");
+    console.log("Stored user:", user);
+    console.log("Current role:", user?.role);
+
+    if (user?.role === "ADMIN") {
+      console.log("Rendering Admin Courses");
+      return <Courses />;
+    }
+
+    if (user?.role === "STUDENT") {
+      console.log("Rendering Student Courses");
+      return <StudentCourses />;
+    }
+
+    console.log("No recognized role");
+    return null;
+}
 
 
 
@@ -123,73 +130,73 @@ function App() {
                 </nav>
 
                 <main className="main-container min-w-0 w-full flex">
-  <Routes>
-    {/* Admin-only pages */}
-    <Route
-      path="/dashboard"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN"]}>
-          <MainDashboard />
-        </ProtectedRoute>
-      }
-    />
+                  <Routes>
+                    {/* Admin-only pages */}
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN"]}>
+                          <MainDashboard />
+                        </ProtectedRoute>
+                      }
+                    />
 
-    <Route
-      path="/students"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN"]}>
-          <Students />
-        </ProtectedRoute>
-      }
-    />
+                    <Route
+                      path="/students"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN"]}>
+                          <Students />
+                        </ProtectedRoute>
+                      }
+                    />
 
-    <Route
-      path="/courses"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-          <RoleBasedCourses />
-        </ProtectedRoute>
-      }
-    />
+                    <Route
+                      path="/courses"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                          <RoleBasedCourses />
+                        </ProtectedRoute>
+                      }
+                    />
 
-    {/* Shared pages */}
-    <Route
-      path="/payments"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-          <Payments />
-        </ProtectedRoute>
-      }
-    />
+                    {/* Shared pages */}
+                    <Route
+                      path="/payments"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                          <Payments />
+                        </ProtectedRoute>
+                      }
+                    />
 
-    <Route
-      path="/setting"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-          <Setting />
-        </ProtectedRoute>
-      }
-    />
+                    <Route
+                      path="/setting"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                          <Setting />
+                        </ProtectedRoute>
+                      }
+                    />
 
-    <Route
-      path="/about"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-          <About />
-        </ProtectedRoute>
-      }
-    />
+                    <Route
+                      path="/about"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                          <About />
+                        </ProtectedRoute>
+                      }
+                    />
 
-    <Route
-      path="/contact"
-      element={
-        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-          <Contact />
-        </ProtectedRoute>
-      }
-    />
-  </Routes>
-</main>
+                    <Route
+                      path="/contact"
+                      element={
+                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                          <Contact />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                </main>
 
                 <div className="bg-(--footer) w-full">
                   <Footer />

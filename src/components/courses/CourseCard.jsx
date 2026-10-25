@@ -14,8 +14,9 @@ function CourseCard({ coursesData, onDelete, onEdit,  isAdmin = true }){
         const menuRef = useRef(null);
         const menuButtonRef = useRef(null);
 
+// *************************************** Close Three Dots Menu **********************************
         useEffect(() => {
-  const handleOutsideClick = (event) => {
+        const handleOutsideClick = (event) => {
           if (
             menuRef.current?.contains(event.target) ||
             menuButtonRef.current?.contains(event.target)
@@ -26,11 +27,11 @@ function CourseCard({ coursesData, onDelete, onEdit,  isAdmin = true }){
           setShowMenu(false);
         };
 
-       document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("mousedown", handleOutsideClick);
 
-  return () => {
-    document.removeEventListener("mousedown", handleOutsideClick);
-  };
+      return () => {
+        document.removeEventListener("mousedown", handleOutsideClick);
+      };
 }, []);
 
  //****************************** Support both database prices and old courseData.js prices **************

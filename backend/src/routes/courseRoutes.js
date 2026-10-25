@@ -6,52 +6,25 @@ import upload from "../lib/upload.js";
 const router = express.Router();
 
 //************************************** Upload an image buffer to Cloudinary *****************
-const uploadToCloudinary = (file, folder) => {
-  return new Promise((resolve, reject) => {
-     const stream = cloudinary.uploader.upload_stream(
-        {
-          folder,
-          resource_type: "image",
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-    );
-         stream.end(file.buffer);
-  });
-};
+    const uploadToCloudinary = (file, folder) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            {
+              folder,
+              resource_type: "image",
+            },
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(result);
+              }
+            }
+        );
+            stream.end(file.buffer);
+      });
+    };
 
-// ==========================================
-// GET /api/courses
-//******************************** Fetch all courses with instructor details *********************
-// ==========================================
-// router.get("/", async (req, res) => {
-//   try {
-//     const courses = await prisma.course.findMany({
-//       include: {
-//         instructor: true,
-//       },
-//       orderBy: {
-//         createdAt: "desc",   // newest course first / asc => oldest course first
-//       },
-//     });
-
-//     return res.status(200).json({
-//       message: "Courses fetched successfully",
-//       courses,
-//     });
-//   } catch (error) {
-//     console.error("Fetch courses error:", error);
-
-//     return res.status(500).json({
-//       message: "Failed to fetch courses",
-//     });
-//   }
-// });
 
 //******************************** Fetch 6 courses/page for admin *********************
     router.get("/", async (req, res) => {
@@ -173,36 +146,36 @@ const uploadToCloudinary = (file, folder) => {
 
 
 //*************************************** */ GET /api/courses/stats ******************************/
-router.get("/stats", async (req, res) => {
-   try {
-        const [totalCourses, publishedCourses, draftCourses, upcomingCourses] =
-          await Promise.all([
-            prisma.course.count(),
-            prisma.course.count({
-              where: { status: "Published" },
-            }),
-            prisma.course.count({
-              where: { status: "Draft" },
-            }),
-            prisma.course.count({
-              where: { status: "Upcoming" },
-            }),
-          ]);
+    router.get("/stats", async (req, res) => {
+      try {
+            const [totalCourses, publishedCourses, draftCourses, upcomingCourses] =
+              await Promise.all([
+                prisma.course.count(),
+                prisma.course.count({
+                  where: { status: "Published" },
+                }),
+                prisma.course.count({
+                  where: { status: "Draft" },
+                }),
+                prisma.course.count({
+                  where: { status: "Upcoming" },
+                }),
+              ]);
 
-        return res.status(200).json({
-          totalCourses,
-          publishedCourses,
-          draftCourses,
-          upcomingCourses,
-        });
-      } catch (error) {
-        console.error("Fetch course statistics error:", error);
+            return res.status(200).json({
+              totalCourses,
+              publishedCourses,
+              draftCourses,
+              upcomingCourses,
+            });
+          } catch (error) {
+            console.error("Fetch course statistics error:", error);
 
-        return res.status(500).json({
-          message: "Failed to fetch course statistics",
-        });
-      }
-});
+            return res.status(500).json({
+              message: "Failed to fetch course statistics",
+            });
+          }
+    });
 
 //******************************** Fetch 6 courses/page for publicCourse page *********************
 
