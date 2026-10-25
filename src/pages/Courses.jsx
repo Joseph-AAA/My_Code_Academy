@@ -163,10 +163,10 @@ function Courses() {
         </div>
 
         {showAddCourse && (
-  <AddCourseModal
-    onClose={() => setShowAddCourse(false)}
-    onCreated={() => setRefreshKey((prev) => prev + 1)}
-  />
+        <AddCourseModal
+          onClose={() => setShowAddCourse(false)}
+          onCreated={() => setRefreshKey((prev) => prev + 1)}
+        />
 )}
     </div>
   );

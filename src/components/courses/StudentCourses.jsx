@@ -5,15 +5,17 @@ import { Code2 } from "lucide-react";
 import CourseCard from "../courses/CourseCard";
 import StudentCourseFilter from "../courses/StudentCourseFilter";
 import CourseDetailModal from "../dashboard/modals/CourseDetailModal";
+import Search_Sortbar from "../courses/Search_Sortbar";
+import CourseListView from "../courses/CourseListView";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const initialFilters = {
-  category: "",
-  level: "",
-  priceRange: "",
-  duration: "",
-};
+    const initialFilters = {
+      category: "",
+      level: "",
+      priceRange: "",
+      duration: "",
+    };
 
 function StudentCourses() {
   const [courses, setCourses] = useState([]);
@@ -27,12 +29,14 @@ function StudentCourses() {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      
       try {
         setLoading(true);
         setError("");
 
-        // Fetch published courses. The student page will filter
-        // the courses locally, without changing the admin page.
+//*********************** Fetch published courses. The student page will filter ******************
+//*********************** the courses locally, without changing the admin page. ******************
+        
         const response = await fetch(
           `${API_URL}/api/courses/public?page=1&limit=1000`
         );
@@ -44,11 +48,11 @@ function StudentCourses() {
         const data = await response.json();
 
         const normalizedCourses = (data.courses || []).map((course) => ({
-          ...course,
-          price: Number(course.price),
-          icon: course.icon || Code2,
-          color: course.color || "#DBEAFE",
-          students: course.students ?? 0,
+            ...course,
+            price: Number(course.price),
+            icon: course.icon || Code2,
+            color: course.color || "#DBEAFE",
+            students: course.students ?? 0,
         }));
 
         setCourses(normalizedCourses);
@@ -63,70 +67,137 @@ function StudentCourses() {
     fetchCourses();
   }, []);
 
-  const filteredCourses = courses.filter((course) => {
-    const { category, level, priceRange, duration } = appliedFilters;
-    const price = Number(course.price);
+    const [viewMode, setViewMode] = useState("grid");
+    const [sortBy, setSortBy] = useState("newest");
+    const [searchQuery, setSearchQuery] = useState("");
 
-    const matchesCategory =
-      !category || course.category === category;
 
-    const matchesLevel =
-      !level || course.level === level;
 
-    const matchesPrice =
-      !priceRange ||
-      (priceRange === "0-500" && price >= 0 && price <= 500) ||
-      (priceRange === "500-1000" && price > 500 && price <= 1000) ||
-      (priceRange === "1000+" && price > 1000);
 
-    // Supports durations stored as "8 weeks", "3 months", etc.
-    const durationText = String(course.duration || "").toLowerCase();
-    const durationNumber = Number(durationText.match(/\d+(\.\d+)?/)?.[0]);
-    const durationIsMonths = durationText.includes("month");
-    const durationInWeeks = durationIsMonths
-      ? durationNumber * 4.345
-      : durationNumber;
+// ********************************************* Filter Courses *********************************
+  
+const normalizedQuery = searchQuery.trim().toLowerCase();
 
-    const matchesDuration =
-      !duration ||
-      (duration === "under-4" && durationInWeeks < 4) ||
-      (duration === "4-8" && durationInWeeks >= 4 && durationInWeeks <= 8) ||
-      (duration === "9-12" && durationInWeeks >= 9 && durationInWeeks <= 12) ||
-      (duration === "over-12" && durationInWeeks > 12);
+// Filter courses using search and the existing student filters
+const filteredCourses = courses.filter((course) => {
+  const { category, level, priceRange, duration } = appliedFilters;
+  const price = Number(course.price);
 
-    return (
-      matchesCategory &&
-      matchesLevel &&
-      matchesPrice &&
-      matchesDuration
-    );
-  });
+  // Search by title, category, description, or instructor
+  const instructorName =
+    typeof course.instructor === "string"
+      ? course.instructor
+      : course.instructor?.name;
 
-  const COURSES_PER_PAGE = 6;
-  const filteredTotalPages = Math.ceil(
-    filteredCourses.length / COURSES_PER_PAGE
+  const searchableText = [
+    course.title,
+    course.category,
+    course.description,
+    instructorName,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  const matchesSearch =
+  !normalizedQuery ||
+  String(course.title || "")
+    .toLowerCase()
+    .includes(normalizedQuery);
+
+  const matchesCategory =
+    !category || course.category === category;
+
+  const matchesLevel =
+    !level || course.level === level;
+
+  const matchesPrice =
+    !priceRange ||
+    (priceRange === "0-500" && price >= 0 && price <= 500) ||
+    (priceRange === "500-1000" && price > 500 && price <= 1000) ||
+    (priceRange === "1000+" && price > 1000);
+
+  // Convert duration to weeks for comparison
+  const durationText = String(course.duration || "").toLowerCase();
+  const durationNumber = Number(
+    durationText.match(/\d+(\.\d+)?/)?.[0]
   );
 
-  const safeCurrentPage = Math.min(
-    currentPage,
-    Math.max(filteredTotalPages, 1)
+  const durationInWeeks = durationText.includes("month")
+    ? durationNumber * 4.345
+    : durationNumber;
+
+  const matchesDuration =
+    !duration ||
+    (duration === "under-4" && durationInWeeks < 4) ||
+    (duration === "4-8" &&
+      durationInWeeks >= 4 &&
+      durationInWeeks <= 8) ||
+    (duration === "9-12" &&
+      durationInWeeks >= 9 &&
+      durationInWeeks <= 12) ||
+    (duration === "over-12" && durationInWeeks > 12);
+
+  return (
+    matchesSearch &&
+    matchesCategory &&
+    matchesLevel &&
+    matchesPrice &&
+    matchesDuration
   );
+});
 
-  const visibleCourses = filteredCourses.slice(
-    (safeCurrentPage - 1) * COURSES_PER_PAGE,
-    safeCurrentPage * COURSES_PER_PAGE
-  );
+// Sort the matching courses
+      const sortedCourses = [...filteredCourses].sort((a, b) => {
+        switch (sortBy) {
+          case "newest":
+            return (
+              new Date(b.createdAt || 0).getTime() -
+              new Date(a.createdAt || 0).getTime()
+            );
 
-  const handleApply = () => {
-    setAppliedFilters(draftFilters);
-    setCurrentPage(1);
-  };
+          case "oldest":
+            return (
+              new Date(a.createdAt || 0).getTime() -
+              new Date(b.createdAt || 0).getTime()
+            );
 
-  const handleClear = () => {
-    setDraftFilters(initialFilters);
-    setAppliedFilters(initialFilters);
-    setCurrentPage(1);
-  };
+          case "price":
+            return Number(a.price) - Number(b.price);
+
+          default:
+            return 0;
+        }
+      });
+
+      // Pagination
+      const COURSES_PER_PAGE = 6;
+
+      const filteredTotalPages = Math.ceil(
+        sortedCourses.length / COURSES_PER_PAGE
+      );
+
+      const safeCurrentPage = Math.min(
+        currentPage,
+        Math.max(filteredTotalPages, 1)
+      );
+
+      const visibleCourses = sortedCourses.slice(
+        (safeCurrentPage - 1) * COURSES_PER_PAGE,
+        safeCurrentPage * COURSES_PER_PAGE
+      );
+
+
+    const handleApply = () => {
+      setAppliedFilters(draftFilters);
+      setCurrentPage(1);
+    };
+
+    const handleClear = () => {
+      setDraftFilters(initialFilters);
+      setAppliedFilters(initialFilters);
+      setCurrentPage(1);
+    };
 
   return (
     <section className="w-full min-w-0 p-5 sm:p-8">
@@ -139,6 +210,26 @@ function StudentCourses() {
         </p>
       </div>
 
+{/***************************************** Search_Sort Bar ****************************************** */}
+    
+      <Search_Sortbar
+        setViewMode={setViewMode}
+        viewMode={viewMode}
+        sortBy={sortBy}
+        setSortBy={(value) => {
+          setSortBy(value);
+          setCurrentPage(1);
+        }}
+        searchQuery={searchQuery}
+        setSearchQuery={(value) => {
+          setSearchQuery(value);
+          setCurrentPage(1);
+        }}
+      />
+
+    
+
+{/***************************************** Filter ****************************************** */}
       <div className="mb-8 rounded-xl border border-slate-200 bg-white p-5">
         <StudentCourseFilter
           draftFilters={draftFilters}
@@ -172,20 +263,33 @@ function StudentCourses() {
             Showing {visibleCourses.length} of {filteredCourses.length} courses
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {visibleCourses.map((course) => (
-              <div
-                key={course.id}
-                onClick={() => setSelectedCourse(course)}
-              >
-                <CourseCard
-                  coursesData={course}
-                  isAdmin={false}
-                />
-              </div>
-            ))}
-          </div>
 
+{viewMode === "list" ? (
+  <CourseListView
+    courses={visibleCourses}
+    onCourseClick={setSelectedCourse}
+  />
+) : (
+  <div className="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+    {visibleCourses.map((course) => (
+      <div
+        key={course.id}
+        className="w-full min-w-0 *:w-full! *:max-w-none!"
+        onClick={() => setSelectedCourse(course)}
+      >
+        <CourseCard
+          coursesData={course}
+          isAdmin={false}
+        />
+      </div>
+    ))}
+  </div>
+)}
+
+
+
+{/*********************************** Previous,Next and Page Numbers*******************************/}
+    
           {filteredTotalPages > 1 && (
             <nav
               aria-label="Course pagination"

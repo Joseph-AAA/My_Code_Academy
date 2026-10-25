@@ -49,73 +49,73 @@ function CoursesController({viewMode,sortBy,searchQuery,appliedFilters,refreshKe
 
   //*************************** Fetch courses from the Express backend *************************
           useEffect(() => {
-  const fetchCourses = async () => {
-    try {
-      setLoading(true);
-      setError("");
+          const fetchCourses = async () => {
+            try {
+              setLoading(true);
+              setError("");
 
-      const params = new URLSearchParams({
-        page: String(currentPage),
-        limit: String(COURSES_PER_PAGE),
-        sortBy,
-      });
+              const params = new URLSearchParams({
+                page: String(currentPage),
+                limit: String(COURSES_PER_PAGE),
+                sortBy,
+              });
 
-      if (searchQuery.trim()) {
-        params.set("search", searchQuery.trim());
-      }
+              if (searchQuery.trim()) {
+                params.set("search", searchQuery.trim());
+              }
 
-      if (appliedFilters.category) {
-        params.set("category", appliedFilters.category);
-      }
+              if (appliedFilters.category) {
+                params.set("category", appliedFilters.category);
+              }
 
-      if (appliedFilters.level) {
-        params.set("level", appliedFilters.level);
-      }
+              if (appliedFilters.level) {
+                params.set("level", appliedFilters.level);
+              }
 
-      if (appliedFilters.priceRange) {
-        params.set("priceRange", appliedFilters.priceRange);
-      }
+              if (appliedFilters.priceRange) {
+                params.set("priceRange", appliedFilters.priceRange);
+              }
 
-      if (appliedFilters.status) {
-        params.set("status", appliedFilters.status);
-      }
+              if (appliedFilters.status) {
+                params.set("status", appliedFilters.status);
+              }
 
-      const response = await fetch(
-        `${API_URL}/api/courses?${params.toString()}`
-      );
+              const response = await fetch(
+                `${API_URL}/api/courses?${params.toString()}`
+              );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch courses");
-      }
+              if (!response.ok) {
+                throw new Error("Failed to fetch courses");
+              }
 
-      const data = await response.json();
+              const data = await response.json();
 
-      const normalizedCourses = (data.courses || []).map((course) => ({
-        ...course,
-        price: Number(course.price),
-        icon: iconMap[course.icon] || Code2,
-        color: course.color || "#DBEAFE",
-      }));
+              const normalizedCourses = (data.courses || []).map((course) => ({
+                ...course,
+                price: Number(course.price),
+                icon: iconMap[course.icon] || Code2,
+                color: course.color || "#DBEAFE",
+              }));
 
-        setCourses(normalizedCourses);
-        setTotalPages(data.totalPages ?? 0);
-        setTotalCourses(data.totalCourses ?? 0);
-        } catch (err) {
-          console.error("Fetch courses error:", err);
-          setError("Unable to load courses. Please try again.");
-        } finally {
-          setLoading(false);
-        }
-      };
+                setCourses(normalizedCourses);
+                setTotalPages(data.totalPages ?? 0);
+                setTotalCourses(data.totalCourses ?? 0);
+                } catch (err) {
+                  console.error("Fetch courses error:", err);
+                  setError("Unable to load courses. Please try again.");
+                } finally {
+                  setLoading(false);
+                }
+              };
 
-  fetchCourses();
-}, [
-  currentPage,
-  refreshKey,
-  searchQuery,
-  sortBy,
-  appliedFilters,
-]);
+          fetchCourses();
+       }, [
+          currentPage,
+          refreshKey,
+          searchQuery,
+          sortBy,
+          appliedFilters,
+                  ]);
 
 
 useEffect(() => {

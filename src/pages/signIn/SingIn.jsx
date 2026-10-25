@@ -4,7 +4,7 @@ import "./SignIn.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import ForgotPassword from "./ForgotPassword";
+
 const SignIn = () => {
       const navigate = useNavigate();
       const [rememberMe, setRememberMe] = useState(false);

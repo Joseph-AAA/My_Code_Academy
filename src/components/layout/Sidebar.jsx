@@ -7,7 +7,7 @@ import { GraduationCap, X } from "lucide-react";
 import { NavLink,Link } from "react-router-dom";
 function Sidebar({sidebarOpen,setSidebarOpen}) {
 
-
+// ************************************* Read the logged-in user from either storage ********************************
     const storedUser =
       localStorage.getItem("user") ||
       sessionStorage.getItem("user");
