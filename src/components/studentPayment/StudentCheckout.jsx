@@ -1,16 +1,18 @@
 
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import {paymentMethods} from "../../data/data";
 import {
   ArrowLeft,
   BookOpen,
   CheckCircle2,
-  CreditCard,
+ 
   LockKeyhole,
-  Wallet,
-  Landmark,
+ 
+  
   ShieldCheck,
 } from "lucide-react";
+
 
 function StudentCheckout() {
   const navigate = useNavigate();
@@ -56,26 +58,7 @@ function StudentCheckout() {
     currency: "MYR",
   }).format(safePrice);
 
-  const paymentMethods = [
-    {
-      id: "fpx",
-      title: "Online Banking (FPX)",
-      description: "Pay securely through your bank",
-      icon: Landmark,
-    },
-    {
-      id: "ewallet",
-      title: "E-Wallet",
-      description: "For example, Touch 'n Go eWallet",
-      icon: Wallet,
-    },
-    {
-      id: "card",
-      title: "Debit or Credit Card",
-      description: "Pay using an eligible bank card",
-      icon: CreditCard,
-    },
-  ];
+
 
   const handleContinue = () => {
     // UI only. A real gateway integration is required before accepting payment.
@@ -86,14 +69,16 @@ function StudentCheckout() {
 
   return (
     <section className="min-w-0 w-full bg-slate-50 p-5 sm:p-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-8xl">
+
+ {/***************************************** Back to Course ****************************************/}
         <button
           type="button"
           onClick={() => navigate("/courses")}
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600"
+          className="cursor-pointer mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-blue-600"
         >
           <ArrowLeft size={18} />
-          Back to courses
+            Back to courses
         </button>
 
         <div className="mb-8">
@@ -110,8 +95,9 @@ function StudentCheckout() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.5fr_1fr]">
-          {/* Payment method section */}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.5fr_1fr]">
+
+{/************************************ Payment method section *************************************/}
           <div className="space-y-6">
             <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
               <div className="mb-5">
@@ -123,6 +109,7 @@ function StudentCheckout() {
                 </p>
               </div>
 
+{/* *************************************** Payment Method ************************************** */}
               <div className="space-y-3">
                 {paymentMethods.map((method) => {
                   const Icon = method.icon;
@@ -198,12 +185,13 @@ function StudentCheckout() {
             </div>
           </div>
 
-          {/* Order summary */}
+{/********************************************* Order summary ************************************/}
+
           <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
             <h2 className="text-xl font-bold text-slate-900">
               Order summary
             </h2>
-
+{/******************************************** Course Price *************************************/}
             <div className="mt-5 flex gap-4">
               {course.imageUrl ? (
                 <img
@@ -254,6 +242,7 @@ function StudentCheckout() {
 
             <div className="my-5 border-t border-slate-200" />
 
+{/*********************************************** Total *****************************************/}
             <div className="flex items-center justify-between gap-4">
               <span className="font-semibold text-slate-900">
                 Total
@@ -266,7 +255,7 @@ function StudentCheckout() {
             <button
               type="button"
               onClick={handleContinue}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white transition hover:bg-blue-700"
+              className="cursor-pointer mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white transition hover:bg-blue-700"
             >
               Continue to Payment
             </button>

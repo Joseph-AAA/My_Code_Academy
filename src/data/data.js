@@ -124,6 +124,7 @@ export const students = [
 
 /******************************************************Data for payments**********************************/
 
+
 export const payments = [
   // April
   {
@@ -256,7 +257,33 @@ export const payments = [
   },
 ];
 
+/******************************************************Data for Checkout**********************************/
+import {
+  Wallet,
+  Landmark,
+ 
+} from "lucide-react";
 
+ export const paymentMethods = [
+    {
+      id: "fpx",
+      title: "Online Banking (FPX)",
+      description: "Pay securely through your bank",
+      icon: Landmark,
+    },
+    {
+      id: "ewallet",
+      title: "E-Wallet",
+      description: "For example, Touch 'n Go eWallet",
+      icon: Wallet,
+    },
+    {
+      id: "card",
+      title: "Debit or Credit Card",
+      description: "Pay using an eligible bank card",
+      icon: CreditCard,
+    },
+  ];
 /******************************************************Data for dashborad**********************************/
 
 export const dashboardCards = [
