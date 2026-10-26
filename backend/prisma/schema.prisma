@@ -8,7 +8,6 @@ datasource db {
 
 //====================================== for User Aunthentication =======================================
 
-
 enum UserRole {
   ADMIN
   STUDENT
@@ -24,8 +23,64 @@ model User {
   resetPasswordTokenExpiry DateTime?
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
+
+  enrollments Enrollment[]
 }
 
+//=============================================== for checkout =====================================
+enum EnrollmentStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+model Enrollment {
+  id          String           @id @default(cuid())
+  userId      String
+  courseId    String
+  status      EnrollmentStatus @default(PENDING)
+  activatedAt DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  course   Course    @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  payments Payment[]
+
+  // One enrollment record per student per course.
+  @@unique([userId, courseId])
+  @@index([userId, status])
+  @@index([courseId, status])
+}
+
+model Payment {
+  id                        String        @id @default(cuid())
+  enrollmentId              String
+  amount                    Decimal       @db.Decimal(10, 2)
+  currency                  String        @default("MYR")
+  status                    PaymentStatus @default(PENDING)
+  provider                  String        @default("stripe")
+  paymentMethod             String?
+  idempotencyKey            String        @unique
+  providerCheckoutSessionId String?       @unique
+  providerPaymentIntentId   String?       @unique
+  paidAt                    DateTime?
+  failureReason             String?
+  createdAt                 DateTime      @default(now())
+  updatedAt                 DateTime      @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
+
+  @@index([enrollmentId, status])
+}
 
 //======================================For Courses Page =======================================
 //================== Instructor ==============
@@ -62,6 +117,7 @@ model Course {
   instructorId String?
   instructor   Instructor? @relation(fields: [instructorId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  enrollments Enrollment[]
 }
