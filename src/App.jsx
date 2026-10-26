@@ -19,7 +19,7 @@ import ResetPassword from "./pages/signIn/ResetPassword";
 import PublicLayout from "./components/layout/PublicLayout";
 import PublicCourses from "./components/courses/PublicCourses";
 import StudentCourses from "./components/courses/StudentCourses";
-
+import StudentCheckout from "./components/studentPayment/StudentCheckout";
 function RoleBasedCourses() {
     const storedUser =
       localStorage.getItem("user") ||
@@ -150,6 +150,14 @@ function App() {
                       }
                     />
 
+                      <Route
+                        path="/payment/checkout"
+                        element={
+                          <ProtectedRoute allowedRoles={["STUDENT"]}>
+                            <StudentCheckout />
+                          </ProtectedRoute>
+                        }
+                      />
                     <Route
                       path="/courses"
                       element={
