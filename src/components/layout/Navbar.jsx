@@ -11,16 +11,30 @@ function Navbar({ sidebarOpen, setSidebarOpen }) {
     
 const [user, setUser] = useState(() => {
   try {
-    return JSON.parse(sessionStorage.getItem("user") || "null");
+    const storedUser =
+      localStorage.getItem("user") ||
+      sessionStorage.getItem("user");
+
+    return storedUser ? JSON.parse(storedUser) : null;
   } catch {
     return null;
   }
 });
 
 useEffect(() => {
-  const token = sessionStorage.getItem("token");
+  // Check which storage contains the login token
+  const storage = localStorage.getItem("token")
+    ? localStorage
+    : sessionStorage;
 
-  if (!token) return;
+  const token = storage.getItem("token");
+
+  if (!token) {
+    setUser(null);
+    return;
+  }
+
+  let cancelled = false;
 
   const fetchProfile = async () => {
     try {
@@ -34,9 +48,15 @@ useEffect(() => {
       );
 
       if (response.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user");
-        navigate("/signin", { replace: true });
+
+        if (!cancelled) {
+          setUser(null);
+          navigate("/signin", { replace: true });
+        }
 
         return;
       }
@@ -47,24 +67,36 @@ useEffect(() => {
 
       const data = await response.json();
 
-      setUser(data.user);
-      sessionStorage.setItem("user", JSON.stringify(data.user));
+      if (!cancelled) {
+        setUser(data.user);
+        storage.setItem("user", JSON.stringify(data.user));
+      }
     } catch (error) {
-      console.error("Profile error:", error);
+      if (!cancelled) {
+        console.error("Profile error:", error);
+      }
     }
   };
 
   fetchProfile();
+
+  return () => {
+    cancelled = true;
+  };
 }, [navigate]);
 
 
 
+ const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    navigate("/", { replace: true });
-  };
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
+
+  setUser(null);
+  navigate("/", { replace: true });
+};
 
 
   
