@@ -20,6 +20,9 @@ import PublicLayout from "./components/layout/PublicLayout";
 import PublicCourses from "./components/courses/PublicCourses";
 import StudentCourses from "./components/courses/StudentCourses";
 import StudentCheckout from "./components/studentPayment/StudentCheckout";
+import MyEnrollments from "./pages/MyEnrollments";
+import StudentCourseLearning from "./components/students/StudentCourseLearning";
+
 function RoleBasedCourses() {
     const storedUser =
       localStorage.getItem("user") ||
@@ -158,6 +161,24 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
+
+                      <Route
+                          path="/my-enrollments"
+                          element={
+                            <ProtectedRoute allowedRoles={["STUDENT"]}>
+                              <MyEnrollments />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
+                          path="/my-enrollments/:courseId"
+                          element={
+                            <ProtectedRoute allowedRoles={["STUDENT"]}>
+                              <StudentCourseLearning />
+                            </ProtectedRoute>
+                          }
+                        />
+
                     <Route
                       path="/courses"
                       element={
