@@ -95,7 +95,7 @@ model Instructor {
   updatedAt DateTime @updatedAt
 }
 
-//================== Course ==============
+//========================================== Course ==============
 
 model Course {
   id          String  @id @default(cuid())

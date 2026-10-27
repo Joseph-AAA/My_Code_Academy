@@ -1,7 +1,9 @@
 
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+
 import {paymentMethods} from "../../data/data";
+import { useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import {
   ArrowLeft,
   BookOpen,
@@ -18,6 +20,10 @@ function StudentCheckout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  const [isProcessing, setIsProcessing] = useState(false);
+  const idempotencyKeyRef = useRef(null); 
   // The course is passed from CourseDetailModal through route state.
   const course = location.state?.course;
 
@@ -60,12 +66,92 @@ function StudentCheckout() {
 
 
 
-  const handleContinue = () => {
-    // UI only. A real gateway integration is required before accepting payment.
-    setNotice(
-      "Payment is not connected yet. No payment has been made. A secure payment gateway will be integrated in the next step."
+
+const handleContinue = async () => {
+  if (isProcessing) return;
+
+  const token =
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token");
+
+  if (!token) {
+    navigate("/signin");
+    return;
+  }
+
+  if (!course?.id) {
+    setNotice("Please select a valid course.");
+    return;
+  }
+
+  if (!API_URL) {
+    setNotice("The API URL is not configured.");
+    return;
+  }
+
+  // Reuse the key when retrying this same request.
+  if (!idempotencyKeyRef.current) {
+    idempotencyKeyRef.current = crypto.randomUUID();
+  }
+
+  setIsProcessing(true);
+  setNotice("");
+
+  try {
+    const response = await fetch(
+      `${API_URL}/api/payments/checkout-session`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "Idempotency-Key": idempotencyKeyRef.current,
+        },
+        body: JSON.stringify({
+          courseId: course.id,
+        }),
+      }
     );
-  };
+
+   const data = await response.json();
+
+// Handle an invalid or expired token
+if (response.status === 401) {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
+
+  navigate("/signin", { replace: true });
+  return;
+}
+
+// Handle other API errors
+if (!response.ok) {
+  throw new Error(
+    data.message || "Unable to start checkout."
+  );
+}
+
+if (!data.checkoutUrl) {
+  throw new Error(
+    "The payment provider returned no checkout URL."
+  );
+}
+
+// Redirect to Stripe Checkout
+window.location.assign(data.checkoutUrl);
+  } catch (error) {
+    console.error("Checkout error:", error);
+    setNotice(
+      error.message || "Unable to connect to the payment server."
+    );
+  } finally {
+    setIsProcessing(false);
+  }
+};
+
 
   return (
     <section className="min-w-0 w-full bg-slate-50 p-5 sm:p-8">
@@ -252,13 +338,16 @@ function StudentCheckout() {
               </span>
             </div>
 
-            <button
-              type="button"
-              onClick={handleContinue}
-              className="cursor-pointer mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white transition hover:bg-blue-700"
-            >
-              Continue to Payment
-            </button>
+            
+          <button
+            type="button"
+            onClick={handleContinue}
+            disabled={isProcessing}
+            className="cursor-pointer mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+               {isProcessing ? "Preparing Checkout..." : "Continue to Payment"}
+          </button>
+
 
             {notice && (
               <p

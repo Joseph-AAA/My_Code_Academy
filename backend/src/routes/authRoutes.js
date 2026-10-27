@@ -294,7 +294,7 @@ router.post("/login", async (req, res) => {
     }
 
     // 5. Generate a JWT
-    const expiresIn = rememberMe ? "15min" : "3min";  //15min for lacal - 1min for seesion
+    const expiresIn = rememberMe ? "1hr" : "3min";  //15min for lacal - 1min for seesion
     
     const token = jwt.sign(
       { userId: user.id ,
