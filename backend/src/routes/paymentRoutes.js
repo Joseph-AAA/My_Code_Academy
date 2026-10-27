@@ -6,6 +6,56 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+
+
+router.get("/checkout-status", authMiddleware, async (req, res) => {
+  try {
+    const sessionId = String(req.query.session_id || "").trim();
+    const userId = String(
+      req.user.userId ?? req.user.id ?? req.user.sub ?? ""
+    );
+
+    if (!sessionId) {
+      return res.status(400).json({
+        message: "Checkout session ID is required.",
+      });
+    }
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Please sign in again.",
+      });
+    }
+
+    const payment = await prisma.payment.findUnique({
+      where: {
+        providerCheckoutSessionId: sessionId,
+      },
+      include: {
+        enrollment: true,
+      },
+    });
+
+    if (!payment || payment.enrollment.userId !== userId) {
+      return res.status(404).json({
+        message: "Checkout session not found.",
+      });
+    }
+
+    return res.status(200).json({
+      paymentStatus: payment.status,
+      enrollmentStatus: payment.enrollment.status,
+      courseId: payment.enrollment.courseId,
+    });
+  } catch (error) {
+    console.error("Checkout status error:", error);
+
+    return res.status(500).json({
+      message: "Failed to check checkout status.",
+    });
+  }
+});
+
 router.post("/checkout-session", authMiddleware, async (req, res) => {
   try {
     const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -288,8 +338,7 @@ router.post("/checkout-session", authMiddleware, async (req, res) => {
         metadata,
         payment_intent_data: { metadata },
 
-        success_url:
-          `${frontendUrl}/courses?checkout=return&session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${frontendUrl}/my-enrollments?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
 
         cancel_url:
           `${frontendUrl}/courses?checkout=cancelled`,

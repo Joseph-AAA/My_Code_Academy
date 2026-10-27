@@ -6,9 +6,10 @@ import {
   Clock3,
   BookOpen,
   Code2,
+  ArrowRight,
 } from "lucide-react";
 import { getCourseBackground } from "../../components/courses/CourseColor";
-function CourseCard({ coursesData, onDelete, onEdit,  isAdmin = true }){
+function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onAction, }){
 
         const [showMenu, setShowMenu] = useState(false);
         const menuRef = useRef(null);
@@ -59,97 +60,97 @@ function CourseCard({ coursesData, onDelete, onEdit,  isAdmin = true }){
                       hover:border-blue-200">
 
 {/******************************************  Image / Header *****************************************/}
-  <div
-    style={{
-      backgroundColor: getCourseBackground(coursesData.color),
-    }}
-    className="relative flex h-32 items-center justify-center overflow-visible rounded-t-2xl"
-  >
+                    <div
+                          style={{
+                            backgroundColor: getCourseBackground(coursesData.color),
+                          }}
+                          className="relative flex h-32 items-center justify-center overflow-visible rounded-t-2xl"
+                        >
 
-{/************************************ Course image or fallback icon ********************************/}
-        {coursesData.imageUrl ? (
-          <img
-              src={coursesData.imageUrl}
-              alt={coursesData.title}
-              className="h-25 w-25 rounded-xl object-contain"
-          />
-        ) : typeof coursesData.icon === "string" ? (
-          <img
-              src={coursesData.icon}
-              alt={coursesData.title}
-              className="h-25 w-25 object-contain"
-          />
-        ) : (
-          (() => {
-            const Icon = coursesData.icon || Code2;
+        {/************************************ Course image or fallback icon ********************************/}
+                        {coursesData.imageUrl ? (
+                          <img
+                              src={coursesData.imageUrl}
+                              alt={coursesData.title}
+                              className="h-25 w-25 rounded-xl object-contain"
+                          />
+                        ) : typeof coursesData.icon === "string" ? (
+                          <img
+                              src={coursesData.icon}
+                              alt={coursesData.title}
+                              className="h-25 w-25 object-contain"
+                          />
+                        ) : (
+                          (() => {
+                            const Icon = coursesData.icon || Code2;
 
-            return (
-              <Icon
-                  size={48}
-                  strokeWidth={1.5}
-                  className={coursesData.textColor}
-                  aria-hidden="true"
-              />
-            );
-          })()
-        )}
+                            return (
+                              <Icon
+                                  size={48}
+                                  strokeWidth={1.5}
+                                  className={coursesData.textColor}
+                                  aria-hidden="true"
+                              />
+                            );
+                          })()
+                        )}
 
-{/************************************************ Three-dot button *********************************/}
-        {
-          isAdmin && (
-              <button
-                ref={menuButtonRef}
-                type="button"
-                aria-label="Course options"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowMenu((prev) => !prev);
-                
-                }}
-                className="absolute right-3 top-3 z-10 cursor-pointer rounded-full bg-white/80 p-1 text-gray-700 shadow-sm transition hover:bg-white"
-                >
-                <MoreVertical size={22} />
-            </button>
-          )
-        }
-       
+        {/************************************************ Three-dot button *********************************/}
+                            {
+                              isAdmin && (
+                                  <button
+                                    ref={menuButtonRef}
+                                    type="button"
+                                    aria-label="Course options"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setShowMenu((prev) => !prev);
+                                    
+                                    }}
+                                    className="absolute right-3 top-3 z-10 cursor-pointer rounded-full bg-white/80 p-1 text-gray-700 shadow-sm transition hover:bg-white"
+                                    >
+                                    <MoreVertical size={22} />
+                                </button>
+                              )
+                            }
+              
 
-{/**************************************************** Dropdown *************************************/}
-        {showMenu && (
-          <div
-            ref={menuRef}
-            className="absolute right-3 top-12 z-70 w-48 rounded-xl bg-white py-2 shadow-xl"
-          >
-{/************************************************** Edit*********************************************/}
-                  <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowMenu(false);
-                        onEdit(coursesData);
-                      }}
-                      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-100"
-                    >
-                      <Pencil size={18} />
-                      <span>Edit</span>
-                  </button>
+        {/**************************************************** Dropdown *************************************/}
+                          {showMenu && (
+                            <div
+                              ref={menuRef}
+                              className="absolute right-3 top-12 z-70 w-48 rounded-xl bg-white py-2 shadow-xl"
+                            >
+                  {/************************************************** Edit*********************************************/}
+                                    <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setShowMenu(false);
+                                          onEdit(coursesData);
+                                        }}
+                                        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-100"
+                                      >
+                                        <Pencil size={18} />
+                                        <span>Edit</span>
+                                    </button>
 
-{/********************************************* Delete Button***************************************/}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowMenu(false);
-                      onDelete(coursesData);
-                    }}
-                    className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50"
-                  >
-                      <Trash2 size={18} />
-                      <span>Delete</span>
-                  </button>
-            </div>
-        )}
-  </div>
+                  {/********************************************* Delete Button***************************************/}
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowMenu(false);
+                                        onDelete(coursesData);
+                                      }}
+                                      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50"
+                                    >
+                                        <Trash2 size={18} />
+                                        <span>Delete</span>
+                                    </button>
+                              </div>
+                          )}
+                    </div>
 
 
 {/******************************************************************* Course information ************************************************************/}
@@ -201,6 +202,19 @@ function CourseCard({ coursesData, onDelete, onEdit,  isAdmin = true }){
                                             <span>{coursesData.students} students</span>
                                         </div>
                         </div>
+                        {actionLabel && onAction && (
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              onAction(coursesData);
+                            }}
+                            className="cursor-pointer mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                          >
+                            {actionLabel}
+                            <ArrowRight size={16} />
+                          </button>
+                        )}
                 </div>
         </div>
     )
