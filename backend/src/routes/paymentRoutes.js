@@ -7,6 +7,116 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 
+router.get("/my", authMiddleware, async (req, res) => {
+  try {
+    // Only students can access their personal payment history.
+    if (req.user.role !== "STUDENT") {
+      return res.status(403).json({
+        message: "Only students can view their payment history.",
+      });
+    }
+
+    // Get the logged-in student's ID from the JWT.
+    const userId = String(
+      req.user.userId ?? req.user.id ?? req.user.sub ?? ""
+    );
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "User not authenticated.",
+      });
+    }
+
+    // Pagination: 10 transactions per page by default.
+    const page = Math.max(
+      1,
+      Number.parseInt(req.query.page, 10) || 1
+    );
+
+    const limit = Math.min(
+      10,
+      Math.max(1, Number.parseInt(req.query.limit, 10) || 10)
+    );
+
+    // Only retrieve payments belonging to this student.
+    const where = {
+      enrollment: {
+        is: { userId },
+      },
+    };
+
+    // Get this page of transactions and the overall summary.
+    const [payments, totalPayments, successfulSummary] =
+      await Promise.all([
+        prisma.payment.findMany({
+          where,
+          include: {
+            enrollment: {
+              include: {
+                course: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+
+        prisma.payment.count({ where }),
+
+        prisma.payment.aggregate({
+          where: {
+            ...where,
+            status: "SUCCEEDED",
+          },
+          _sum: {
+            amount: true,
+          },
+          _count: {
+            _all: true,
+          },
+        }),
+      ]);
+
+    return res.status(200).json({
+      payments: payments.map((payment) => ({
+        id: payment.id,
+        amount: Number(payment.amount),
+        currency: payment.currency,
+        status: payment.status,
+        paidAt: payment.paidAt,
+        createdAt: payment.createdAt,
+        providerPaymentIntentId:
+          payment.providerPaymentIntentId,
+        course: payment.enrollment.course,
+      })),
+
+      summary: {
+        totalSpent: Number(
+          successfulSummary._sum.amount ?? 0
+        ),
+        successfulPayments:
+          successfulSummary._count._all,
+      },
+
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalPayments / limit),
+        totalPayments,
+        limit,
+      },
+    });
+  } catch (error) {
+    console.error("Get student payments error:", error);
+
+    return res.status(500).json({
+      message: "Failed to retrieve payment history.",
+    });
+  }
+});
+
 
 router.get("/checkout-status", authMiddleware, async (req, res) => {
   try {
@@ -339,7 +449,7 @@ router.post("/checkout-session", authMiddleware, async (req, res) => {
         payment_intent_data: { metadata },
 
         success_url: `${frontendUrl}/my-enrollments?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
-
+        
         cancel_url:
           `${frontendUrl}/courses?checkout=cancelled`,
       },

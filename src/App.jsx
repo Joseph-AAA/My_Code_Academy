@@ -22,6 +22,7 @@ import StudentCourses from "./components/courses/StudentCourses";
 import StudentCheckout from "./components/studentPayment/StudentCheckout";
 import MyEnrollments from "./pages/MyEnrollments";
 import StudentCourseLearning from "./components/students/StudentCourseLearning";
+import StudentPayments from "./components/studentPayment/StudentPayments";
 
 function RoleBasedCourses() {
     const storedUser =
@@ -54,7 +55,29 @@ function RoleBasedCourses() {
     return null;
 }
 
+function RoleBasedPayments() {
+  const storedUser =
+    localStorage.getItem("user") ||
+    sessionStorage.getItem("user");
 
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch {
+    user = null;
+  }
+
+  if (user?.role === "STUDENT") {
+    return <StudentPayments />;
+  }
+
+  if (user?.role === "ADMIN") {
+    return <Payments />;
+  }
+
+  return null;
+}
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -189,14 +212,14 @@ function App() {
                     />
 
                     {/* Shared pages */}
-                    <Route
-                      path="/payments"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-                          <Payments />
-                        </ProtectedRoute>
-                      }
-                    />
+                  <Route
+                    path="/payments"
+                    element={
+                      <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                        <RoleBasedPayments />
+                      </ProtectedRoute>
+                    }
+                  />
 
                     <Route
                       path="/setting"
