@@ -1,345 +1,222 @@
-import { useMemo, useState } from "react";
-import { students as studentData } from "../data/students";
+import { useEffect, useState } from "react";
+import StudentStatsCard from "../components/students/StudentStatsCard";
+import StudentsTable from "../components/students/StudentsTable";
+import StudentDetailsModal from "../components/students/StudentDetailsModal";
 
-import StudentForm from "../components/students/StudentForm";
-import StudentTable from "../components/students/StudentTable";
-import StudentDetails from "./StudentDetails";
 
-function Students() {
-  const [students, setStudents] = useState(studentData);
-  const [search, setSearch] = useState("");
-  const [courseFilter, setCourseFilter] = useState("All Courses");
-  const [statusFilter, setStatusFilter] = useState("All Status");
-  const [showForm, setShowForm] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
-  const [viewingStudent, setViewingStudent] = useState(null);
-  const courseNames = {
-    1: "Web Development",
-    2: "Data Science",
-    3: "UI/UX Design",
-    4: "JavaScript",
-    5: "Python",
-    6: "React",
-  };
-  const handleAddStudent = (newStudent) => {
-    setStudents((currentStudents) => {
-      const nextId =
-        currentStudents.length > 0
-          ? Math.max(
-              ...currentStudents.map((student) => Number(student.id))
-            ) + 1
-          : 1;
+const API_URL = import.meta.env.VITE_API_URL;
 
-      const studentToAdd = {
-        ...newStudent,
-        id: nextId,
-        status: "Active",
-      };
+const initialPagination = {
+  currentPage: 1,
+  totalPages: 1,
+  totalRecords: 0,
+  limit: 10,
+};
 
-      return [...currentStudents, studentToAdd];
-    });
-  };
-  const handleViewStudent = (student) => {
-    setViewingStudent(student);
-  };
-  const handleEditStudent = (student) => {
-    setEditingStudent(student);
-    setShowForm(true);
-    setViewingStudent(null);
-  };
-  const handleUpdateStudent = (updatedStudent) => {
-    setStudents((currentStudents) =>
-      currentStudents.map((student) =>
-        student.id === updatedStudent.id
-          ? {
-              ...updatedStudent,
-              status: student.status || "Active",
-            }
-          : student
-      )
-    );
-    setViewingStudent(updatedStudent);
-    setEditingStudent(null);
-    setShowForm(false);
-  };
-  const handleDeleteStudent = (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this student?"
-    );
-    if (!confirmDelete) {
-      return;
-    }
-    setStudents((currentStudents) =>
-      currentStudents.filter((student) => student.id !== id)
-    );
-    if (viewingStudent?.id === id) {
-      setViewingStudent(null);
-    }
-    if (editingStudent?.id === id) {
-      setEditingStudent(null);
-      setShowForm(false);
-    }
-  };
-  const handleCloseForm = () => {
-    setShowForm(false);
-    setEditingStudent(null);
-  };
-  const getCourseName = (courseId) => {
-    return courseNames[courseId] || `Course ${courseId}`;
-  };
-  const courseOptions = [
-    "All Courses",
-    ...Array.from(
-      new Set(
-        students.map((student) => getCourseName(student.courseId))
-      )
-    ),
-  ];
-  const filteredStudents = useMemo(() => {
-    return students.filter((student) => {
-      const searchText = search.toLowerCase();
-
-      const matchesSearch =
-        student.name?.toLowerCase().includes(searchText) ||
-        student.email?.toLowerCase().includes(searchText) ||
-        String(student.id).toLowerCase().includes(searchText);
-
-      const matchesCourse =
-        courseFilter === "All Courses" ||
-        getCourseName(student.courseId) === courseFilter;
-
-      const studentStatus = student.status || "Active";
-
-      const matchesStatus =
-        statusFilter === "All Status" ||
-        studentStatus === statusFilter;
-
-      return matchesSearch && matchesCourse && matchesStatus;
-    });
-  }, [students, search, courseFilter, statusFilter]);
-
-  const totalStudents = students.length;
-  const activeCourses = new Set(
-    students.map((student) => student.courseId)
-  ).size;
-  const pendingPayments = students.filter(
-    (student) =>
-      student.paymentStatus === "Pending" ||
-      student.paymentStatus === "Partial"
-  ).length;
-  const newThisMonth = students.filter((student) => {
-    if (!student.enrollmentDate) {
-      return false;
-    }
-
-    const enrollmentDate = new Date(student.enrollmentDate);
-    const now = new Date();
-
-    return (
-      enrollmentDate.getMonth() === now.getMonth() &&
-      enrollmentDate.getFullYear() === now.getFullYear()
-    );
-  }).length;
+function getToken() {
   return (
-    <div className="w-full bg-slate-50 mb-5">
-
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">
-              Students
-            </h1>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Manage and view all registered students
-            </p>
-          </div>
-
-          <button
-            onClick={() => {
-              setEditingStudent(null);
-              setShowForm(true);
-              setViewingStudent(null);
-            }}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
-          >
-            <span className="text-lg">+</span>
-            Add Student
-          </button>
-        </div>
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl">
-                👥
-              </div>
-
-              <div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {totalStudents}
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  Total Students
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-2xl">
-                🎓
-              </div>
-
-              <div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {activeCourses}
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  Active Courses
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-2xl">
-                👤
-              </div>
-
-              <div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {newThisMonth}
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  New This Month
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">
-                ⚠️
-              </div>
-
-              <div>
-                <p className="text-2xl font-bold text-slate-900">
-                  {pendingPayments}
-                </p>
-
-                <p className="text-sm text-slate-500">
-                  Pending Payments
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        {showForm && (
-          <StudentForm
-            onAddStudent={handleAddStudent}
-            onUpdateStudent={handleUpdateStudent}
-            onClose={handleCloseForm}
-            editingStudent={editingStudent}
-          />
-        )}
-        <div
-          className={`grid grid-cols-1 gap-6 ${
-            viewingStudent
-              ? "xl:grid-cols-[minmax(0,1fr)_360px]"
-              : ""
-          }`}
-        >
-          <div className="min-w-0">
-            <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
-
-                {/* Search */}
-                <div className="relative md:col-span-2">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                    🔍
-                  </span>
-
-                  <input
-                    type="text"
-                    placeholder="Search by name, email or student ID..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                  />
-                </div>
-                <select
-                  value={courseFilter}
-                  onChange={(e) => setCourseFilter(e.target.value)}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                >
-                  {courseOptions.map((course) => (
-                    <option key={course} value={course}>
-                      {course}
-                    </option>
-                  ))}
-                </select>
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-600 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-                >
-                  <option value="All Status">All Status</option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
-
-              <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
-                <span>
-                  Showing {filteredStudents.length} of{" "}
-                  {students.length} students
-                </span>
-                {(search ||
-                  courseFilter !== "All Courses" ||
-                  statusFilter !== "All Status") && (
-                  <button
-                    onClick={() => {
-                      setSearch("");
-                      setCourseFilter("All Courses");
-                      setStatusFilter("All Status");
-                    }}
-                    className="font-medium text-indigo-600 hover:text-indigo-700"
-                  >
-                    Clear filters
-                  </button>
-                )}
-
-              </div>
-            </div>
-            <StudentTable
-              students={filteredStudents}
-              onView={handleViewStudent}
-              onEdit={handleEditStudent}
-              onDelete={handleDeleteStudent}
-              getCourseName={getCourseName}
-            />
-
-          </div>
-          {viewingStudent && (
-            <div className="xl:sticky xl:top-6 xl:self-start">
-              <StudentDetails
-                student={viewingStudent}
-                onClose={() => setViewingStudent(null)}
-                onEdit={handleEditStudent}
-                onDelete={handleDeleteStudent}
-                getCourseName={getCourseName}
-              />
-            </div>
-          )}
-
-        </div>
-    </div>
+    localStorage.getItem("token") ||
+    sessionStorage.getItem("token")
   );
 }
 
-export default Students;
+async function readResponse(response) {
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || "The request could not be completed."
+    );
+  }
+
+  return data;
+}
+
+export default function Students() {
+  const [students, setStudents] = useState([]);
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    activeLearners: 0,
+    newThisMonth: 0,
+  });
+
+  const [pagination, setPagination] = useState(initialPagination);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState("");
+
+  // Fetch student list and summary statistics.
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const token = getToken();
+
+        if (!token) {
+          throw new Error("Please sign in again.");
+        }
+
+        const params = new URLSearchParams({
+          page: String(pagination.currentPage),
+          limit: String(pagination.limit),
+          search: search.trim(),
+        });
+
+        const response = await fetch(
+          `${API_URL}/api/students?${params.toString()}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            signal: controller.signal,
+          }
+        );
+
+        const data = await readResponse(response);
+
+        setStudents(data.students || []);
+        setStats(
+          data.stats || {
+            totalStudents: 0,
+            activeLearners: 0,
+            newThisMonth: 0,
+          }
+        );
+        setPagination(data.pagination || initialPagination);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setError(err.message || "Failed to load students.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [search, pagination.currentPage, pagination.limit, retryCount]);
+
+  // Fetch the full details when the admin opens a student.
+  useEffect(() => {
+    if (!selectedStudentId) return;
+
+    const controller = new AbortController();
+
+    async function loadStudentDetails() {
+      setDetailLoading(true);
+      setDetailError("");
+      setSelectedStudent(null);
+
+      try {
+        const token = getToken();
+
+        if (!token) {
+          throw new Error("Please sign in again.");
+        }
+
+        const response = await fetch(
+          `${API_URL}/api/students/${encodeURIComponent(selectedStudentId)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            signal: controller.signal,
+          }
+        );
+
+        const data = await readResponse(response);
+        setSelectedStudent(data.student);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          setDetailError(
+            err.message || "Failed to load student details."
+          );
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setDetailLoading(false);
+        }
+      }
+    }
+
+    loadStudentDetails();
+
+    return () => controller.abort();
+  }, [selectedStudentId]);
+
+  function handleSearchChange(value) {
+    setSearch(value);
+
+    // Reset to the first page for a new search.
+    setPagination((current) => ({
+      ...current,
+      currentPage: 1,
+    }));
+  }
+
+  function handlePageChange(nextPage) {
+    setPagination((current) => ({
+      ...current,
+      currentPage: nextPage,
+    }));
+  }
+
+  function handleCloseDetails() {
+    setSelectedStudentId(null);
+    setSelectedStudent(null);
+    setDetailError("");
+  }
+
+  return (
+    <div className="mx-auto w-full max-w-8xl space-y-7 p-6 lg:p-8">
+        <header>
+          <h1 className="text-2xl font-bold text-gray-800 sm:text-3xl">
+            Students
+          </h1>
+
+          <p className="mt-2 text-sm text-gray-500 sm:text-base">
+            Manage student accounts and review their learning activity.
+          </p>
+        </header>
+
+        <StudentStatsCard stats={stats} loading={loading} />
+
+        <StudentsTable
+          students={students}
+          loading={loading}
+          search={search}
+          onSearchChange={handleSearchChange}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+          onViewDetails={(studentId) => {
+            setDetailError("");
+            setSelectedStudentId(studentId);
+          }}
+          error={error}
+          onRetry={() => setRetryCount((count) => count + 1)}
+        />
+
+        <StudentDetailsModal
+          isOpen={Boolean(selectedStudentId)}
+          student={selectedStudent}
+          loading={detailLoading}
+          error={detailError}
+          onClose={handleCloseDetails}
+        />
+    </div>
+  );
+}
