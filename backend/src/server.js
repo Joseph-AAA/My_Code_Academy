@@ -8,6 +8,7 @@ import stripeWebhookRoutes from "./routes/stripeWebhookRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import studentSettingRoutes from "./routes/studentSettingRoutes.js";
 import studentRoutes from "./routes/stuedentRoutes.js";
+import adminPaymentRoutes from "./routes/adminPaymentRoutes.js";
 
 const app = express();  
 const PORT = process.env.PORT || 5000;
@@ -22,7 +23,7 @@ app.use("/api/payments", stripeWebhookRoutes);
 app.use(express.json());         //convert to JSON incoming obj data from frontend
 
 
-
+app.use("/api/payments", adminPaymentRoutes);
 app.use("/api/auth", authRoutes); //
 app.use("/api", emailRoutes);
 app.use("/api/courses", courseRoutes);
