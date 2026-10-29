@@ -84,13 +84,13 @@ function CourseDetailModal({ selectedCourse, onClose }) {
             style={{
               backgroundColor: getCourseBackground(selectedCourse.color),
             }}
-            className="flex h-36 w-36 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
+            className="flex h-20 w-20 md:h-36 md:w-36 shrink-0 items-center justify-center overflow-hidden rounded-2xl"
           >
             {selectedCourse.imageUrl ? (
               <img
                 src={selectedCourse.imageUrl}
                 alt={selectedCourse.title}
-                className="h-25 w-25 rounded-xl object-contain"
+                className="h-15 w-15 md:h-25 md:w-25 rounded-xl object-contain"
               />
             ) : typeof selectedCourse.icon === "string" ? (
               <img

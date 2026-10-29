@@ -23,7 +23,7 @@ function PublicNavbar() {
           <NavLink
             to="/public/courses"
             className={({ isActive }) =>
-              `font-medium ${
+              `font-medium hidden sm:flex ${
                 isActive
                   ? "text-blue-600"
                   : "text-gray-600 hover:text-blue-600 hover:cursor-pointer"
