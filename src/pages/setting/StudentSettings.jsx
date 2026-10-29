@@ -23,6 +23,65 @@ function getStoredUser() {
   }
 }
 
+async function compressProfileImage(file) {
+  const image = new Image();
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    image.src = objectUrl;
+
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
+    });
+
+    const maxSize = 500;
+    const scale = Math.min(
+      maxSize / image.width,
+      maxSize / image.height,
+      1
+    );
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(image.width * scale);
+    canvas.height = Math.round(image.height * scale);
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      throw new Error("Unable to process this image.");
+    }
+
+    context.drawImage(
+      image,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    return await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(
+              new File([blob], "profile.jpg", {
+                type: "image/jpeg",
+              })
+            );
+          } else {
+            reject(new Error("Image compression failed."));
+          }
+        },
+        "image/jpeg",
+        0.8
+      );
+    });
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 export default function StudentSettings({
   accountLabel = "Student Account",
 }) {
@@ -261,8 +320,10 @@ async function handlePhotoUpload(event) {
   setIsSaving(true);
 
   try {
+    const compressedFile = await compressProfileImage(file);
+
     const formData = new FormData();
-    formData.append("profileImage", file);
+    formData.append("profileImage", compressedFile);
 
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/api/settings/profile/photo`,
