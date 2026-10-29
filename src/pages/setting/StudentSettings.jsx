@@ -23,7 +23,9 @@ function getStoredUser() {
   }
 }
 
-export default function StudentSettings() {
+export default function StudentSettings({
+  accountLabel = "Student Account",
+}) {
   const [user, setUser] = useState(getStoredUser);
   const initialName = user?.name || user?.fullName || "";
   const [name, setName] = useState(initialName);
@@ -461,7 +463,7 @@ async function handleChangePassword(event) {
         {name || "Student"}
       </h2>
 
-      <p className="text-sm text-gray-500">Student Account</p>
+      <p className="text-sm text-gray-500">{accountLabel}</p>
 
       <div className="mt-3 flex flex-wrap gap-2">
         <label className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${

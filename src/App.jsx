@@ -6,7 +6,7 @@ import MainDashboard from "./pages/MainDashboard";
 import Courses from "./pages/Courses";
 import Students from "./pages/Students";
 import Payments from "./pages/Payments";
-import Setting from "./pages/Setting";
+import Setting from "./pages/Setting";  //for admin
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import { useState } from "react";

@@ -128,9 +128,9 @@ router.post(
         });
       }
 
-      if (req.user?.role !== "STUDENT") {
+     if (!["ADMIN", "STUDENT"].includes(req.user?.role)) {
         return res.status(403).json({
-          message: "Only students can update their profile photo.",
+          message: "You are not allowed to update this profile photo.",
         });
       }
 
@@ -265,11 +265,11 @@ router.delete("/profile/photo", authMiddleware, async (req, res) => {
       });
     }
 
-    if (req.user?.role !== "STUDENT") {
-      return res.status(403).json({
-        message: "Only students can remove their profile photo.",
-      });
-    }
+    if (!["ADMIN", "STUDENT"].includes(req.user?.role)) {
+        return res.status(403).json({
+          message: "You are not allowed to update this profile photo.",
+        });
+      }
 
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
