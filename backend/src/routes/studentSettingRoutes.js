@@ -82,16 +82,17 @@ router.patch("/profile", authMiddleware, async (req, res) => {
       });
     }
 
-    const user = await prisma.user.update({
-      where: { id: userId },
-      data: { name: trimmedName },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
-    });
+   const user = await prisma.user.update({
+    where: { id: userId },
+    data: { name: trimmedName },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      profileImageUrl: true, // Keep the existing profile photo
+    },
+  });
 
     return res.status(200).json({
       message: "Profile updated successfully.",
