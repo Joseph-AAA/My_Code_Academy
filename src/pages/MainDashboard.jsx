@@ -10,7 +10,7 @@ import UpcomingCourses from '../components/dashboard/UpcomingCourses';
 import PaymentStatus from '../components/dashboard/PaymentStatus';
 import ShowHighlights from '../components/dashboard/ShowHighlights';
 import { useState,useRef } from 'react';
-
+import EnrollmentOverview from "../components/dashboard/EnrollmentOverview";
 
 
 function Dashboard (){
@@ -71,9 +71,14 @@ function Dashboard (){
                             <div className="min-w-0">
                                 <RevenueOverviewChart />
                             </div>
-                        </div>  
-                        <div className='min-w-0'>
-                            <UpcomingCourses />    
+                      </div>  
+
+{/*************************************   EnrollmentOverview & Payment Status ***********************************************/}
+      
+                        <div className="grid min-w-0 grid-cols-1 2xl:grid-cols-2 gap-3">
+            
+                            <EnrollmentOverview />
+                             <PaymentStatus />
                         </div>                
                     </section>
 {/******************************************************Top Courses***********************************************/}
@@ -81,11 +86,8 @@ function Dashboard (){
                         <div className=''>
                             <TopCourses />
                         </div>
-{/****************************************************** Payment Status ***********************************************/}
-                        
-                        <div>
-                            <PaymentStatus />
-                        </div>
+                  
+                    
 {/******************************************************ShowHigihLight Carousel***********************************************/}
 
                          <div >

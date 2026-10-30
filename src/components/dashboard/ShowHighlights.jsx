@@ -4,28 +4,28 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import PaymentRemiderHighlight from "./highlights/PaymentRemiderHighlight";
-import UpcomingClassHighlight from "./highlights/UpcomingClassHighlight";
-import CourseUpdateHighlight from "./highlights/CourseUpdateHighlight";
+import PaymentOverviewHighlight from "./highlights/PaymentOverviewHighlight";
 import StudentUpdateHighlight from "./highlights/StudentUpdateHighlight";
+import EnrollmentOverviewHighlight from "./highlights/EnrollmentOverviewHighlight";
+import RevenueInsightsHighlight from "./highlights/RevenueInsightsHighlight";
 
 function ShowHighlights() {
   const slides = [
     {
       id: "payment",
-      component: <PaymentRemiderHighlight />,
+      component: <PaymentOverviewHighlight /> ,
     },
     {
       id: "class",
-      component: <UpcomingClassHighlight />,
+      component: <StudentUpdateHighlight />,
     },
     {
       id: "course",
-      component: <CourseUpdateHighlight />,
+      component:  <EnrollmentOverviewHighlight />,
     },
     {
       id: "student",
-      component: <StudentUpdateHighlight />,
+      component: <RevenueInsightsHighlight />,
     },
   ];
 
@@ -59,7 +59,7 @@ function ShowHighlights() {
 
   return (
     <div
-        className="relative flex h-108 w-full items-center justify-center 
+        className="relative flex min-h-113 w-full items-center justify-center 
                   rounded-xl bg-white p-2 shadow-sm"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
