@@ -157,7 +157,7 @@ function Navbar({ sidebarOpen, setSidebarOpen }) {
       </button>
 
       <div className="flex h-full w-auto items-center gap-4">
-        <Bell className="size-5 cursor-pointer text-gray-500" />
+        {/* <Bell className="size-5 cursor-pointer text-gray-500" /> */}
 
         <div className="relative flex h-full items-center justify-end">
           <button
