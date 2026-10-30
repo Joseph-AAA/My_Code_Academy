@@ -9,6 +9,7 @@ import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import studentSettingRoutes from "./routes/studentSettingRoutes.js";
 import studentRoutes from "./routes/stuedentRoutes.js";
 import adminPaymentRoutes from "./routes/adminPaymentRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 const app = express();  
 const PORT = process.env.PORT || 5000;
@@ -31,7 +32,7 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/settings", studentSettingRoutes);
 app.use("/api/students", studentRoutes);
-
+app.use("/api/admin/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.json({

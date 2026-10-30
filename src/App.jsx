@@ -24,6 +24,7 @@ import MyEnrollments from "./pages/MyEnrollments";
 import StudentCourseLearning from "./components/students/StudentCourseLearning";
 import StudentPayments from "./components/studentPayment/StudentPayments";
 import StudentSettings from "./pages/setting/StudentSettings";
+import { DashboardProvider } from "./context/DashboardContext";
 
 function RoleBasedCourses() {
     const storedUser =
@@ -186,7 +187,9 @@ function App() {
                       path="/dashboard"
                       element={
                         <ProtectedRoute allowedRoles={["ADMIN"]}>
-                          <MainDashboard />
+                          <DashboardProvider>
+                            <MainDashboard />
+                          </DashboardProvider>
                         </ProtectedRoute>
                       }
                     />
