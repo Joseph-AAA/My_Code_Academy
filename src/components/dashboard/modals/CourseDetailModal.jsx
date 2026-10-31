@@ -189,19 +189,22 @@ function CourseDetailModal({ selectedCourse, onClose }) {
         </div>
 
         {/* Bottom section */}
-        <div className="mt-5 flex items-center justify-between gap-4">
-          <p className="text-2xl font-bold text-gray-800">
-            {formattedPrice}
-          </p>
+       {/* Bottom section */}
+          <div className="mt-5 flex items-center justify-between gap-4">
+            <p className="text-2xl font-bold text-gray-800">
+              {formattedPrice}
+            </p>
 
-            <button
-                  type="button"
-                  onClick={handleEnroll}
-                  className="cursor-pointer rounded-2xl bg-blue-600 px-7 py-3 text-white transition hover:bg-blue-700"
-                >
-                  Enroll Now
-            </button>
-        </div>
+            {user?.role !== "ADMIN" && (
+              <button
+                type="button"
+                onClick={handleEnroll}
+                className="cursor-pointer rounded-2xl bg-blue-600 px-7 py-3 text-white transition hover:bg-blue-700"
+              >
+                Enroll Now
+              </button>
+            )}
+          </div>
       </div>
     </div>
   );

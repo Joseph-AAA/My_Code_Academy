@@ -65,7 +65,7 @@ function ActivitiesModal({ activities = [], closeModal }) {
                 No activities available.
               </p>
             ) : (
-              activities.map((item) => {
+              activities.map((item,index) => {
                 const config = configMap[item.type];
 
                 if (!config) return null;
@@ -75,7 +75,11 @@ function ActivitiesModal({ activities = [], closeModal }) {
                 return (
                   <div
                     key={item.id}
-                    className="flex items-center gap-4 rounded-xl p-4 hover:bg-gray-50"
+                    className={`flex items-center gap-4 border-b border-gray-100 px-4 py-4 hover:bg-gray-50 ${
+                      index === activities.length - 1
+                        ? "border-b-0"
+                        : ""
+                    }`}
                   >
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${config.bgColor}`}
