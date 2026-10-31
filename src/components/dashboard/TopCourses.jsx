@@ -15,11 +15,11 @@ function TopCourses() {
   const { dashboardData } = useDashboard();
 
   const courses = dashboardData?.topCourses || [];
-  const topCourses = courses.slice(0, 7);
+  const topCourses = courses.slice(0, 5);
 
   return (
     <div className="w-full bg-white min-h-92 rounded-xl flex justify-center items-center">
-      <div className="w-[90%] h-[90%] mt-2 rounded-2xl">
+      <div className="w-[90%] h-[90%] mt-4 rounded-2xl">
 
         {/* Top Courses Header */}
         <div className="flex justify-between mb-3">
@@ -47,31 +47,38 @@ function TopCourses() {
             No course enrollments available yet.
           </p>
         ) : (
-          topCourses.map((course) => {
+          topCourses.map((course, index) => {
             const Icon = courseIcons[course.icon] || BookOpen;
+            const courseColor = course.color || "#f3f4f6";
 
             return (
               <div
-                className="w-full flex min-h-15 mb-3 gap-3 items-center"
+                className={`w-full flex min-h-15 mb-3 gap-3 items-center border-b border-gray-100 pb-3 ${
+                  index === topCourses.length - 1
+                    ? "last:border-b-0 last:pb-0 last:mb-3"
+                    : ""
+                }`}
                 key={course.id}
               >
-               <span
-                    className="h-15 w-15 rounded-md flex justify-center items-center border border-gray-200 shadow-md shrink-0 overflow-hidden"
-                    style={{
-                        backgroundColor: course.color || "#f3f4f6",
-                    }}
-                    >
-                    {course.imageUrl ? (
-                        <img
-                        src={course.imageUrl}
-                        alt={course.title}
-                        className="h-12 w-12 object-cover"
-                        />
-                    ) : (
-                        <Icon size={28} className="text-white" />
-                    )}
+                {/* Course Logo */}
+                <span
+                  className="h-15 w-15 rounded-md flex justify-center items-center border border-gray-200 shadow-md shrink-0 overflow-hidden"
+                  style={{
+                    backgroundColor: courseColor,
+                  }}
+                >
+                  {course.imageUrl ? (
+                    <img
+                      src={course.imageUrl}
+                      alt={course.title}
+                      className="h-12 w-12 object-cover"
+                    />
+                  ) : (
+                    <Icon size={28} className="text-white" />
+                  )}
                 </span>
 
+                {/* Course Details */}
                 <div className="w-full flex justify-between items-center gap-2">
                   <span className="text-sm flex flex-col min-w-0">
                     <h3 className="font-bold truncate">
@@ -83,7 +90,13 @@ function TopCourses() {
                     </p>
                   </span>
 
-                  <span className="bg-gray-100 shadow-sm text-sm p-2 rounded-md shrink-0">
+                  {/* Course Level Badge */}
+                 <span
+                    className="text-sm font-medium px-3 py-2 rounded-md shrink-0 text-white"
+                    style={{
+                      backgroundColor: courseColor,
+                    }}
+                  >
                     {course.level}
                   </span>
                 </div>
