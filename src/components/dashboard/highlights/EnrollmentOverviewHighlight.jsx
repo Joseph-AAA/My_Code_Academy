@@ -1,3 +1,4 @@
+
 import {
   GraduationCap,
   Users,
@@ -5,7 +6,13 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-function EnrollmentOverviewHighlight() {
+
+function EnrollmentOverviewHighlight({ statistics }) {
+  const activeEnrollments =
+    statistics?.totalActiveEnrollments ?? 0;
+
+  const newEnrollments = statistics?.newEnrollments ?? 0;
+
   return (
     <div className="h-full rounded-2xl bg-orange-200 p-6">
       <div className="flex items-center justify-between">
@@ -34,9 +41,11 @@ function EnrollmentOverviewHighlight() {
             <Users size={21} className="text-orange-600" />
           </div>
 
-          <p className="text-2xl font-bold text-gray-800">245</p>
+          <p className="text-2xl font-bold text-gray-800">
+            {activeEnrollments}
+          </p>
           <p className="mt-1 text-xs text-gray-500">
-            Total Enrollments
+            Active Enrollments
           </p>
         </div>
 
@@ -45,7 +54,9 @@ function EnrollmentOverviewHighlight() {
             <TrendingUp size={21} className="text-emerald-600" />
           </div>
 
-          <p className="text-2xl font-bold text-gray-800">18</p>
+          <p className="text-2xl font-bold text-gray-800">
+            {newEnrollments}
+          </p>
           <p className="mt-1 text-xs text-gray-500">
             New This Month
           </p>
@@ -53,27 +64,23 @@ function EnrollmentOverviewHighlight() {
       </div>
 
       <div className="mt-5 rounded-xl bg-orange-100 p-4">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-orange-800">
-            Active Enrollments
-          </span>
+        <p className="text-sm font-medium text-orange-800">
+          Current active enrollments
+        </p>
 
-          <span className="text-lg font-bold text-orange-800">
-            192
-          </span>
-        </div>
+        <p className="mt-2 text-2xl font-bold text-orange-900">
+          {activeEnrollments}
+        </p>
 
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-white">
-          <div className="h-full w-[78%] rounded-full bg-orange-500" />
-        </div>
-
-        <p className="mt-2 text-xs text-orange-700">
-          78% of total enrollments
+        <p className="mt-1 text-xs text-orange-700">
+          Students currently enrolled in active courses
         </p>
       </div>
 
-      <Link className="mt-4 flex items-center justify-between text-sm"
-        to="/students">
+      <Link
+        className="mt-4 flex items-center justify-between text-sm"
+        to="/students"
+      >
         <span className="font-medium text-orange-700">
           View enrollment details
         </span>

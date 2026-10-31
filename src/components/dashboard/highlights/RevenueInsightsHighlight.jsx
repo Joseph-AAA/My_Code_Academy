@@ -1,3 +1,4 @@
+
 import {
   Wallet,
   TrendingUp,
@@ -6,7 +7,19 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function RevenueInsightsHighlight() {
+function RevenueInsightsHighlight({  statistics,revenueOverview,paymentStatus,}) {
+  const totalRevenue = Number(statistics?.totalRevenue ?? 0);
+
+  const monthlyRevenue = Number(
+    revenueOverview?.[revenueOverview.length - 1]?.revenue ?? 0
+  );
+
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("en-MY", {
+      style: "currency",
+      currency: statistics?.currency || "MYR",
+    }).format(amount);
+
   return (
     <div className="h-full rounded-2xl bg-emerald-200 p-6">
       <div className="flex items-center justify-between">
@@ -36,7 +49,7 @@ function RevenueInsightsHighlight() {
         </div>
 
         <h4 className="mt-3 text-3xl font-bold text-gray-800">
-          RM 9,689
+          {formatCurrency(totalRevenue)}
         </h4>
 
         <div className="mt-3 flex items-center gap-2">
@@ -46,7 +59,7 @@ function RevenueInsightsHighlight() {
           </div>
 
           <span className="text-xs text-gray-500">
-            Successful payments
+            After refunds
           </span>
         </div>
       </div>
@@ -57,22 +70,25 @@ function RevenueInsightsHighlight() {
             This month
           </p>
           <p className="mt-1 text-lg font-bold text-emerald-900">
-            RM 9,689
+            {formatCurrency(monthlyRevenue)}
           </p>
         </div>
 
         <div className="rounded-xl bg-white p-3">
           <p className="text-xs text-gray-500">
-            Transactions
+            Successful payments
           </p>
           <p className="mt-1 text-lg font-bold text-gray-800">
-            12
+            {/* Payment count is supplied by Payment Overview */}
+            {paymentStatus?.paid ?? 0}
           </p>
         </div>
       </div>
 
-      <Link className="mt-4 flex items-center justify-between text-sm"
-        to="/payments">
+      <Link
+        className="mt-4 flex items-center justify-between text-sm"
+        to="/payments"
+      >
         <span className="font-medium text-emerald-700">
           View revenue details
         </span>

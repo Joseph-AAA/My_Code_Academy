@@ -1,3 +1,4 @@
+
 import {
   Users,
   UserRoundPlus,
@@ -6,11 +7,16 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function StudentUpdateHighlight() {
-  const recentStudents = [
-    { name: "Alex Johnson", course: "React Development", initials: "AJ" },
-    { name: "Sarah Lee", course: "UI/UX Design", initials: "SL" },
-  ];
+function StudentUpdateHighlight({ recentActivities }) {
+  const recentStudents = (recentActivities ?? [])
+    .filter((activity) => activity.type === "student")
+    .slice(0, 2);
+
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString("en-MY", {
+      day: "2-digit",
+      month: "short",
+    });
 
   return (
     <div className="h-full rounded-2xl bg-pink-200 p-6">
@@ -40,41 +46,68 @@ function StudentUpdateHighlight() {
         </div>
 
         <div>
-          <p className="text-sm text-gray-500">New registrations</p>
-          <h4 className="text-2xl font-bold text-gray-800">12</h4>
+          <p className="text-sm text-gray-500">
+            Recent registrations
+          </p>
+          <h4 className="text-2xl font-bold text-gray-800">
+            {recentStudents.length}
+          </h4>
         </div>
 
         <div className="ml-auto text-xs font-semibold text-pink-600">
-          This month
+          Latest
         </div>
       </div>
 
       <div className="mt-4 space-y-3">
-        {recentStudents.map((student) => (
-          <div
-            key={student.name}
-            className="flex items-center gap-3 rounded-xl bg-white p-3"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-sm font-bold text-pink-700">
-              {student.initials}
-            </div>
+        {recentStudents.length > 0 ? (
+          recentStudents.map((student) => {
+            const name = student.message.replace(
+              " registered as a new student",
+              ""
+            );
 
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-gray-800">
-                {student.name}
-              </p>
-              <p className="truncate text-xs text-gray-500">
-                {student.course}
-              </p>
-            </div>
+            const initials = name
+              .trim()
+              .split(/\s+/)
+              .map((word) => word[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase();
 
-            <GraduationCap size={19} className="text-pink-500" />
+            return (
+              <div
+                key={student.id}
+                className="flex items-center gap-3 rounded-xl bg-white p-3"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-100 text-sm font-bold text-pink-700">
+                  {initials}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-gray-800">
+                    {name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Registered {formatDate(student.createdAt)}
+                  </p>
+                </div>
+
+                <GraduationCap size={19} className="text-pink-500" />
+              </div>
+            );
+          })
+        ) : (
+          <div className="rounded-xl bg-white p-5 text-center text-sm text-gray-500">
+            No recent student registrations.
           </div>
-        ))}
+        )}
       </div>
 
-      <Link className="mt-4 flex items-center justify-between text-sm"
-        to="/students">
+      <Link
+        className="mt-4 flex items-center justify-between text-sm"
+        to="/students"
+      >
         <span className="font-medium text-pink-700">
           View student records
         </span>

@@ -1,24 +1,32 @@
-import { Wallet, CheckCircle, Clock, XCircle, ArrowUpRight } from "lucide-react";
+
+import {
+  Wallet,
+  CheckCircle,
+  Clock,
+  XCircle,
+  ArrowUpRight,
+} from "lucide-react";
 import { Link } from "react-router-dom";
-function PaymentOverviewHighlight() {
+
+function PaymentOverviewHighlight({ paymentStatus }) {
   const payments = [
     {
       label: "Paid",
-      value: 128,
+      value: paymentStatus?.paid ?? 0,
       icon: CheckCircle,
       color: "text-emerald-600",
       bg: "bg-emerald-100",
     },
     {
       label: "Pending",
-      value: 12,
+      value: paymentStatus?.pending ?? 0,
       icon: Clock,
       color: "text-amber-600",
       bg: "bg-amber-100",
     },
     {
       label: "Failed",
-      value: 3,
+      value: paymentStatus?.failed ?? 0,
       icon: XCircle,
       color: "text-rose-600",
       bg: "bg-rose-100",
@@ -71,8 +79,10 @@ function PaymentOverviewHighlight() {
         })}
       </div>
 
-      <Link className="mt-15 flex items-center justify-between text-sm"
-          to="/payments">
+      <Link
+        className="mt-15 flex items-center justify-between text-sm"
+        to="/payments"
+      >
         <span className="font-medium text-indigo-700">
           View payment details
         </span>
