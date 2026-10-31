@@ -40,31 +40,38 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
               No course enrollments available yet.
             </p>
           ) : (
-            topCourses.map((course) => {
+           topCourses.map((course, index) => {
               const Icon = courseIcons[course.icon] || BookOpen;
+              const courseColor = course.color || "#f3f4f6";
 
               return (
                 <div
-                  className="w-full flex min-h-15 mb-3 gap-3 items-center"
+                  className={`w-full flex min-h-15 mb-3 gap-3 items-center border-b border-gray-100 pb-3 ${
+                    index === topCourses.length - 1
+                      ? "border-b-0 pb-2 mb-0"
+                      : ""
+                  }`}
                   key={course.id}
                 >
+                  {/* Course Icon */}
                   <span
-                        className="h-15 w-15 rounded-md flex justify-center items-center border border-gray-200 shadow-md shrink-0 overflow-hidden"
-                        style={{
-                            backgroundColor: course.color || "#f3f4f6",
-                        }}
-                        >
-                        {course.imageUrl ? (
-                            <img
-                            src={course.imageUrl}
-                            alt={course.title}
-                            className="h-12 w-12 object-cover"
-                            />
-                        ) : (
-                            <Icon size={28} className="text-white" />
-                        )}
+                    className="h-15 w-15 rounded-md flex justify-center items-center border border-gray-200 shadow-md shrink-0 overflow-hidden"
+                    style={{
+                      backgroundColor: courseColor,
+                    }}
+                  >
+                    {course.imageUrl ? (
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
+                        className="h-12 w-12 object-cover"
+                      />
+                    ) : (
+                      <Icon size={28} className="text-white" />
+                    )}
                   </span>
 
+                  {/* Course Details */}
                   <div className="w-full flex justify-between items-center gap-2">
                     <span className="text-sm flex flex-col min-w-0">
                       <h3 className="font-bold truncate">
@@ -76,7 +83,13 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
                       </p>
                     </span>
 
-                    <span className="bg-gray-100 shadow-sm text-sm p-2 rounded-md shrink-0">
+                    {/* Level Badge */}
+                    <span
+                      className="text-sm font-medium px-3 py-2 rounded-md shrink-0 text-white"
+                      style={{
+                        backgroundColor: courseColor,
+                      }}
+                    >
                       {course.level}
                     </span>
                   </div>

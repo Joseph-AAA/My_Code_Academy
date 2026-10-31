@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../lib/prisma.js";
 import cloudinary from "../lib/cloudinary.js";
 import upload from "../lib/upload.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -426,8 +427,17 @@ router.post( "/", upload.fields([
 
 
 //************************************************** DELETE a course **************************
-router.delete("/:id", async (req, res) => {
+
+// DELETE a course (ADMIN only)
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
+    // Check admin role
+    if (req.user.role !== "ADMIN") {
+      return res.status(403).json({
+        message: "Access denied. Admins only.",
+      });
+    }
+
     const { id } = req.params;
 
     // Check whether the course exists
@@ -441,7 +451,19 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
-    // Delete the course from the database
+    // Check whether the course has enrollment records
+    const enrollmentCount = await prisma.enrollment.count({
+      where: { courseId: id },
+    });
+
+    if (enrollmentCount > 0) {
+      return res.status(409).json({
+        message:
+          "This course has enrolled students and cannot be deleted.",
+      });
+    }
+
+    // Delete the course
     await prisma.course.delete({
       where: { id },
     });

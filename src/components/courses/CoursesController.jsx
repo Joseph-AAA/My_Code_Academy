@@ -126,42 +126,50 @@ useEffect(() => {
 
 //******************************************* Fetch to Detle Courses *************************************
 const handleDeleteCourse = async (courseId) => {
-    try {
-      setIsDeleting(true);
-      setDeleteError("");
+  try {
+    setIsDeleting(true);
+    setDeleteError("");
 
-      const response = await fetch(
-        `${API_URL}/api/courses/${courseId}`,
-        {
-          method: "DELETE",
-        }
-      );
+    const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
 
-        const data = await response.json();
+    const response = await fetch(
+      `${API_URL}/api/courses/${courseId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-        if (!response.ok) {
-          throw new Error(data.message || "Failed to delete course");
-        }
+    const data = await response.json();
 
-//************************************ Remove the deleted course from the list *****************************
-        setCourses((prevCourses) =>
-          prevCourses.filter((course) => course.id !== courseId)
-        );
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete course");
+    }
 
-          // Close the detail modal if it shows the deleted course
-          setSelectedCourse((prevCourse) =>
-            prevCourse?.id === courseId ? null : prevCourse
-          );
+    // Remove the deleted course from the list
+    setCourses((prevCourses) =>
+      prevCourses.filter((course) => course.id !== courseId)
+    );
 
-            // Show success message inside the confirmation modal
-            setDeleteSuccess(true);
-          } catch (error) {
-            console.error("Delete course error:", error);
-            setDeleteError(error.message || "Failed to delete course");
-          } finally {
-            setIsDeleting(false);
-          }
-        };
+    // Close the detail modal if it shows the deleted course
+    setSelectedCourse((prevCourse) =>
+      prevCourse?.id === courseId ? null : prevCourse
+    );
+
+    // Show success message
+    setDeleteSuccess(true);
+
+  } catch (error) {
+    console.error("Delete course error:", error);
+    setDeleteError(error.message || "Failed to delete course");
+  } finally {
+    setIsDeleting(false);
+  }
+};
 
   return (
     <>
@@ -169,35 +177,35 @@ const handleDeleteCourse = async (courseId) => {
 {/**************************************** Course Grid and List View **********************************/}
              
 {/* Course Grid and List View */}
-{courses.length === 0 ? (
-  <p className="col-span-full py-8 text-center text-2xl font-bold text-gray-500">
-    No courses found.
-  </p>
-) : viewMode === "grid" ? (
-          <div className="grid h-full w-full grid-cols-1 gap-3 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
-            {courses.map((course) => (
-              <div
-                key={course.id}
-                onClick={() => setSelectedCourse(course)}
-              >
-                <CourseCard
-                  coursesData={course}
-                  onEdit={(course) => setCourseToEdit(course)}
-                  onDelete={(course) => {
-                    setCourseToDelete(course);
-                    setDeleteError("");
-                    setDeleteSuccess(false);
-                  }}
+      {courses.length === 0 ? (
+        <p className="col-span-full py-8 text-center text-2xl font-bold text-gray-500">
+          No courses found.
+        </p>
+      ) : viewMode === "grid" ? (
+                <div className="grid h-full w-full grid-cols-1 gap-3 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                  {courses.map((course) => (
+                    <div
+                      key={course.id}
+                      onClick={() => setSelectedCourse(course)}
+                    >
+                      <CourseCard
+                        coursesData={course}
+                        onEdit={(course) => setCourseToEdit(course)}
+                        onDelete={(course) => {
+                          setCourseToDelete(course);
+                          setDeleteError("");
+                          setDeleteSuccess(false);
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <CourseListView
+                  courses={courses}
+                  onCourseClick={setSelectedCourse}
                 />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <CourseListView
-            courses={courses}
-            onCourseClick={setSelectedCourse}
-          />
-        )}
+              )}
 
 
 {/**********************************************  Course Detail Modal *********************************/}
