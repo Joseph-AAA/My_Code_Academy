@@ -1,20 +1,26 @@
-
-function DashboardCard({ label, value, icon, Icon, change,bgColor,text}) {
+function DashboardCard({ label, value, Icon, bgColor, change, text }) {
   return (
-        <div className="flex h-26  w-full  rounded-xl bg-white shadow-sm">
-            <div className={`flex w-15 shrink-0  pt-5 justify-center rounded-xl ${bgColor}`}>
-              <Icon className="size-7 text-white" />
-            </div>
+    <div className="flex border border-(--border) h-26 w-full rounded-xl bg-(--surface) text-(--text-primary) shadow-sm">
+      <div className={`flex w-15 shrink-0 justify-center rounded-xl pt-5 ${bgColor}`}>
+        <Icon className="size-7 text-white" />
+      </div>
 
-            <div className="flex flex-col  justify-center h-full items  px-4">
-                <h2 className="text-md lg:text-lg font-bold">{value}</h2>
-                <p className="text-sm text-gray-500">{label}</p>
+      <div className="flex h-full flex-col justify-center px-4">
+        <h2 className="text-md font-bold lg:text-lg">{value}</h2>
 
-                <p className="text-sm md:text-xs">
-                  <span className="text-green-800">{change}</span> {text}
-                </p>
-            </div>
-        </div>
+        <p className="text-sm text-(--text-secondary)">
+          {label}
+        </p>
+
+        <p className="text-sm md:text-xs">
+          <span className="text-(--success)">
+            {change}
+          </span>{" "}
+          {text}
+        </p>
+      </div>
+    </div>
   );
-}   
+}
+
 export default DashboardCard;

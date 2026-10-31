@@ -66,16 +66,16 @@ function ImageUpload({
         </div>
 
         <div className="flex flex-col items-start gap-2">
-          <label className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50">
-            Choose Image
+          <label className="cursor-pointer rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text-secondary) transition hover:bg-(--surface-secondary)">
+              Choose Image
 
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              className="hidden"
-              onChange={handleChange}
-            />
-          </label>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={handleChange}
+              />
+            </label>
 
           <p className="text-xs text-gray-500">
             PNG, JPG or WebP · Max 5 MB
@@ -85,7 +85,7 @@ function ImageUpload({
             <button
               type="button"
               onClick={handleRemove}
-              className="flex items-center gap-1 text-sm text-red-600 hover:text-red-700"
+              className="flex cursor-pointer items-center gap-1 text-sm text-red-600 hover:text-red-700"
             >
               <X size={14} />
               Remove selected image

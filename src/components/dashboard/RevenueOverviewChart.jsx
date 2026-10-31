@@ -43,8 +43,7 @@ function RevenueOverviewChart() {
   );
 
   return (
-    <div className="w-full flex flex-col items-center rounded-xl h-96 bg-white shadow-sm">
-
+    <div className="w-full border border-(--border) flex flex-col items-center rounded-xl h-96 bg-(--surface) text-(--text-primary) shadow-sm">
       {/* Header */}
       <div className="w-full flex items-center p-5 py-5 justify-between">
         <div>
@@ -55,7 +54,7 @@ function RevenueOverviewChart() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="h-full w-full appearance-none cursor-pointer rounded-lg border border-gray-200 bg-white pl-3 pr-9 text-sm text-gray-700 outline-none transition-all hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="h-full w-full appearance-none cursor-pointer rounded-lg border border-(--border) bg-(--surface) pl-3 pr-9 text-sm text-(--text-primary) outline-none transition-all hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
               <option value="this-month">This month</option>
               <option value="last-month">Last month</option>
@@ -65,7 +64,7 @@ function RevenueOverviewChart() {
 
             <ChevronDown
               size={16}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
             />
         </div>
     </div>
@@ -85,14 +84,31 @@ function RevenueOverviewChart() {
       <div className="w-full min-w-0 overflow-hidden pr-5">
         <ResponsiveContainer width="100%" height={240}>
           <AreaChart data={chartData}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip
-              formatter={(value) => [
-                `RM ${Number(value).toLocaleString("en-MY")}`,
-                "Revenue",
-              ]}
-            />
+            <XAxis
+                dataKey="month"
+                tick={{ fill: "var(--text-muted)", fontSize: 12 }}
+                axisLine={{ stroke: "var(--border)" }}
+                tickLine={{ stroke: "var(--border)" }}
+              />
+
+              <YAxis
+                tick={{ fill: "var(--text-muted)", fontSize: 12 }}
+                axisLine={{ stroke: "var(--border)" }}
+                tickLine={{ stroke: "var(--border)" }}
+              />
+
+              <Tooltip
+                formatter={(value) => [
+                  `RM ${Number(value).toLocaleString("en-MY")}`,
+                  "Revenue",
+                ]}
+                contentStyle={{
+                  backgroundColor: "var(--surface)",
+                  color: "var(--text-primary)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "10px",
+                }}
+              />
 
             <Area
               type="monotone"

@@ -40,12 +40,12 @@ function EnrollmentOverview() {
   }
 
   return (
-    <div className="w-full shadow-sm  min-h-92 rounded-xl bg-white p-5">
+    <div className="border border-(--border) w-full shadow-sm min-h-92 rounded-xl bg-(--surface) text-(--text-primary) p-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <h3 className="font-bold">Enrollment Overview</h3>
 
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-(--text-muted)">
           Last 6 months
         </span>
       </div>
@@ -57,12 +57,12 @@ function EnrollmentOverview() {
             {currentMonthEnrollments}
           </p>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-(--text-muted)">
             Enrollments this month
           </p>
         </div>
 
-        <div className="rounded-lg bg-blue-50 p-3">
+        <div className="rounded-lg bg-(--primary-soft) p-3">
           <Users className="text-blue-600" size={24} />
         </div>
       </div>
@@ -102,36 +102,38 @@ function EnrollmentOverview() {
             </defs>
 
             <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="#e5e7eb"
-            />
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="var(--border)"
+              />
 
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: "#9ca3af" }}
-            />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "var(--text-muted)" }}
+              />
 
-            <YAxis
-              allowDecimals={false}
-              axisLine={false}
-              tickLine={false}
-              tick={{ fontSize: 12, fill: "#9ca3af" }}
-            />
+              <YAxis
+                allowDecimals={false}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "var(--text-muted)" }}
+              />
 
             <Tooltip
-              formatter={(value) => [
-                `${value} enrollments`,
-                "Enrollments",
-              ]}
-              contentStyle={{
-                borderRadius: "10px",
-                border: "1px solid #e5e7eb",
-                fontSize: "12px",
-              }}
-            />
+                formatter={(value) => [
+                  `${value} enrollments`,
+                  "Enrollments",
+                ]}
+                contentStyle={{
+                  backgroundColor: "var(--surface)",
+                  color: "var(--text-primary)",
+                  borderRadius: "10px",
+                  border: "1px solid var(--border)",
+                  fontSize: "12px",
+                }}
+              />
 
             <Area
               type="monotone"

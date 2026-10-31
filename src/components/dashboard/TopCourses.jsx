@@ -18,7 +18,7 @@ function TopCourses() {
   const topCourses = courses.slice(0, 5);
 
   return (
-    <div className="w-full bg-white min-h-92 rounded-xl flex justify-center items-center">
+    <div className="border border-(--border) w-full bg-(--surface) text-(--text-primary) min-h-92 rounded-xl flex justify-center items-center">
       <div className="w-[90%] h-[90%] mt-4 rounded-2xl">
 
         {/* Top Courses Header */}
@@ -43,7 +43,7 @@ function TopCourses() {
 
         {/* Top Courses Data */}
         {topCourses.length === 0 ? (
-          <p className="py-6 text-sm text-gray-500">
+          <p className="py-6 text-sm text-(--text-secondary)">
             No course enrollments available yet.
           </p>
         ) : (
@@ -53,7 +53,7 @@ function TopCourses() {
 
             return (
               <div
-                className={`w-full flex min-h-15 mb-3 gap-3 items-center border-b border-gray-100 pb-3 ${
+                className={`w-full flex min-h-15 mb-3 gap-3 items-center border-b border-(--border) pb-3 ${
                   index === topCourses.length - 1
                     ? "last:border-b-0 last:pb-0 last:mb-3"
                     : ""
@@ -62,7 +62,7 @@ function TopCourses() {
               >
                 {/* Course Logo */}
                 <span
-                  className="h-15 w-15 rounded-md flex justify-center items-center border border-gray-200 shadow-md shrink-0 overflow-hidden"
+                  className="h-15 w-15 rounded-md flex justify-center items-center border border-(--border) shadow-md shrink-0 overflow-hidden"
                   style={{
                     backgroundColor: courseColor,
                   }}
@@ -85,9 +85,9 @@ function TopCourses() {
                       {course.title}
                     </h3>
 
-                    <p className="text-gray-400">
+                   <p className="text-(--text-secondary)">
                       {course.students} students
-                    </p>
+                   </p>
                   </span>
 
                   {/* Course Level Badge */}

@@ -184,11 +184,11 @@ export default function Students() {
   return (
     <div className="mx-auto w-full max-w-8xl space-y-7 p-6 lg:p-8">
         <header>
-          <h1 className="text-2xl font-bold text-gray-800 sm:text-3xl">
+          <h1 className="text-2xl font-bold text-(--text-primary) sm:text-3xl">
             Students
           </h1>
 
-          <p className="mt-2 text-sm text-gray-500 sm:text-base">
+          <p className="mt-2 text-sm text-(--text-secondary) sm:text-base">
             Manage student accounts and review their learning activity.
           </p>
         </header>

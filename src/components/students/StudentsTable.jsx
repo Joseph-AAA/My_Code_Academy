@@ -39,14 +39,14 @@ export default function StudentsTable({
   onRetry,
 }) {
   return (
-    <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex flex-col gap-4 border-b border-gray-200 p-5 sm:flex-row sm:items-center sm:justify-between">
+    <section className="overflow-hidden rounded-xl border border-(--border) bg-(--surface) text-(--text-primary) shadow-sm">
+      <div className="flex flex-col gap-4 border-b border-(--border) p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">
+          <h2 className="text-lg font-semibold text-(--text-primary)">
             All Students
           </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-(--text-secondary)">
             View registered students and their learning activity.
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function StudentsTable({
         <div className="relative w-full sm:max-w-sm">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
           />
 
           <input
@@ -63,7 +63,7 @@ export default function StudentsTable({
             onChange={(event) => onSearchChange(event.target.value)}
             placeholder="Search name or email..."
             aria-label="Search students by name or email"
-            className="w-full rounded-lg border border-gray-200 py-2.5 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-(--border) bg-(--surface) py-2.5 pl-10 pr-4 text-sm text-(--text-primary) placeholder:text-(--text-muted) outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
       </div>
@@ -84,8 +84,8 @@ export default function StudentsTable({
         <>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left">
-              <thead className="bg-gray-50">
-                <tr className="text-xs uppercase tracking-wide text-gray-500">
+              <thead className="bg-(--surface-secondary)">
+                <tr className="text-xs uppercase tracking-wide text-(--text-secondary)">
                   <th className="px-5 py-4 font-medium">Student</th>
                   <th className="px-5 py-4 font-medium">Registered</th>
                   <th className="px-5 py-4 font-medium">
@@ -98,12 +98,12 @@ export default function StudentsTable({
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-(--border)">
                 {loading ? (
                   <tr>
                     <td
                       colSpan={5}
-                      className="px-5 py-12 text-center text-sm text-gray-500"
+                      className="px-5 py-12 text-center text-sm text-(--text-secondary)"
                     >
                       Loading students...
                     </td>
@@ -116,14 +116,14 @@ export default function StudentsTable({
                     >
                       <Users
                         size={32}
-                        className="mx-auto text-gray-300"
+                        className="mx-auto text-(--text-muted)"
                       />
 
-                      <p className="mt-3 font-medium text-gray-700">
+                      <p className="mt-3 font-medium text-(--text-primary)">
                         No students found
                       </p>
 
-                      <p className="mt-1 text-sm text-gray-500">
+                      <p className="mt-1 text-sm text-(--text-secondary)">
                         Try another name or email.
                       </p>
                     </td>
@@ -136,7 +136,7 @@ export default function StudentsTable({
                     return (
                       <tr
                         key={student.id}
-                        className="transition hover:bg-gray-50"
+                        className="transition hover:bg-(--surface-secondary)"
                       >
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
@@ -153,22 +153,22 @@ export default function StudentsTable({
                             </div>
 
                             <div className="min-w-0">
-                              <p className="truncate font-medium text-gray-800">
+                              <p className="truncate font-medium text-(--text-primary)">
                                 {student.name}
                               </p>
 
-                              <p className="mt-1 max-w-[240px] truncate text-sm text-gray-500">
+                              <p className="mt-1 max-w-[240px] truncate text-sm text-(--text-secondary)">
                                 {student.email}
                               </p>
                             </div>
                           </div>
                         </td>
 
-                        <td className="whitespace-nowrap px-5 py-4 text-sm text-gray-600">
+                        <td className="whitespace-nowrap px-5 py-4 text-sm text-(--text-secondary)">
                           {formatDate(student.createdAt)}
                         </td>
 
-                        <td className="px-5 py-4 text-sm text-gray-600">
+                        <td className="px-5 py-4 text-sm text-(--text-secondary)">
                           {student.activeEnrollmentCount}
                         </td>
 
@@ -190,7 +190,7 @@ export default function StudentsTable({
                           <button
                             type="button"
                             onClick={() => onViewDetails(student.id)}
-                            className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-blue-600 transition hover:border-blue-200 hover:bg-blue-50"
+                            className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-(--border) px-3 py-2 text-sm font-medium text-(--primary) transition hover:border-blue-300 hover:bg-(--primary-soft)"
                           >
                             <Eye size={16} />
                             View Details
@@ -204,8 +204,8 @@ export default function StudentsTable({
             </table>
           </div>
 
-          <div className="flex flex-col gap-3 border-t border-gray-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-gray-500">
+          <div className="flex flex-col gap-3 border-t border-(--border) px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-(--text-secondary)">
               {loading
                 ? "Loading records..."
                 : `${pagination.totalRecords} student(s) found · ${pagination.limit} per page`}
@@ -220,13 +220,13 @@ export default function StudentsTable({
                 onClick={() =>
                   onPageChange(pagination.currentPage - 1)
                 }
-                className="cursor-pointer  inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm text-(--text-primary) transition hover:bg-(--surface-secondary) disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={16} />
                 Previous
               </button>
 
-              <span className="whitespace-nowrap text-sm text-gray-600">
+              <span className="whitespace-nowrap text-sm text-(--text-secondary)">
                 Page {pagination.currentPage} of{" "}
                 {pagination.totalPages}
               </span>
@@ -240,7 +240,7 @@ export default function StudentsTable({
                 onClick={() =>
                   onPageChange(pagination.currentPage + 1)
                 }
-                className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm text-(--text-primary) transition hover:bg-(--surface-secondary) disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
                 <ChevronRight size={16} />

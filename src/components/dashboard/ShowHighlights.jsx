@@ -74,7 +74,7 @@ function ShowHighlights() {
 
   if (loading) {
     return (
-      <div className="flex min-h-113 items-center justify-center rounded-xl bg-white shadow-sm">
+      <div className="flex min-h-113 items-center justify-center rounded-xl bg-(--surface) text-(--text-primary) shadow-sm">
         <p className="text-sm text-gray-500">
           Loading highlights...
         </p>
@@ -94,7 +94,7 @@ function ShowHighlights() {
 
   return (
     <div
-      className="relative flex min-h-113 w-full items-center justify-center rounded-xl bg-white p-2 shadow-sm"
+      className="border border-(--border) relative flex min-h-113 w-full items-center justify-center rounded-xl bg-(--surface) p-2 shadow-sm"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -102,16 +102,17 @@ function ShowHighlights() {
         type="button"
         onClick={previousSlide}
         aria-label="Previous highlight"
-        className="cursor-pointer absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 text-slate-700 shadow-md transition hover:bg-white"
+        className="cursor-pointer absolute left-3 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full bg-(--surface-secondary) p-2 text-(--text-primary) shadow-md transition hover:opacity-80"
       >
         <ChevronLeft size={18} />
       </button>
 
       <div className="relative h-[90%] w-[90%] min-w-0 overflow-hidden rounded-2xl">
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
+       <div
+          className="flex"
           style={{
             transform: `translateX(-${current * 100}%)`,
+            transition: "transform 500ms ease-in-out",
           }}
         >
           {slides.map((slide) => (
@@ -129,7 +130,7 @@ function ShowHighlights() {
         type="button"
         onClick={nextSlide}
         aria-label="Next highlight"
-        className="cursor-pointer absolute right-3 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 text-slate-700 shadow-md transition hover:bg-white"
+        className="cursor-pointer absolute right-3 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full bg-(--surface-secondary) p-2 text-(--text-primary) shadow-md transition hover:opacity-80"
       >
         <ChevronRight size={18} />
       </button>
@@ -144,7 +145,7 @@ function ShowHighlights() {
             className={`h-2 rounded-full transition-all duration-300 ${
               current === index
                 ? "w-6 bg-blue-600"
-                : "w-2 bg-slate-300 hover:bg-slate-400"
+                : "w-2 bg-(--border) hover:opacity-70"
             }`}
           />
         ))}

@@ -27,7 +27,7 @@ function Dashboard (){
 {/*****************************************************header**********************************************/}
                         <header className ="flex flex-wrap gap-5 justify-between items-center ">
                             <span className="min-w-0 md:w-[50%] w-full flex flex-col gap-2  ">
-                                <h1 className=" font-bold text-xl sm:text-2xl lg:text-3xl text-[#21295e]">
+                                <h1 className="font-bold text-xl sm:text-2xl lg:text-3xl text-(--text-primary)">
                                     Welcome back, Admin!👋
                                 </h1>
                                 <p className="text-sm text-(--text-primary)">

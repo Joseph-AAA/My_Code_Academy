@@ -10,12 +10,12 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 p-4">
       <div
-        className="w-full max-w-xl rounded-2xl bg-white shadow-xl"
+        className="w-full max-w-xl rounded-2xl border border-(--border) bg-(--surface) text-(--text-primary) shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
 
         {/* Top Courses Modal Header */}
-        <div className="flex items-center justify-between border-b p-5">
+        <div className="flex items-center justify-between border-b border-(--border) p-5">
           <div>
             <h2 className="text-xl font-bold">Top Courses</h2>
 
@@ -36,7 +36,7 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
         <div className="max-h-[65vh] overflow-y-auto p-5">
 
           {topCourses.length === 0 ? (
-            <p className="py-8 text-center text-sm text-gray-500">
+            <p className="py-8 text-center text-sm text-(--text-secondary)">
               No course enrollments available yet.
             </p>
           ) : (
@@ -46,7 +46,7 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
 
               return (
                 <div
-                  className={`w-full flex min-h-15 mb-3 gap-3 items-center border-b border-gray-100 pb-3 ${
+                  className={`w-full flex min-h-15 mb-3 gap-3 items-center border-b border-(--border) pb-3 ${
                     index === topCourses.length - 1
                       ? "border-b-0 pb-2 mb-0"
                       : ""
@@ -78,7 +78,7 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
                         {course.title}
                       </h3>
 
-                      <p className="text-gray-400">
+                      <p className="text-(--text-secondary)">
                         {course.students} students
                       </p>
                     </span>
@@ -101,7 +101,7 @@ function TopCoursesModal({ topCourses = [], closeModal }) {
         </div>
 
         {/* Top Courses Modal Footer */}
-        <div className="border-t p-4 text-right">
+        <div className="border-t border-(--border) p-4 text-right">
           <button
             onClick={closeModal}
             className="rounded-lg hover:cursor-pointer hover:bg-blue-700 bg-blue-600 px-4 py-2 text-sm font-medium text-white"

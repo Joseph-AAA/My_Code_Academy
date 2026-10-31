@@ -74,10 +74,10 @@ function Courses() {
 {/*********************************************************** Page Header ****************************/}
       <div className="flex justify-between items-center gap-4 mb-4">
         <div>
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-(--text-primary)">
               Courses
             </h2>
-            <p className="text-md text-gray-500 mt-1">
+            <p className="text-md text-(--text-secondary) mt-1">
               Manage and organize all courses
             </p>
         </div>
@@ -101,18 +101,18 @@ function Courses() {
             return (
               <div
                 key={stat.key}
-                className="min-w-0 bg-white border border-(--border) rounded-xl p-5 flex items-center gap-4"
+                className="min-w-0 bg-(--surface) text-(--text-primary) border border-(--border) rounded-xl p-5 flex items-center gap-4"
               >
                     <div className={`p-3 rounded-xl shrink-0 ${stat.bg}`}>
                       <Icon size={24} className={stat.color} />
                     </div>
 
                   <div className="min-w-0">
-                      <p className="text-2xl font-bold text-gray-800 leading-tight">
+                      <p className="text-2xl font-bold text-(--text-primary) leading-tight">
                         {courseStats[stat.key]}
                       </p>
 
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-sm text-(--text-secondary) mt-1">
                         {stat.label}
                       </p>
                   </div>
@@ -136,10 +136,10 @@ function Courses() {
 
 {/**************************************************** Filter Card **************************************/}
 
-        <div className="mt-3 mb-4 bg-white border border-(--border)
-                        rounded-2xl p-4">
+        <div className="mt-3 mb-4 bg-(--surface) text-(--text-primary) border border-(--border)
+                rounded-2xl p-4">
           <div className="flex justify-between items-center mb-4">
-              <h3 className="hover: font-semibold text-gray-800">Filters</h3>
+              <h3 className="font-semibold text-(--text-primary)">Filters</h3>
           </div>
 
           <CoursesFilter

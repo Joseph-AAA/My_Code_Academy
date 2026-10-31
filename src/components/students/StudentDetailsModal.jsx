@@ -30,20 +30,20 @@ function statusStyle(status) {
   switch (status) {
     case "ACTIVE":
     case "SUCCEEDED":
-      return "bg-green-50 text-green-700";
+      return "bg-green-500/10 text-green-600";
 
     case "PENDING":
-      return "bg-amber-50 text-amber-700";
+      return "bg-amber-500/10 text-amber-600";
 
     case "FAILED":
     case "CANCELLED":
-      return "bg-red-50 text-red-700";
+      return "bg-red-500/10 text-red-600";
 
     case "REFUNDED":
-      return "bg-purple-50 text-purple-700";
+      return "bg-purple-500/10 text-purple-600";
 
     default:
-      return "bg-gray-100 text-gray-600";
+      return "bg-(--surface-secondary) text-(--text-secondary)";
   }
 }
 
@@ -93,17 +93,18 @@ export default function StudentDetailsModal({
         aria-modal="true"
         aria-labelledby="student-details-title"
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-(--border) bg-(--surface) text-(--text-primary) shadow-xl"
       >
-        <header className="flex items-center justify-between border-b border-gray-200 px-5 py-4 sm:px-6">
+        <header className="flex items-center justify-between border-b border-(--border) px-5 py-4 sm:px-6">
           <div>
             <h2
               id="student-details-title"
-              className="text-lg font-bold text-gray-800"
+              className="text-lg font-bold text-(--text-primary)"
             >
               Student Details
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
+
+            <p className="mt-1 text-sm text-(--text-secondary)">
               Account, enrollments and payment history
             </p>
           </div>
@@ -112,7 +113,7 @@ export default function StudentDetailsModal({
             type="button"
             onClick={onClose}
             aria-label="Close student details"
-            className="cursor-pointer rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            className="cursor-pointer rounded-lg p-2 text-(--text-secondary) transition hover:bg-(--surface-secondary) hover:text-(--text-primary)"
           >
             <X size={20} />
           </button>
@@ -120,7 +121,7 @@ export default function StudentDetailsModal({
 
         <div className="overflow-y-auto p-5 sm:p-6">
           {loading ? (
-            <p className="py-12 text-center text-sm text-gray-500">
+            <p className="py-12 text-center text-sm text-(--text-secondary)">
               Loading student details...
             </p>
           ) : error ? (
@@ -129,203 +130,221 @@ export default function StudentDetailsModal({
             </p>
           ) : student ? (
             <div className="space-y-7">
-                <section className="flex flex-wrap items-center gap-4 rounded-xl bg-gray-50 p-4">
-                    <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-lg font-semibold text-blue-700">
-                    {student.profileImageUrl ? (
-                        <img
-                        src={student.profileImageUrl}
-                        alt=""
-                        className="h-full w-full object-cover"
-                        />
-                    ) : (
-                        initials
-                    )}
-                    </div>
+              {/* Student Profile */}
+              <section className="flex flex-wrap items-center gap-4 rounded-xl border border-(--border) bg-(--surface-secondary) p-4">
+                <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-lg font-semibold text-blue-700">
+                  {student.profileImageUrl ? (
+                    <img
+                      src={student.profileImageUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    initials
+                  )}
+                </div>
 
-                    <div className="min-w-0 flex-1">
-                    <h3 className="break-words font-semibold text-gray-800">
-                        {student.name}
-                    </h3>
-                    <p className="mt-1 break-all text-sm text-gray-500">
+                <div className="min-w-0 flex-1">
+                  <h3 className="break-words font-semibold text-(--text-primary)">
+                    {student.name}
+                  </h3>
+
+                  <p className="mt-1 break-all text-sm text-(--text-secondary)">
+                    {student.email}
+                  </p>
+                </div>
+              </section>
+
+              {/* Account Information */}
+              <section>
+                <h3 className="mb-4 font-semibold text-(--text-primary)">
+                  Account Information
+                </h3>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="flex items-start gap-3">
+                    <Mail
+                      size={18}
+                      className="mt-0.5 text-(--text-muted)"
+                    />
+
+                    <div className="min-w-0">
+                      <p className="text-xs text-(--text-secondary)">
+                        Email
+                      </p>
+
+                      <p className="mt-1 break-all text-sm text-(--text-primary)">
                         {student.email}
-                    </p>
+                      </p>
                     </div>
-                </section>
+                  </div>
 
-                <section>
-                    <h3 className="mb-4 font-semibold text-gray-800">
-                    Account Information
-                    </h3>
+                  <div className="flex items-start gap-3">
+                    <CalendarDays
+                      size={18}
+                      className="mt-0.5 text-(--text-muted)"
+                    />
 
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div className="flex items-start gap-3">
-                        <Mail size={18} className="mt-0.5 text-gray-400" />
-                        <div className="min-w-0">
-                        <p className="text-xs text-gray-500">Email</p>
-                        <p className="mt-1 break-all text-sm text-gray-700">
-                            {student.email}
-                        </p>
-                        </div>
+                    <div>
+                      <p className="text-xs text-(--text-secondary)">
+                        Registered
+                      </p>
+
+                      <p className="mt-1 text-sm text-(--text-primary)">
+                        {formatDate(student.createdAt)}
+                      </p>
                     </div>
+                  </div>
 
-                    <div className="flex items-start gap-3">
-                        <CalendarDays
-                        size={18}
-                        className="mt-0.5 text-gray-400"
-                        />
-                        <div>
-                        <p className="text-xs text-gray-500">
-                            Registered
-                        </p>
-                        <p className="mt-1 text-sm text-gray-700">
-                            {formatDate(student.createdAt)}
-                        </p>
-                        </div>
-                    </div>
+                  <div className="flex items-start gap-3">
+                    <UserRound
+                      size={18}
+                      className="mt-0.5 text-(--text-muted)"
+                    />
 
-                    <div className="flex items-start gap-3">
-                        <UserRound
-                        size={18}
-                        className="mt-0.5 text-gray-400"
-                        />
-                        <div>
-                        <p className="text-xs text-gray-500">
-                            Enrollments
-                        </p>
-                        <p className="mt-1 text-sm text-gray-700">
-                            {enrollments.length} total · {activeCount} active
-                        </p>
-                        </div>
-                    </div>
-                    </div>
-                </section>
-
-                <section>
-                    <div className="mb-4 flex items-center gap-2">
-                    <BookOpen size={19} className="text-blue-600" />
-                    <h3 className="font-semibold text-gray-800">
+                    <div>
+                      <p className="text-xs text-(--text-secondary)">
                         Enrollments
-                    </h3>
-                    </div>
+                      </p>
 
-                    {enrollments.length === 0 ? (
-                    <p className="rounded-lg bg-gray-50 p-4 text-sm text-gray-500">
-                        This student has no enrollments yet.
-                    </p>
-                    ) : (
-                    <div className="space-y-3">
-                        {enrollments.map((enrollment) => (
-                        <div
-                            key={enrollment.id}
-                            className="flex flex-col gap-3 rounded-xl border border-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between"
+                      <p className="mt-1 text-sm text-(--text-primary)">
+                        {enrollments.length} total · {activeCount} active
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Enrollments */}
+              <section>
+                <div className="mb-4 flex items-center gap-2">
+                  <BookOpen size={19} className="text-blue-600" />
+
+                  <h3 className="font-semibold text-(--text-primary)">
+                    Enrollments
+                  </h3>
+                </div>
+
+                {enrollments.length === 0 ? (
+                  <p className="rounded-lg border border-(--border) bg-(--surface-secondary) p-4 text-sm text-(--text-secondary)">
+                    This student has no enrollments yet.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {enrollments.map((enrollment) => (
+                      <div
+                        key={enrollment.id}
+                        className="flex flex-col gap-3 rounded-xl border border-(--border) bg-(--surface) p-4 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div className="flex min-w-0 items-center gap-3">
+                          {enrollment.course?.imageUrl ? (
+                            <img
+                              src={enrollment.course.imageUrl}
+                              alt=""
+                              className="size-12 shrink-0 rounded-lg object-cover"
+                            />
+                          ) : (
+                            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                              <BookOpen size={21} />
+                            </div>
+                          )}
+
+                          <div className="min-w-0">
+                            <p className="font-medium text-(--text-primary)">
+                              {enrollment.course?.title || "Unknown course"}
+                            </p>
+
+                            <p className="mt-1 text-xs text-(--text-secondary)">
+                              {enrollment.course?.category || "Course"} ·{" "}
+                              {formatDate(
+                                enrollment.activatedAt ||
+                                  enrollment.createdAt
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span
+                          className={`w-fit rounded-full px-2.5 py-1 text-xs font-medium ${statusStyle(enrollment.status)}`}
                         >
-                            <div className="flex min-w-0 items-center gap-3">
-                            {enrollment.course?.imageUrl ? (
-                                <img
-                                src={enrollment.course.imageUrl}
-                                alt=""
-                                className="size-12 shrink-0 rounded-lg object-cover"
-                                />
-                            ) : (
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                                <BookOpen size={21} />
-                                </div>
+                          {enrollment.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              {/* Payment History */}
+              <section>
+                <div className="mb-4 flex items-center gap-2">
+                  <CreditCard size={19} className="text-blue-600" />
+
+                  <h3 className="font-semibold text-(--text-primary)">
+                    Payment History
+                  </h3>
+                </div>
+
+                {payments.length === 0 ? (
+                  <p className="rounded-lg border border-(--border) bg-(--surface-secondary) p-4 text-sm text-(--text-secondary)">
+                    No payment records found.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {payments.map((payment) => (
+                      <div
+                        key={payment.id}
+                        className="flex flex-col gap-2 rounded-xl border border-(--border) bg-(--surface) p-4 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-medium text-(--text-primary)">
+                            {payment.courseTitle}
+                          </p>
+
+                          <p className="mt-1 text-xs text-(--text-secondary)">
+                            {formatDate(
+                              payment.paidAt || payment.createdAt
                             )}
+                          </p>
 
-                            <div className="min-w-0">
-                                <p className="font-medium text-gray-800">
-                                {enrollment.course?.title || "Unknown course"}
-                                </p>
-                                <p className="mt-1 text-xs text-gray-500">
-                                {enrollment.course?.category || "Course"} ·{" "}
-                                {formatDate(
-                                    enrollment.activatedAt ||
-                                    enrollment.createdAt
-                                )}
-                                </p>
-                            </div>
-                            </div>
-
-                            <span
-                            className={`w-fit rounded-full px-2.5 py-1 text-xs font-medium ${statusStyle(enrollment.status)}`}
-                            >
-                            {enrollment.status}
-                            </span>
+                          <p className="mt-1 break-all text-xs text-(--text-muted)">
+                            Reference:{" "}
+                            {payment.providerPaymentIntentId || payment.id}
+                          </p>
                         </div>
-                        ))}
-                    </div>
-                    )}
-                </section>
 
-                <section>
-                    <div className="mb-4 flex items-center gap-2">
-                    <CreditCard size={19} className="text-blue-600" />
-                    <h3 className="font-semibold text-gray-800">
-                        Payment History
-                    </h3>
-                    </div>
+                        <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
+                          <span className="font-semibold text-(--text-primary)">
+                            {formatMoney(
+                              payment.amount,
+                              payment.currency
+                            )}
+                          </span>
 
-                    {payments.length === 0 ? (
-                    <p className="rounded-lg bg-gray-50 p-4 text-sm text-gray-500">
-                        No payment records found.
-                    </p>
-                    ) : (
-                    <div className="space-y-3">
-                        {payments.map((payment) => (
-                        <div
-                            key={payment.id}
-                            className="flex flex-col gap-2 rounded-xl border border-gray-200 p-4 sm:flex-row sm:items-center sm:justify-between"
-                        >
-                            <div className="min-w-0">
-                            <p className="font-medium text-gray-800">
-                                {payment.courseTitle}
-                            </p>
-
-                            <p className="mt-1 text-xs text-gray-500">
-                                {formatDate(
-                                payment.paidAt || payment.createdAt
-                                )}
-                            </p>
-
-                            <p className="mt-1 break-all text-xs text-gray-400">
-                                Reference:{" "}
-                                {payment.providerPaymentIntentId ||
-                                payment.id}
-                            </p>
-                            </div>
-
-                            <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
-                            <span className="font-semibold text-gray-800">
-                                {formatMoney(
-                                payment.amount,
-                                payment.currency
-                                )}
-                            </span>
-
-                            <span
-                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusStyle(payment.status)}`}
-                            >
-                                {payment.status}
-                            </span>
-                            </div>
+                          <span
+                            className={`rounded-full px-2.5 py-1 text-xs font-medium ${statusStyle(payment.status)}`}
+                          >
+                            {payment.status}
+                          </span>
                         </div>
-                        ))}
-                    </div>
-                    )}
-                </section>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
             </div>
           ) : null}
         </div>
 
-            <footer className="flex justify-end border-t border-gray-200 px-5 py-4 sm:px-6">
-            <button
-                type="button"
-                onClick={onClose}
-                className="cursor-pointer rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-                Close
-            </button>
-            </footer>
+        <footer className="flex justify-end border-t border-(--border) px-5 py-4 sm:px-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text-primary) transition hover:bg-(--surface-secondary)"
+          >
+            Close
+          </button>
+        </footer>
       </section>
     </div>
   );

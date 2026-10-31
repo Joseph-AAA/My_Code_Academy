@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CourseCard from "../components/courses/CourseCard";
@@ -6,7 +7,6 @@ const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function MyEnrollments() {
-  
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -19,9 +19,8 @@ function MyEnrollments() {
   const [error, setError] = useState("");
   const [checkoutMessage, setCheckoutMessage] = useState("");
 
-  
-  // PURPOSE: After Stripe redirects the student back,
-// check whether the webhook has activated the enrollment.
+  // After Stripe redirects the student back,
+  // check whether the webhook has activated the enrollment.
   useEffect(() => {
     // Only poll after a successful checkout redirect.
     if (!checkoutSuccess || !sessionId) return;
@@ -125,8 +124,6 @@ function MyEnrollments() {
     };
   }, [checkoutSuccess, sessionId]);
 
-
-
   useEffect(() => {
     let cancelled = false;
 
@@ -182,7 +179,7 @@ function MyEnrollments() {
 
   if (loading) {
     return (
-      <div className="p-6 text-gray-600">
+      <div className="p-6 text-(--text-secondary)">
         Loading your enrolled courses...
       </div>
     );
@@ -190,7 +187,7 @@ function MyEnrollments() {
 
   if (error) {
     return (
-      <div className="m-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+      <div className="m-6 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-red-600 dark:text-red-400">
         {error}
       </div>
     );
@@ -199,32 +196,32 @@ function MyEnrollments() {
   return (
     <div className="w-full p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl font-bold text-(--text-primary)">
           My Enrollments
         </h1>
 
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-(--text-secondary)">
           View and continue learning from your enrolled courses.
         </p>
       </div>
-      
-      {/* PURPOSE: Show the student the current checkout or activation status. */}
+
+      {/* Show the current checkout or activation status. */}
       {checkoutMessage && (
         <div
           role="status"
-          className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800"
+          className="mb-6 rounded-lg border border-(--border) bg-(--primary-soft) p-4 text-sm text-(--primary)"
         >
           {checkoutMessage}
         </div>
       )}
 
       {enrollments.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
-          <h2 className="text-lg font-semibold text-gray-700">
+        <div className="rounded-xl border border-(--border) bg-(--surface) p-8 text-center">
+          <h2 className="text-lg font-semibold text-(--text-primary)">
             No enrolled courses yet
           </h2>
 
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-(--text-secondary)">
             Your purchased courses will appear here once your
             enrollment is activated.
           </p>
@@ -249,7 +246,7 @@ function MyEnrollments() {
 
             return (
               <div key={enrollment.id} className="relative">
-                <span className="absolute right-3 top-3 z-20 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                <span className="absolute right-3 top-3 z-20 rounded-full border border-green-500/30 bg-white/70 px-3 py-1 text-xs font-semibold text-green-700 dark:text-green-400">
                   Enrolled
                 </span>
 

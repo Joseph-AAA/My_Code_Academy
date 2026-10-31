@@ -46,22 +46,22 @@ export default function AdminPaymentStatsCards({ stats, loading }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {cards.map((card) => {
         const Icon = card.icon;
 
         return (
           <article
             key={card.label}
-            className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="rounded-xl border border-(--border) bg-(--surface) p-5 text-(--text-primary) shadow-sm"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-(--text-secondary)">
                   {card.label}
                 </p>
 
-                <p className="mt-3 break-words text-2xl font-bold text-gray-800">
+                <p className="mt-3 break-words text-2xl font-bold text-(--text-primary)">
                   {loading ? "—" : card.value}
                 </p>
               </div>
@@ -73,7 +73,7 @@ export default function AdminPaymentStatsCards({ stats, loading }) {
               </div>
             </div>
 
-            <p className="mt-3 text-xs text-gray-500">
+            <p className="mt-3 text-xs text-(--text-muted)">
               {card.description}
             </p>
           </article>

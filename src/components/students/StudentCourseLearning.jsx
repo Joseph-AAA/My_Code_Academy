@@ -83,7 +83,7 @@ function StudentCourseLearning() {
 
   if (loading) {
     return (
-      <div className="p-6 text-gray-600">
+      <div className="p-6 text-(--text-secondary)">
         Loading course...
       </div>
     );
@@ -96,7 +96,7 @@ function StudentCourseLearning() {
 
         <Link
           to="/my-enrollments"
-          className="text-blue-600 hover:underline"
+          className="text-blue-600 transition hover:underline"
         >
           Back to My Enrollments
         </Link>
@@ -116,14 +116,14 @@ function StudentCourseLearning() {
     <div className="w-full p-6">
       <Link
         to="/my-enrollments"
-        className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600"
+        className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-(--text-secondary) transition hover:text-(--primary)"
       >
         <ArrowLeft size={16} />
         Back to My Enrollments
       </Link>
 
       {/* Course header */}
-      <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm">
+      <div className="mb-8 rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-sm">
         <div className="flex items-center gap-4">
           {course.imageUrl ? (
             <img
@@ -132,31 +132,31 @@ function StudentCourseLearning() {
               className="h-20 w-20 rounded-xl object-contain"
             />
           ) : (
-            <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-blue-50">
+            <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-(--primary-soft)">
               <BookOpen
                 size={36}
-                className="text-blue-600"
+                className="text-(--primary)"
               />
             </div>
           )}
 
           <div>
-            <p className="mb-2 text-sm font-medium text-blue-700">
+            <p className="mb-2 text-sm font-medium text-(--primary)">
               {course.category || "Course"}
             </p>
 
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-(--text-primary)">
               {title}
             </h1>
 
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-(--text-secondary)">
               {tutorials.length} tutorials
             </p>
           </div>
         </div>
 
         {course.description && (
-          <p className="mt-5 leading-6 text-gray-600">
+          <p className="mt-5 leading-6 text-(--text-secondary)">
             {course.description}
           </p>
         )}
@@ -164,11 +164,11 @@ function StudentCourseLearning() {
 
       {/* Tutorial heading */}
       <div className="mb-5">
-        <h2 className="text-xl font-bold text-gray-900">
+        <h2 className="text-xl font-bold text-(--text-primary)">
           Course Content
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-(--text-secondary)">
           Explore the tutorials included in this course.
         </p>
       </div>
@@ -178,14 +178,14 @@ function StudentCourseLearning() {
         {tutorials.map((tutorial) => (
           <article
             key={tutorial.number}
-            className="rounded-xl border border-gray-200 bg-white p-4 transition hover:border-blue-200 hover:shadow-sm"
+            className="rounded-xl border border-(--border) bg-(--surface) p-4 transition hover:border-blue-300 hover:shadow-sm"
           >
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 font-bold text-blue-700">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-(--primary-soft) font-bold text-(--primary)">
                 {String(tutorial.number).padStart(2, "0")}
               </div>
 
-              <h3 className="flex-1 font-semibold text-gray-900">
+              <h3 className="flex-1 font-semibold text-(--text-primary)">
                 {tutorial.title}
               </h3>
 
@@ -198,7 +198,7 @@ function StudentCourseLearning() {
               ) : (
                 <BookOpen
                   size={32}
-                  className="shrink-0 text-blue-600"
+                  className="shrink-0 text-(--primary)"
                 />
               )}
             </div>

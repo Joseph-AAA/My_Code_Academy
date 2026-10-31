@@ -102,8 +102,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 };
 
 
+
   const inputClass =
-    "mt-1 w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+       "mt-1 w-full rounded-lg border border-(--border) bg-(--surface) px-3 py-2.5 text-(--text-primary) placeholder:text-(--text-muted) outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20";
 
   return (
     <div
@@ -113,17 +114,17 @@ const API_URL = import.meta.env.VITE_API_URL;
           role="dialog"
           aria-modal="true"
           aria-labelledby="add-course-title"
-          className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-xl"
+          className="max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-(--border) bg-(--surface) text-(--text-primary) shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
   {/***********************************************Title & Close*********************************/}
             
-              <div className="sticky top-0 flex items-center justify-between border-b bg-white px-6 py-4">
+              <div className="sticky top-0 z-20 flex items-center justify-between border-b border-(--border) bg-(--surface) px-6 py-4">
                   <div>
-                      <h2 id="add-course-title" className="text-xl font-bold text-gray-800">
+                      <h2 id="add-course-title" className="text-xl font-bold text-(--text-primary)">
                         Add New Course
                       </h2>
-                      <p className="mt-1 text-sm text-gray-500">
+                      <p className="mt-1 text-sm text-(--text-secondary)">
                         Enter the course and instructor details.
                       </p>
                   </div>
@@ -132,7 +133,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                     type="button"
                     onClick={onClose}
                     aria-label="Close form"
-                    className="hover:cursor-pointer rounded-lg p-2 hover:bg-gray-100"
+                    className="cursor-pointer rounded-lg p-2 text-(--text-secondary) transition hover:bg-(--surface-secondary)"
                   >
                     <X size={22} />
                   </button>
@@ -143,7 +144,7 @@ const API_URL = import.meta.env.VITE_API_URL;
               <form onSubmit={handleSubmit} className="space-y-5 p-6">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="sm:col-span-2">
-                            <label htmlFor="title" className="text-sm font-medium">
+                            <label htmlFor="title" className="text-sm font-medium text-(--text-primary)">
                               Course Title <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -159,7 +160,7 @@ const API_URL = import.meta.env.VITE_API_URL;
   {/********************************************** Category ***************************************/}
 
                         <div>
-                            <label htmlFor="category" className="text-sm font-medium">
+                            <label htmlFor="category" className="text-sm font-medium text-(--text-primary)">
                               Category <span className="text-red-500">*</span>
                             </label>
                             <select
@@ -180,7 +181,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                         </div>
   {/********************************************* Level *******************************************/}
                         <div>
-                            <label htmlFor="level" className="text-sm font-medium">
+                            <label htmlFor="level" className="text-sm font-medium text-(--text-primary)">
                               Level <span className="text-red-500">*</span>
                             </label>
                             <select
@@ -198,7 +199,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                         </div>
   {/********************************************** Duration **************************************/}
                         <div>
-                            <label htmlFor="duration" className="text-sm font-medium">
+                            <label htmlFor="duration" className="text-sm font-medium text-(--text-primary)">
                               Duration <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -213,7 +214,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                         </div>
   {/******************************************** Price *******************************************/}
                         <div>
-                            <label htmlFor="price" className="text-sm font-medium">
+                            <label htmlFor="price" className="text-sm font-medium text-(--text-primary)">
                               Price (RM) <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -232,7 +233,7 @@ const API_URL = import.meta.env.VITE_API_URL;
   {/************************************************ Status **************************************/}
 
                         <div>
-                            <label htmlFor="status" className="text-sm font-medium">
+                            <label htmlFor="status" className="text-sm font-medium text-(--text-primary)">
                               Status <span className="text-red-500">*</span>
                             </label>
                             <select
@@ -250,7 +251,7 @@ const API_URL = import.meta.env.VITE_API_URL;
   {/*************************************** Release Date ****************************************/}
 
                         <div>
-                          <label htmlFor="releaseDate" className="text-sm font-medium">
+                          <label htmlFor="releaseDate" className="text-sm font-medium text-(--text-primary)">
                             Release Date
                           </label>
                           <input
@@ -266,7 +267,7 @@ const API_URL = import.meta.env.VITE_API_URL;
   {/******************************************* Description **************************************/}
 
                         <div className="sm:col-span-2">
-                          <label htmlFor="description" className="text-sm font-medium">
+                          <label htmlFor="description" className="text-sm font-medium text-(--text-primary)">
                             Description <span className="text-red-500">*</span>
                           </label>
                           <textarea
@@ -283,13 +284,13 @@ const API_URL = import.meta.env.VITE_API_URL;
 
   {/*************************************** Course Logo and Bg color*********************************/}
 
-                        <div className="sm:col-span-2 border-t pt-5">
-                                <h3 className="mb-4 font-semibold text-gray-800">
+                        <div className="sm:col-span-2 border-t border-(--border) pt-5">
+                               <h3 className="mb-4 font-semibold text-(--text-primary)">
                                     Course Logo
                                 </h3>
                                           
                                 <div>
-                                      <label htmlFor="color" className="text-sm font-medium">
+                                      <label htmlFor="color" className="text-sm font-medium text-(--text-primary)">
                                         Course Background Color
                                       </label>
 
@@ -300,10 +301,10 @@ const API_URL = import.meta.env.VITE_API_URL;
                                           type="color"
                                           value={formData.color}
                                           onChange={handleChange}
-                                          className="h-11 w-14 cursor-pointer rounded border border-gray-300 p-1"
+                                          className="h-11 w-14 cursor-pointer rounded border border-(--border) bg-(--surface) p-1"
                                         />
 
-                                        <span className="text-sm text-gray-500">
+                                        <span className="text-sm text-(--text-secondary)">
                                           {formData.color}
                                         </span>
                                       </div>
@@ -319,14 +320,14 @@ const API_URL = import.meta.env.VITE_API_URL;
   {/******************************************* Instructor ***********************************/}
                   </div>
 
-                  <div className="border-t pt-5">
-                    <h3 className="mb-3 font-semibold text-gray-800">
+                  <div className="border-t pt-5border-t border-(--border) pt-5">
+                    <h3 className="mb-3 font-semibold text-(--text-primary)">
                       Instructor (Optional)
                     </h3>
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
-                        <label htmlFor="instructorName" className="text-sm font-medium">
+                        <label htmlFor="instructorName" className="text-sm font-medium text-(--text-primary)">
                           Instructor Name
                         </label>
                         <input
@@ -340,7 +341,7 @@ const API_URL = import.meta.env.VITE_API_URL;
                       </div>
 
                       <div>
-                        <label htmlFor="instructorTitle" className="text-sm font-medium">
+                        <label htmlFor="instructorTitle" className="text-sm font-medium text-(--text-primary)">
                           Job Title
                         </label>
                         <input
@@ -355,8 +356,11 @@ const API_URL = import.meta.env.VITE_API_URL;
                     </div>
                   </div>
 
-                  {error && (
-                    <p role="alert" className="hover:cursor-pointer rounded-lg bg-red-50 p-3 text-sm text-red-600">
+                 {error && (
+                    <p
+                      role="alert"
+                      className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600"
+                    >
                       {error}
                     </p>
                   )}
@@ -369,12 +373,12 @@ const API_URL = import.meta.env.VITE_API_URL;
                         />
                   </div>
 
-                  <div className="flex justify-end gap-3 border-t pt-4">
+                  <div className="flex justify-end gap-3 border-t border-(--border) pt-4">
                     <button
                       type="button"
                       onClick={onClose}
                       disabled={isSubmitting}
-                      className="hover:cursor-pointer rounded-lg border px-4 py-2.5 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                      className="cursor-pointer rounded-lg border border-(--border) px-4 py-2.5 text-(--text-primary) transition hover:bg-(--surface-secondary) disabled:opacity-50"
                     >
                       Cancel
                     </button>

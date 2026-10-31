@@ -93,33 +93,34 @@ const handlePageChange = (page) => {
      
 {/*********************************************** Page heading *******************************/}
       <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+          <h1 className="text-3xl font-bold text-(--text-primary) sm:text-4xl">
             Explore Our Courses
           </h1>
 
-          <p className="mt-3 text-gray-600">
+          <p className="mt-3 text-(--text-secondary)">
             Build your skills with practical programming courses.
           </p>
       </div>
 
 {/********************************************* Loading Courses ******************************/}
       {loading && (
-        <p className="py-16 text-center text-gray-500">
+        <p className="py-16 text-center text-(--text-secondary)">
           Loading courses...
         </p>
       )}
 
 {/********************************************** Error *****************************************/}
+      
       {!loading && error && (
-        <p className="py-16 text-center text-red-600">
+        <p className="py-16 text-center text-red-600 dark:text-red-400">
           {error}
         </p>
       )}
 
       
 {/****************************************** Empty state ***************************************/}
-      {!loading && !error && courses.length === 0 && (
-        <p className="py-16 text-center text-gray-500">
+     {!loading && !error && courses.length === 0 && (
+        <p className="py-16 text-center text-(--text-secondary)">
           No published courses available yet.
         </p>
       )}
@@ -129,40 +130,40 @@ const handlePageChange = (page) => {
         !error &&
         courses.length > 0 &&
         guestLimitReached && (
-          <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 p-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Discover More Courses
-            </h2>
+          <div className="mx-auto max-w-xl rounded-2xl border border-(--border) bg-(--surface) p-8 text-center">
+              <h2 className="text-2xl font-bold text-(--text-primary)">
+                Discover More Courses
+              </h2>
 
-            <p className="mt-3 text-gray-600">
-              Create a free account to explore more courses
-              and start your learning journey with My Code Academy.
-            </p>
+              <p className="mt-3 text-(--text-secondary)">
+                Create a free account to explore more courses
+                and start your learning journey with My Code Academy.
+              </p>
 
-            <Link
-              to="/signup"
-              className="mt-6 inline-block rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
-            >
-              Sign Up for Free
-            </Link>
-
-            <p className="mt-4 text-sm text-gray-500">
-              Already have an account?{" "}
               <Link
-                to="/signin"
-                className="font-medium text-blue-600 hover:underline"
+                to="/signup"
+                className="mt-6 inline-block rounded-lg bg-(--primary) px-6 py-3 font-semibold text-white transition hover:opacity-90"
               >
-                Sign in
+                Sign Up for Free
               </Link>
-            </p>
 
-            <button
-              type="button"
-              onClick={() => handlePageChange(MAX_GUEST_PAGES)}
-              className="mt-5 text-sm text-gray-600 hover:text-blue-600"
-            >
-              Back to courses
-            </button>
+              <p className="mt-4 text-sm text-(--text-secondary)">
+                Already have an account?{" "}
+                <Link
+                  to="/signin"
+                  className="font-medium text-(--primary) hover:underline"
+                >
+                  Sign in
+                </Link>
+              </p>
+
+              <button
+                type="button"
+                onClick={() => handlePageChange(MAX_GUEST_PAGES)}
+                className="cursor-pointer mt-5 text-sm text-(--text-secondary) transition hover:text-(--primary)"
+              >
+                Back to courses
+              </button>
           </div>
         )}
 
