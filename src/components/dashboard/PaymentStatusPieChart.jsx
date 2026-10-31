@@ -14,7 +14,7 @@ export default function PaymentStatusPieChart() {
   const paymentStatus = dashboardData?.paymentStatus;
 
   if (loading) {
-    return <p className="p-4">Loading payment status...</p>;
+    return <p className="p-4 text-(--text-secondary)">Loading payment status... </p>
   }
 
   if (error) {
@@ -47,10 +47,10 @@ export default function PaymentStatusPieChart() {
   );
 
   return (
-    <div className="w-full h-full rounded-xl">
+    <div className="w-full h-full rounded-xl text-(--text-primary)">
       {/* Header */}
       <div className="h-10 w-full flex">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-lg font-semibold text-(--text-primary)">
           Payment Status
         </h2>
       </div>
@@ -59,7 +59,7 @@ export default function PaymentStatusPieChart() {
       <div className="grid items-center justify-center h-full grid-cols-[1.5fr_1.5fr]">
 
         {/* Donut Chart */}
-        <div className="max-w-56 relative flex items-center justify-center">
+        <div className="max-w-56 relative flex items-center justify-center rounded-full">
           <PieChart
             responsive
             style={{
@@ -91,7 +91,7 @@ export default function PaymentStatusPieChart() {
               {totalPayments}
             </span>
 
-            <span className="text-sm font-medium text-gray-500">
+            <span className="text-sm font-medium text-(--text-secondary)">
               Total Payments
             </span>
           </div>
@@ -118,10 +118,10 @@ export default function PaymentStatusPieChart() {
                     }}
                   />
 
-                  <p>{item.name}</p>
+                  <p className="text-(--text-primary)">{item.name}</p>
                 </div>
 
-                <p className="ml-2 text-sm text-gray-500">
+                <p className="ml-2 text-sm text-(--text-secondary)">
                   {item.value} ({percentage}%)
                 </p>
               </div>

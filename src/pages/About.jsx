@@ -7,7 +7,6 @@ import {
   GraduationCap,
   UserRound,
   Code2,
-  MessageCircle,
 } from "lucide-react";
 
 const features = [
@@ -101,34 +100,34 @@ export default function StudentAbout() {
             About Us
           </p>
 
-          <h2 className="mt-3 text-2xl font-bold text-gray-800 sm:text-3xl">
+          <h2 className="mt-3 text-2xl font-bold text-(--text-primary) sm:text-3xl">
             Your coding journey starts here
           </h2>
 
-          <p className="mt-4 leading-7 text-gray-600">
+          <p className="mt-4 leading-7 text-(--text-secondary)">
             My Code Academy is a learning platform designed to help
             students discover coding courses and access their
             enrolled learning materials in one place.
           </p>
 
-          <p className="mt-3 leading-7 text-gray-600">
+          <p className="mt-3 leading-7 text-(--text-secondary)">
             Whether you're exploring a new topic or developing your
             existing skills, you can manage your courses and keep
             track of your learning activity through your student account.
           </p>
         </div>
 
-        <div className="flex min-h-64 items-center justify-center rounded-2xl bg-blue-50 p-8">
+        <div className="flex min-h-64 items-center justify-center rounded-2xl bg-(--surface-secondary) p-8">
           <div className="text-center">
             <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
               <GraduationCap size={42} />
             </div>
 
-            <h3 className="mt-5 text-xl font-bold text-gray-800">
+            <h3 className="mt-5 text-xl font-bold text-(--text-primary)">
               Keep Learning
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-gray-500">
+            <p className="mt-2 text-sm leading-6 text-(--text-secondary)">
               Discover courses, practice your skills, and keep moving
               forward.
             </p>
@@ -139,10 +138,11 @@ export default function StudentAbout() {
       {/* Features */}
       <section>
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-(--text-primary)">
             Everything you need to get started
           </h2>
-          <p className="mt-2 text-gray-500">
+
+          <p className="mt-2 text-(--text-secondary)">
             Your student account brings your learning activities together.
           </p>
         </div>
@@ -154,17 +154,17 @@ export default function StudentAbout() {
             return (
               <div
                 key={feature.title}
-                className="rounded-xl border border-gray-200 bg-white p-6 transition hover:border-blue-200 hover:shadow-md"
+                className="rounded-xl border border-(--border) bg-(--surface) p-6 transition hover:border-blue-300 hover:shadow-md"
               >
                 <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                   <Icon size={24} />
                 </div>
 
-                <h3 className="mt-4 font-semibold text-gray-800">
+                <h3 className="mt-4 font-semibold text-(--text-primary)">
                   {feature.title}
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-gray-500">
+                <p className="mt-2 text-sm leading-6 text-(--text-secondary)">
                   {feature.description}
                 </p>
               </div>
@@ -174,12 +174,13 @@ export default function StudentAbout() {
       </section>
 
       {/* Learning steps */}
-      <section className="rounded-2xl bg-gray-50 p-6 sm:p-8">
+      <section className="rounded-2xl border border-(--border) bg-(--surface-secondary) p-6 sm:p-8">
         <div className="mb-7 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-(--text-primary)">
             How It Works
           </h2>
-          <p className="mt-2 text-gray-500">
+
+          <p className="mt-2 text-(--text-secondary)">
             Three simple steps to begin learning.
           </p>
         </div>
@@ -191,11 +192,11 @@ export default function StudentAbout() {
                 {step.number}
               </div>
 
-              <h3 className="mt-4 font-semibold text-gray-800">
+              <h3 className="mt-4 font-semibold text-(--text-primary)">
                 {step.title}
               </h3>
 
-              <p className="mt-2 text-sm leading-6 text-gray-500">
+              <p className="mt-2 text-sm leading-6 text-(--text-secondary)">
                 {step.description}
               </p>
             </div>
@@ -204,27 +205,27 @@ export default function StudentAbout() {
       </section>
 
       {/* Get Started */}
-        <section className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white sm:flex-row sm:items-center sm:p-8">
+      <section className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-white sm:flex-row sm:items-center sm:p-8">
         <div>
-            <h2 className="text-xl font-bold sm:text-2xl">
+          <h2 className="text-xl font-bold sm:text-2xl">
             Ready to Start Learning?
-            </h2>
+          </h2>
 
-            <p className="mt-2 max-w-xl text-sm leading-6 text-blue-100">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-blue-100">
             Explore our coding courses, discover new skills, and take
             the next step in your learning journey.
-            </p>
+          </p>
         </div>
 
         <button
-            type="button"
-            onClick={() => navigate("/courses")}
-            className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-white px-5 py-3 font-semibold text-blue-700 transition hover:bg-blue-50"
+          type="button"
+          onClick={() => navigate("/courses")}
+          className="inline-flex shrink-0 cursor-pointer items-center gap-2 rounded-lg bg-white px-5 py-3 font-semibold text-blue-700 transition hover:bg-blue-50"
         >
-            Explore Courses
-            <ArrowRight size={18} />
+          Explore Courses
+          <ArrowRight size={18} />
         </button>
-        </section>
+      </section>
     </div>
   );
 }

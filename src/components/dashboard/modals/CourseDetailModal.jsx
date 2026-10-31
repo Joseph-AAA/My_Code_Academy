@@ -26,18 +26,17 @@ function CourseDetailModal({ selectedCourse, onClose }) {
       user = null;
     }
 
-    const handleEnroll = () => {
-      if (!user) {
+   const handleEnroll = () => {
+      if (user?.role?.toUpperCase() !== "STUDENT") {
         navigate("/signin");
         return;
       }
 
-      if (user.role === "STUDENT") {
-        onClose();
-        navigate("/payment/checkout", {
-          state: { course: selectedCourse },
-        });
-      }
+      onClose();
+
+      navigate("/payment/checkout", {
+        state: { course: selectedCourse },
+      });
     };
 
 
@@ -64,7 +63,7 @@ function CourseDetailModal({ selectedCourse, onClose }) {
       onClick={onClose}
     >
       <div
-        className="relative w-[90%] lg:w-[50%] max-w-3xl max-h-[95vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl"
+        className="relative w-[90%] lg:w-[50%] max-w-3xl max-h-[95vh] overflow-y-auto rounded-2xl border border-(--border) bg-(--surface) p-6 text-(--text-primary) shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -72,7 +71,7 @@ function CourseDetailModal({ selectedCourse, onClose }) {
           type="button"
           onClick={onClose}
           aria-label="Close course details"
-          className="absolute right-5 top-5 z-10 cursor-pointer text-gray-400 transition hover:text-gray-700"
+          className="absolute right-5 top-5 z-10 cursor-pointer text-(--text-muted) transition hover:text-(--text-primary)"
         >
           <X size={28} />
         </button>
@@ -115,11 +114,11 @@ function CourseDetailModal({ selectedCourse, onClose }) {
 
           {/* Title */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-2xl font-bold text-(--text-primary)">
               {selectedCourse.title}
             </h2>
 
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-(--text-secondary)">
               {selectedCourse.category} • {selectedCourse.level}
             </p>
           </div>
@@ -128,38 +127,38 @@ function CourseDetailModal({ selectedCourse, onClose }) {
         {/* Course statistics */}
         <div className="mt-5 grid grid-cols-2 gap-y-5 sm:grid-cols-2">
           {/* Duration */}
-          <div className="flex items-center gap-3 text-gray-600">
+          <div className="flex items-center gap-3 text-(--text-secondary)">
             <Clock3 size={21} className="text-blue-500" />
             <span>Duration: {selectedCourse.duration}</span>
           </div>
 
           {/* Students */}
-          <div className="flex items-center gap-3 text-gray-600">
+          <div className="flex items-center  gap-3 text-(--text-secondary)">
             <UsersRound size={21} className="text-purple-500" />
             <span>Students: {selectedCourse.students}</span>
           </div>
 
           {/* Rating */}
-          <div className="flex items-center gap-3 text-gray-600">
+          <div className="flex items-center gap-3 text-(--text-secondary)">
             <Star size={21} className="text-yellow-500" />
             <span>Rating: {selectedCourse.rating ?? "N/A"}</span>
           </div>
 
           {/* Lessons */}
-          <div className="flex items-center gap-3 text-gray-600">
+          <div className="flex items-center gap-3 text-(--text-secondary)">
             <BookOpen size={21} className="text-green-500" />
             <span>Lessons: {selectedCourse.totalLessons ?? "N/A"}</span>
           </div>
         </div>
 
         {/* Description */}
-        <p className="mt-6 text-base leading-7 text-gray-600">
+        <p className="mt-6 text-base leading-7 text-(--text-secondary)">
           {selectedCourse.description}
         </p>
 
         {/* Instructor */}
-        <div className="mt-5 rounded-2xl bg-gray-50 p-5">
-          <h3 className="mb-4 font-semibold text-gray-800">
+        <div className="mt-5 rounded-2xl border border-(--border) bg-(--surface-secondary) p-5">
+          <h3 className="mb-4 font-semibold text-(--text-primary)">
             Instructor
           </h3>
 
@@ -177,11 +176,11 @@ function CourseDetailModal({ selectedCourse, onClose }) {
             )}
 
             <div>
-              <p className="font-medium text-gray-800">
+              <p className="font-medium text-(--text-primary)">
                 {selectedCourse.instructor?.name || "Instructor not assigned"}
               </p>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-(--text-secondary)">
                 {selectedCourse.instructor?.title || ""}
               </p>
             </div>
@@ -191,15 +190,15 @@ function CourseDetailModal({ selectedCourse, onClose }) {
         {/* Bottom section */}
        {/* Bottom section */}
           <div className="mt-5 flex items-center justify-between gap-4">
-            <p className="text-2xl font-bold text-gray-800">
+            <p className="text-2xl font-bold text-(--text-primary)">
               {formattedPrice}
             </p>
 
-            {user?.role !== "ADMIN" && (
+            {user?.role?.toUpperCase() !== "ADMIN" && (
               <button
                 type="button"
                 onClick={handleEnroll}
-                className="cursor-pointer rounded-2xl bg-blue-600 px-7 py-3 text-white transition hover:bg-blue-700"
+                className="cursor-pointer rounded-2xl bg-(--primary) px-7 py-3 text-white transition hover:opacity-90"
               >
                 Enroll Now
               </button>

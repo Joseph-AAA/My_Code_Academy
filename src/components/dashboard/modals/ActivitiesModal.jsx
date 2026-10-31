@@ -37,11 +37,11 @@ function ActivitiesModal({ activities = [], closeModal }) {
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/40 p-4">
       <div
-        className="w-full max-w-xl rounded-2xl bg-white shadow-xl"
+        className="w-full max-w-xl rounded-2xl border border-(--border) bg-(--surface) text-(--text-primary) shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Activity Modal Header */}
-        <div className="flex items-center justify-between border-b p-5">
+        <div className="flex items-center justify-between border-b border-(--border) p-5">
           <div>
             <h2 className="text-xl font-bold">All Activities</h2>
             <p className="text-sm text-(--text-secondary)">
@@ -50,7 +50,7 @@ function ActivitiesModal({ activities = [], closeModal }) {
           </div>
 
           <button
-            className="hover:cursor-pointer hover:text-red-500 hover:font-extrabold"
+            className="cursor-pointer rounded-md px-2 py-1 text-(--text-secondary) transition hover:bg-(--surface-secondary) hover:text-red-500"
             onClick={closeModal}
           >
             ✕
@@ -61,7 +61,7 @@ function ActivitiesModal({ activities = [], closeModal }) {
         <div className="max-h-[65vh] overflow-y-auto p-5">
           <div className="space-y-2">
             {activities.length === 0 ? (
-              <p className="py-8 text-center text-sm text-gray-500">
+              <p className="py-8 text-center text-sm text-(--text-secondary)">
                 No activities available.
               </p>
             ) : (
@@ -75,12 +75,10 @@ function ActivitiesModal({ activities = [], closeModal }) {
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-center gap-4 border-b border-gray-100 px-4 py-4 hover:bg-gray-50 ${
-                      index === activities.length - 1
-                        ? "border-b-0"
-                        : ""
+                     className={`flex items-center gap-4 border-b border-(--border) px-4 py-4 transition-colors hover:bg-(--surface-secondary) ${
+                      index === activities.length - 1 ? "border-b-0" : ""
                     }`}
-                  >
+                                      >
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${config.bgColor}`}
                     >
@@ -104,7 +102,7 @@ function ActivitiesModal({ activities = [], closeModal }) {
         </div>
 
         {/* Activity Modal Footer */}
-        <div className="border-t p-4 text-right">
+        <div className="border-t border-(--border) p-4 text-right">
           <button
             onClick={closeModal}
             className="rounded-lg hover:cursor-pointer hover:bg-blue-700 bg-blue-600 px-4 py-2 text-sm font-medium text-white"

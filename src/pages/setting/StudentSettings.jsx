@@ -496,16 +496,16 @@ async function handleChangePassword(event) {
   return (
     <div className=" w-full max-w-6xl space-y-6 p-6 lg:p-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl font-bold text-(--text-primary)">
           Settings
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-(--text-secondary)">
           Manage your account information.
         </p>
       </div>
 
       
-<section className="rounded-xl border border-gray-200 bg-white p-6">
+<section className="rounded-xl border border-(--border) bg-(--surface) p-6">
   <div className="flex flex-wrap items-center gap-4">
     <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-xl font-semibold text-blue-700">
       {user?.profileImageUrl ? (
@@ -520,14 +520,14 @@ async function handleChangePassword(event) {
     </div>
 
     <div className="min-w-0 flex-1">
-      <h2 className="text-lg font-semibold text-gray-800">
+      <h2 className="text-lg font-semibold text-(--text-primary)">
         {name || "Student"}
       </h2>
 
-      <p className="text-sm text-gray-500">{accountLabel}</p>
+      <p className="text-sm text-(--text-secondary)">{accountLabel}</p>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        <label className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${
+        <label className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border border-(--border) px-3 py-2 text-sm font-medium text-(--text-primary) transition hover:bg-(--surface-secondary) ${
           isSaving ? "pointer-events-none opacity-50" : ""
         }`}>
           <Camera size={16} />
@@ -559,12 +559,12 @@ async function handleChangePassword(event) {
 </section>
 
     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
-           <section className="space-y-5 rounded-xl border border-gray-200 bg-white p-6">
+           <section className="space-y-5 rounded-xl border border-(--border) bg-(--surface) p-6">
               <div>
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-(--text-primary)">
                   Account Information
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-(--text-secondary)">
                   Update your personal information.
                 </p>
               </div>
@@ -573,13 +573,13 @@ async function handleChangePassword(event) {
                 <div className="space-y-2">
                   <label
                     htmlFor="student-name"
-                    className="text-sm font-medium text-gray-700"
+                    className="text-sm font-medium text-(--text-primary)"
                   >
                     Full Name
                   </label>
 
-                  <div className="flex items-center gap-3 rounded-lg border border-gray-200 px-4 py-3 focus-within:border-blue-500">
-                    <UserRound size={18} className="text-gray-500" />
+                  <div className="flex items-center gap-3 rounded-lg border border-(--border) px-4 py-3 focus-within:border-blue-500">
+                    <UserRound size={18} className="text-(--text-muted)" />
 
                     <input
                       id="student-name"
@@ -593,7 +593,7 @@ async function handleChangePassword(event) {
                       minLength={2}
                       maxLength={80}
                       required
-                      className="w-full bg-transparent text-gray-700 outline-none"
+                      className="w-full bg-transparent text-(--text-primary) outline-none"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -601,17 +601,17 @@ async function handleChangePassword(event) {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <label className="text-sm font-medium text-gray-700">
+                    <label className="text-sm font-medium text-(--text-primary)">
                       Email Address
                     </label>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-(--text-muted)">
                       Read-only
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
-                    <Mail size={18} className="text-gray-500" />
-                    <span className="break-all text-gray-700">
+                  <div className="flex items-center gap-3 rounded-lg border border-(--border) bg-(--surface-secondary) px-4 py-3">
+                    <Mail size={18} className="text-(--text-muted)" />
+                    <span className="break-all text-(--text-primary)">
                       {email}
                     </span>
                   </div>
@@ -641,17 +641,17 @@ async function handleChangePassword(event) {
           </section>
 
         
-          <section className="min-w-0 rounded-xl border border-gray-200 bg-white p-6 lg:p-8">
+          <section className="min-w-0 rounded-xl border border-(--border) bg-(--surface) p-6 lg:p-8">
             <div className="mb-6">
               <div className="flex items-center gap-3">
                 <ShieldCheck className="text-blue-600" size={22} />
 
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-(--text-primary)">
                   Password & Security
                 </h2>
               </div>
 
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="mt-2 text-sm text-(--text-secondary)">
                 Update your password to keep your account secure.
               </p>
             </div>
@@ -669,7 +669,7 @@ async function handleChangePassword(event) {
                     setPasswordMessage("");
                   }}
                   required
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 pr-12 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-(--border) bg-(--surface) px-4 py-3 pr-12 text-(--text-primary) outline-none placeholder:text-(--text-muted) focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   placeholder="Enter current password"
                 />
 
@@ -677,7 +677,7 @@ async function handleChangePassword(event) {
                   type="button"
                   onClick={() => setShowCurrentPassword((prev) => !prev)}
                   aria-label={showCurrentPassword ? "Hide current password" : "Show current password"}
-                  className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted) transition hover:text-(--text-primary)"
                 >
                   {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -697,7 +697,7 @@ async function handleChangePassword(event) {
                     setPasswordMessage("");
                   }}
                   required
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 pr-12 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-(--border) bg-(--surface) px-4 py-3 pr-12 text-(--text-primary) outline-none placeholder:text-(--text-muted) focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   placeholder="At least 8 characters"
                 />
 
@@ -705,7 +705,7 @@ async function handleChangePassword(event) {
                   type="button"
                   onClick={() => setShowNewPassword((prev) => !prev)}
                   aria-label={showNewPassword ? "Hide new password" : "Show new password"}
-                  className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted) transition hover:text-(--text-primary)"
                 >
                   {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -718,7 +718,7 @@ async function handleChangePassword(event) {
                         className={`flex items-center gap-2 text-xs ${
                           requirement.met
                             ? "text-green-600"
-                            : "text-gray-500"
+                            : "text-(--text-secondary)"
                         }`}
                       >
                         <span aria-hidden="true">
@@ -747,7 +747,7 @@ async function handleChangePassword(event) {
                         ? "border-red-500 focus:border-red-500 focus:ring-red-100"
                         : passwordsMatch
                           ? "border-green-500 focus:border-green-500 focus:ring-green-100"
-                          : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                          : "border-(--border) bg-(--surface) text-(--text-primary) placeholder:text-(--text-muted) focus:border-blue-500 focus:ring-blue-500/20"
                     }`}
                     placeholder="Enter your new password again"
                   />
@@ -756,7 +756,7 @@ async function handleChangePassword(event) {
                     type="button"
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     aria-label={showConfirmPassword ? "Hide confirmation password" : "Show confirmation password"}
-                    className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted) transition hover:text-(--text-primary)"
                   >
                     {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>

@@ -279,7 +279,7 @@ const handleDeleteCourse = async (courseId) => {
           type="button"
           onClick={() => setCurrentPage((page) => page - 1)}
           disabled={currentPage === 1}
-          className="hover:cursor-pointer  rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-40"
+          className="cursor-pointer rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm text-(--text-primary) transition hover:bg-(--surface-secondary) hover:text-(--text-primary) disabled:cursor-not-allowed disabled:opacity-40"
         >
           Previous
         </button>
@@ -293,10 +293,10 @@ const handleDeleteCourse = async (courseId) => {
                   type="button"
                   onClick={() => setCurrentPage(page)}
                   aria-current={currentPage === page ? "page" : undefined}
-                  className={`hover:cursor-pointer rounded-lg border px-4 py-2 text-sm ${
+                  className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
                     currentPage === page
                       ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-gray-300 hover:bg-gray-100"
+                      : "border-(--border) bg-(--surface) text-(--text-primary) hover:bg-(--surface-secondary) hover:text-(--text-primary)"
                   }`}
                 >
                   {page}
@@ -309,14 +309,14 @@ const handleDeleteCourse = async (courseId) => {
             type="button"
             onClick={() => setCurrentPage((page) => page + 1)}
             disabled={currentPage === totalPages}
-            className="hover:cursor-pointer rounded-lg border border-gray-300 px-3 py-2 text-sm disabled:opacity-40"
+            className="cursor-pointer rounded-lg border border-(--border) bg-(--surface) px-3 py-2 text-sm text-(--text-primary) transition hover:bg-(--surface-secondary) hover:text-(--text-primary) disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next
           </button>
         </nav>
     )}
 
-        <p className="mt-3 text-center text-sm text-gray-500">
+        <p className="mt-3 text-center text-sm text-(--text-secondary)">
           {totalCourses} courses in total
         </p>
     </>

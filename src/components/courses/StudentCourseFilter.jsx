@@ -12,14 +12,14 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
             };
 
       const selectClass =
-        "w-full appearance-none relative rounded-lg border border-(--border) bg-white pl-3 pr-10 py-2 text-sm outline-none focus:border-blue-500 hover:cursor-pointer";
-  
+          "w-full appearance-none relative rounded-lg border border-(--border) bg-(--surface) pl-3 pr-10 py-2 text-sm text-(--text-primary) outline-none focus:border-(--primary) hover:cursor-pointer";
+    
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
 
 {/******************************************* Category ***********************************************/}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="mb-2 block text-sm font-medium text-(--text-secondary)">
             Category
           </label>
 
@@ -37,7 +37,7 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
 
             <ChevronDown
               size={16}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
             />
           </div>
         </div>
@@ -45,7 +45,7 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
 {/******************************************* Level ***********************************************/}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="mb-2 block text-sm font-medium text-(--text-secondary)">
           Level
         </label>
 
@@ -62,14 +62,14 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
             </select>
             <ChevronDown
                   size={16}
-                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
                 />
             </div>
       </div>
 
 {/******************************************* Price Range ***********************************************/}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="mb-2 block text-sm font-medium text-(--text-secondary)">
           Price Range
         </label>
          <div className="relative">
@@ -87,7 +87,7 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
           </select>
           <ChevronDown
                     size={16}
-                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
           />
         </div>
         
@@ -96,7 +96,7 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
 
 {/******************************************* Duration ***********************************************/}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="mb-2 block text-sm font-medium text-(--text-secondary)">
           Duration
         </label>
           <div className="relative">
@@ -113,32 +113,30 @@ function StudentCourseFilter({draftFilters,setDraftFilters,onApply,onClear}) {
             </select>
             <ChevronDown
                         size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-(--text-muted)"
               />
           </div>
       </div>
 
 
 {/******************************************* Action ***********************************************/}
-      <div className="sm:col-span-2 xl:col-span-4 flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onClear}
-          className="hover:cursor-pointer px-4 py-2 rounded-lg border border-(--border)
-                     text-sm text-gray-700 hover:bg-gray-50"
-        >
-          Reset
-        </button>
+        <div className="sm:col-span-2 xl:col-span-4 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClear}
+              className="cursor-pointer rounded-lg border border-(--border) px-4 py-2 text-sm text-(--text-secondary) transition hover:bg-(--surface-secondary)"
+            >
+              Reset
+            </button>
 
-        <button
-          type="button"
-          onClick={onApply}
-          className="hover:cursor-pointer px-5 py-2 rounded-lg bg-blue-600 text-white
-                     text-sm font-medium hover:bg-blue-700"
-        >
-          Apply Filters
-        </button>
-      </div>
+            <button
+              type="button"
+              onClick={onApply}
+              className="cursor-pointer rounded-lg bg-(--primary) px-5 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            >
+              Apply Filters
+            </button>
+        </div>
     </div>
   );
 }

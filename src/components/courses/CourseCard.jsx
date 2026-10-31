@@ -52,12 +52,12 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
 
 
     return(
-         <div className="relative w-full overflow-visible 
-                        rounded-2xl bg-white shadow-md cursor-pointer
-                        transition-all duration-300 ease-in-out
-                        hover:-translate-y-1
-                        hover:shadow-lg
-                      hover:border-blue-200">
+         <div className="relative w-full overflow-visible
+           rounded-2xl bg-(--surface) text-(--text-primary)
+           border border-(--border) shadow-md cursor-pointer
+           transition-all duration-300 ease-in-out
+           hover:-translate-y-1 hover:shadow-lg
+           hover:border-(--primary)">
 
 {/******************************************  Image / Header *****************************************/}
                     <div
@@ -119,7 +119,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                           {showMenu && (
                             <div
                               ref={menuRef}
-                              className="absolute right-3 top-12 z-70 w-48 rounded-xl bg-white py-2 shadow-xl"
+                              className="absolute right-3 top-12 z-70 w-48 rounded-xl border border-(--border) bg-(--surface) py-2 text-(--text-primary) shadow-xl"
                             >
                   {/************************************************** Edit*********************************************/}
                                     <button
@@ -129,7 +129,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                                           setShowMenu(false);
                                           onEdit(coursesData);
                                         }}
-                                        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition hover:bg-gray-100"
+                                        className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-(--text-primary) transition hover:bg-(--surface-secondary)"
                                       >
                                         <Pencil size={18} />
                                         <span>Edit</span>
@@ -143,7 +143,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                                         setShowMenu(false);
                                         onDelete(coursesData);
                                       }}
-                                      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50"
+                                      className="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-sm text-red-500 transition hover:bg-(--surface-secondary)"
                                     >
                                         <Trash2 size={18} />
                                         <span>Delete</span>
@@ -158,29 +158,29 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                 <div className="px-5 pb-5 pt-4 z-2">
 
 {/************************************************************************** Category ***************************************************************/}
-                        <p className="mb-4 text-sm font-medium text-blue-900">
+                        <p className="mb-4 text-sm font-medium text-(--primary)">
                              {coursesData.category}
                         </p>
 
 {/************************************************************************** Title *******************************************************************/}
-                        <h3 className="mb-5 text-xl font-medium text-gray-900">
+                        <h3 className="mb-5 text-xl font-semibold text-(--text-primary)">
                             {coursesData.title}
                         </h3>
 
 {/************************************************************************** Level *******************************************************************/}
               
-                        <span className="inline-flex rounded-full border border-gray-400 px-3 py-1 text-sm text-gray-700">
+                        <span className="inline-flex rounded-full border border-(--border) px-3 py-1 text-sm font-medium text-(--text-secondary)">
                             {coursesData.level}
                         </span>
 
 
 {/************************************************************************** Divider Line ************************************************************/}
                    
-                         <div className="my-5 border-t border-gray-200" />
+                         <div className="my-5 border-t border-(--border)" />
 
 {/**********************************************************************Bottom information************************************************************/}
                 
-                        <div className="flex items-center justify-between text-gray-600">
+                       <div className="flex items-center justify-between text-(--text-secondary)">
 
 {/*************************************** Duration ****************************************************/}
                                         
@@ -191,7 +191,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
 
                                  
 {/*******************************************  Price *************************************************/}
-                                      <span className="font-medium text-gray-700">
+                                      <span className="font-semibold text-(--text-primary)">
                                         {formattedPrice}
                                       </span>
 
@@ -209,7 +209,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                               event.stopPropagation();
                               onAction(coursesData);
                             }}
-                            className="cursor-pointer mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-(--primary) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-(--primary) focus:ring-offset-2"
                           >
                             {actionLabel}
                             <ArrowRight size={16} />

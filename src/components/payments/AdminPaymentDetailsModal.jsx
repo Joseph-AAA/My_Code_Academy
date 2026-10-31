@@ -34,32 +34,29 @@ function formatMoney(amount, currency = "MYR") {
 
 function getStatusStyle(status) {
   if (status === "SUCCEEDED" || status === "ACTIVE") {
-    return "bg-green-50 text-green-700";
+    return "bg-green-500/10 text-green-600";
   }
 
   if (status === "PENDING") {
-    return "bg-amber-50 text-amber-700";
+    return "bg-amber-500/10 text-amber-600";
   }
 
   if (status === "REFUNDED") {
-    return "bg-purple-50 text-purple-700";
+    return "bg-purple-500/10 text-purple-600";
   }
 
-  if (
-    status === "FAILED" ||
-    status === "CANCELLED"
-  ) {
-    return "bg-red-50 text-red-700";
+  if (status === "FAILED" || status === "CANCELLED") {
+    return "bg-red-500/10 text-red-600";
   }
 
-  return "bg-gray-100 text-gray-600";
+  return "bg-(--surface-secondary) text-(--text-secondary)";
 }
 
 function DetailItem({ label, value }) {
   return (
     <div className="min-w-0">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 break-words text-sm font-medium text-gray-800">
+      <p className="text-xs text-(--text-secondary)">{label}</p>
+      <p className="mt-1 break-words text-sm font-medium text-(--text-primary)">
         {value || "—"}
       </p>
     </div>
@@ -99,18 +96,18 @@ export default function AdminPaymentDetailsModal({
         aria-modal="true"
         aria-labelledby="payment-details-title"
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-(--border) bg-(--surface) text-(--text-primary) shadow-xl"
       >
-        <header className="flex items-center justify-between border-b border-gray-200 px-5 py-4 sm:px-6">
+        <header className="flex items-center justify-between border-b border-(--border) px-5 py-4 sm:px-6">
           <div>
             <h2
               id="payment-details-title"
-              className="text-lg font-bold text-gray-800"
+              className="text-lg font-bold text-(--text-primary)"
             >
               Payment Details
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-(--text-secondary)">
               Transaction and enrollment information
             </p>
           </div>
@@ -119,7 +116,7 @@ export default function AdminPaymentDetailsModal({
             type="button"
             onClick={onClose}
             aria-label="Close payment details"
-            className="cursor-pointer rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+            className="cursor-pointer rounded-lg p-2 text-(--text-secondary) transition hover:bg-(--surface-secondary) hover:text-(--text-primary)"
           >
             <X size={20} />
           </button>
@@ -127,7 +124,7 @@ export default function AdminPaymentDetailsModal({
 
         <div className="overflow-y-auto p-5 sm:p-6">
           {loading ? (
-            <p className="py-12 text-center text-sm text-gray-500">
+            <p className="py-12 text-center text-sm text-(--text-secondary)">
               Loading payment details...
             </p>
           ) : error ? (
@@ -136,18 +133,18 @@ export default function AdminPaymentDetailsModal({
             </p>
           ) : payment ? (
             <div className="space-y-7">
-              <section className="rounded-xl bg-gray-50 p-5">
+              <section className="rounded-xl border border-(--border) bg-(--surface-secondary) p-5">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-(--text-secondary)">
                       Payment Amount
                     </p>
 
-                    <p className="mt-1 text-3xl font-bold text-gray-900">
+                    <p className="mt-1 text-3xl font-bold text-(--text-primary)">
                       {formatMoney(payment.amount, payment.currency)}
                     </p>
 
-                    <p className="mt-2 break-all text-xs text-gray-500">
+                    <p className="mt-2 break-all text-xs text-(--text-secondary)">
                       Transaction ID: {payment.id}
                     </p>
                   </div>
@@ -155,7 +152,7 @@ export default function AdminPaymentDetailsModal({
                   <div className="flex flex-col items-start gap-2 sm:items-end">
                     <StatusBadge status={payment.status} />
 
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-(--text-secondary)">
                       Provider: {payment.provider || "—"}
                     </span>
                   </div>
@@ -165,12 +162,12 @@ export default function AdminPaymentDetailsModal({
               <section>
                 <div className="mb-4 flex items-center gap-2">
                   <UserRound size={19} className="text-blue-600" />
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold text-(--text-primary)">
                     Student
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 p-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 rounded-xl border border-(--border) bg-(--surface) p-4 sm:grid-cols-2">
                   <DetailItem label="Name" value={student?.name} />
                   <DetailItem label="Email" value={student?.email} />
                 </div>
@@ -179,18 +176,18 @@ export default function AdminPaymentDetailsModal({
               <section>
                 <div className="mb-4 flex items-center gap-2">
                   <BookOpen size={19} className="text-blue-600" />
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold text-(--text-primary)">
                     Course & Enrollment
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 p-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 rounded-xl border border-(--border) bg-(--surface) p-4 sm:grid-cols-2">
                   <DetailItem label="Course" value={course?.title} />
                   <DetailItem label="Category" value={course?.category} />
 
                   <div className="flex items-center gap-2">
                     <div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-(--text-secondary)">
                         Enrollment Status
                       </p>
                       <div className="mt-1">
@@ -213,12 +210,12 @@ export default function AdminPaymentDetailsModal({
               <section>
                 <div className="mb-4 flex items-center gap-2">
                   <CreditCard size={19} className="text-blue-600" />
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold text-(--text-primary)">
                     Payment Information
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 p-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 rounded-xl border border-(--border) bg-(--surface) p-4 sm:grid-cols-2">
                   <DetailItem
                     label="Payment Method"
                     value={payment.paymentMethod}
@@ -256,7 +253,7 @@ export default function AdminPaymentDetailsModal({
                 </div>
               </section>
 
-              <div className="flex items-start gap-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">
+              <div className="flex items-start gap-2 rounded-lg border border-blue-500/20 bg-(--primary-soft) p-3 text-sm text-(--text-primary)">
                 <CalendarDays size={18} className="mt-0.5 shrink-0" />
                 <p>
                   These are the records currently stored in your
@@ -265,7 +262,7 @@ export default function AdminPaymentDetailsModal({
                 </p>
               </div>
 
-              <div className="flex items-start gap-2 rounded-lg bg-gray-50 p-3 text-xs text-gray-600">
+              <div className="flex items-start gap-2 rounded-lg border border-(--border) bg-(--surface-secondary) p-3 text-xs text-(--text-secondary)">
                 <Hash size={16} className="mt-0.5 shrink-0" />
                 <p>
                   Payment references are shown for identification.
@@ -277,11 +274,11 @@ export default function AdminPaymentDetailsModal({
           ) : null}
         </div>
 
-        <footer className="flex justify-end border-t border-gray-200 px-5 py-4 sm:px-6">
+        <footer className="flex justify-end border-t border-(--border) px-5 py-4 sm:px-6">
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="cursor-pointer rounded-lg border border-(--border) px-4 py-2 text-sm font-medium text-(--text-primary) transition hover:bg-(--surface-secondary)"
           >
             Close
           </button>

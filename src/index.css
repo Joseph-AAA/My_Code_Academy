@@ -20,44 +20,32 @@ html {
 
 
 :root {
-
+  color-scheme: light;
+  --sidebar-border: #232b63;
   --sidebar: #232b63;
   --navbar: #ffffff;
   --background: #f5f8ff;
   --surface: #ffffff;
-  --footer: #363e97;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-
-  --border: #e2e8f0;
-
-  /* Brand */
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-foreground: #f7f7f7;
-  --primary-soft: rgba(59, 131, 246, 0.1);
-
-  /* Backgrounds */
-  
-
-  --foreground: #f8fafc;
-  --surface: #ffffff;
   --surface-secondary: #f1f5f9;
+  --footer: #363e97;
 
-  /* Text */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
 
-  /* Borders */
   --border: #e2e8f0;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --primary-soft: rgba(59, 131, 246, 0.1);
 
-  /* Status */
   --success: #16a34a;
   --warning: #f59e0b;
   --danger: #dc2626;
+
   --radius-lg: 16px;
 }
+
 
 /* ================================
    Dark Theme
@@ -66,41 +54,30 @@ html {
 
 
 [data-theme="dark"] {
-
+  color-scheme: dark;
+  --sidebar-border: #334155;
   --sidebar: #020617;
   --navbar: #111827;
   --background: #0b1120;
   --surface: #111827;
-  --text-primary: #f8fafc;
-  --border: #334155;
-  /* Brand */
-  --primary: #3b82f6;
-  --primary-hover: #60a5fa;
-  --primary-foreground: #f7f7f7;
-
-  /* Backgrounds */
-
-
- --background: #f8fafc;
-  --foreground: #0b1120;
-  --surface: #111827;
   --surface-secondary: #1f2937;
+  --footer: #020617;
 
-  /* Text */
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
 
-  /* Borders */
   --border: #334155;
 
-  /* Status */
+  --primary: #60a5fa;
+  --primary-hover: #60a5fa;
+  --primary-foreground: #ffffff;
+  --primary-soft: rgba(59, 130, 246, 0.15);
+
   --success: #22c55e;
   --warning: #fbbf24;
   --danger: #ef4444;
 }
-
-
 /* ================================
    Base
 ================================ */
@@ -129,6 +106,25 @@ body {
       transparent 60%
     );
 }
+
+body,
+nav,
+aside,
+main,
+footer,
+div,
+section,
+header,
+button,
+input,
+select,
+textarea {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
 .page-container {
   width: 95%;
   margin-inline: auto;

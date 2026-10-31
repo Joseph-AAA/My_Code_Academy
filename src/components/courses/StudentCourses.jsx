@@ -202,10 +202,11 @@ const filteredCourses = courses.filter((course) => {
   return (
     <section className="w-full min-w-0 p-5 sm:p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-(--text-primary)">
           Explore Courses
         </h1>
-        <p className="mt-2 text-gray-600">
+
+        <p className="mt-2 text-(--text-secondary)">
           Find the right course for your learning journey.
         </p>
       </div>
@@ -230,7 +231,7 @@ const filteredCourses = courses.filter((course) => {
     
 
 {/***************************************** Filter ****************************************** */}
-      <div className="mb-8 rounded-xl border border-slate-200 bg-white p-5">
+      <div className="mb-8 rounded-xl border border-(--border) bg-(--surface) p-5">
         <StudentCourseFilter
           draftFilters={draftFilters}
           setDraftFilters={setDraftFilters}
@@ -240,51 +241,51 @@ const filteredCourses = courses.filter((course) => {
       </div>
 
       {loading && (
-        <p className="py-12 text-center text-gray-500">
-          Loading courses...
-        </p>
-      )}
+            <p className="py-12 text-center text-(--text-secondary)">
+              Loading courses...
+            </p>
+          )}
 
-      {!loading && error && (
-        <p className="py-12 text-center text-red-600">
-          {error}
-        </p>
-      )}
+          {!loading && error && (
+            <p className="py-12 text-center text-red-600 dark:text-red-400">
+              {error}
+            </p>
+          )}
 
-      {!loading && !error && visibleCourses.length === 0 && (
-        <p className="py-12 text-center text-gray-500">
-          No courses match your filters.
-        </p>
-      )}
+          {!loading && !error && visibleCourses.length === 0 && (
+            <p className="py-12 text-center text-(--text-secondary)">
+              No courses match your filters.
+            </p>
+          )}
 
-      {!loading && !error && visibleCourses.length > 0 && (
-        <>
-          <div className="mb-5 text-sm text-gray-500">
-            Showing {visibleCourses.length} of {filteredCourses.length} courses
-          </div>
+          {!loading && !error && visibleCourses.length > 0 && (
+            <>
+              <div className="mb-5 text-sm text-(--text-secondary)">
+                Showing {visibleCourses.length} of {filteredCourses.length} courses
+              </div>
 
 
-{viewMode === "list" ? (
-  <CourseListView
-    courses={visibleCourses}
-    onCourseClick={setSelectedCourse}
-  />
-) : (
-  <div className="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-    {visibleCourses.map((course) => (
-      <div
-        key={course.id}
-        className="w-full min-w-0 *:w-full! *:max-w-none!"
-        onClick={() => setSelectedCourse(course)}
-      >
-        <CourseCard
-          coursesData={course}
-          isAdmin={false}
-        />
-      </div>
-    ))}
-  </div>
-)}
+          {viewMode === "list" ? (
+            <CourseListView
+              courses={visibleCourses}
+              onCourseClick={setSelectedCourse}
+            />
+          ) : (
+            <div className="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {visibleCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="w-full min-w-0 *:w-full! *:max-w-none!"
+                  onClick={() => setSelectedCourse(course)}
+                >
+                  <CourseCard
+                    coursesData={course}
+                    isAdmin={false}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
 
 
@@ -299,12 +300,12 @@ const filteredCourses = courses.filter((course) => {
                 type="button"
                 disabled={safeCurrentPage === 1}
                 onClick={() => setCurrentPage((page) => page - 1)}
-                className="cursor-pointer rounded-lg border px-4 py-2 disabled:opacity-40"
+                className="cursor-pointer rounded-lg border border-(--border) px-4 py-2 text-(--text-secondary) transition hover:bg-(--surface-secondary) disabled:opacity-40"
               >
                 Previous
               </button>
 
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-(--text-secondary)">
                 Page {safeCurrentPage} of {filteredTotalPages}
               </span>
 
@@ -312,7 +313,7 @@ const filteredCourses = courses.filter((course) => {
                 type="button"
                 disabled={safeCurrentPage >= filteredTotalPages}
                 onClick={() => setCurrentPage((page) => page + 1)}
-                className="cursor-pointer rounded-lg border px-4 py-2 disabled:opacity-40"
+                className="cursor-pointer rounded-lg border border-(--border) px-4 py-2 text-(--text-secondary) transition hover:bg-(--surface-secondary) disabled:opacity-40"
               >
                 Next
               </button>

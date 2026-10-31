@@ -39,11 +39,11 @@ function ActivityCard() {
   };
 
   return (
-    <div className="w-full flex flex-col items-center h-96 rounded-xl bg-white shadow-sm">
+    <div className="border border-(--border) w-full flex flex-col items-center h-96 rounded-xl bg-(--surface) text-(--text-primary) shadow-sm">
 
       {/* Activity Header */}
-      <div className="w-[95%] h-16 flex items-center justify-between">
-        <h3 className="text-xs md:text-md font-bold flex flex-col sm:flex-row gap-3 text-(--text-darks)">
+      <div className="w-[95%] min-h-15 items-center flex justify-between border-b border-(--border) last:border-b-0 gap-4">
+        <h3 className="text-xs md:text-md font-bold flex  flex-col sm:flex-row gap-3 text-(--text-primary)">
           <Activity />
           Recent Activities
         </h3>
@@ -66,7 +66,7 @@ function ActivityCard() {
 
       {/* Activity Data */}
       {activities.length === 0 ? (
-        <p className="mt-6 text-sm text-gray-500">
+        <p className="mt-6 text-sm text-(--text-secondary)">
           No recent activities yet.
         </p>
       ) : (
@@ -89,11 +89,11 @@ function ActivityCard() {
               </span>
 
               <div>
-                <p className="text-xs md:text-sm">
+                 <p className="text-xs md:text-sm text-(--text-primary)">
                   {activityData.message}
                 </p>
 
-                <span className="text-xs md:text-sm text-gray-500">
+                <span className="text-xs md:text-sm text-(--text-secondary)">
                   {formatTimeAgo(activityData.createdAt)}
                 </span>
               </div>

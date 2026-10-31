@@ -33,15 +33,15 @@ export default function StudentStatsCard({ stats, loading }) {
         return (
           <div
             key={item.key}
-            className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+            className="rounded-xl border border-(--border) bg-(--surface) p-5 text-(--text-primary) shadow-sm"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-(--text-secondary)">
                   {item.title}
                 </p>
 
-                <p className="mt-3 text-3xl font-bold text-gray-800">
+                <p className="mt-3 text-3xl font-bold text-(--text-primary)">
                   {loading
                     ? "—"
                     : (stats[item.key] ?? 0).toLocaleString()}
@@ -55,7 +55,7 @@ export default function StudentStatsCard({ stats, loading }) {
               </div>
             </div>
 
-            <p className="mt-3 text-xs text-gray-500">
+            <p className="mt-3 text-xs text-(--text-muted)">
               {item.description}
             </p>
           </div>

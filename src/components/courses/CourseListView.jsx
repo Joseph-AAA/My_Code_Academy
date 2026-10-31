@@ -8,7 +8,7 @@ function CourseListView({ courses, onCourseClick }) {
         <div
           key={course.id}
           onClick={() => onCourseClick(course)}
-          className="bg-white border border-(--border) rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer"
+          className="bg-(--surface) text-(--text-primary) border border-(--border) rounded-xl p-4 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer"
         >
           <div
             className={`${course.color} shadow-md h-12 w-12 flex items-center justify-center rounded-lg shrink-0`}
@@ -21,21 +21,21 @@ function CourseListView({ courses, onCourseClick }) {
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm text-gray-800">
+            <h3 className="font-semibold text-sm text-(--text-primary)">
               {course.title}
             </h3>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-(--text-secondary)">
               {course.category} • {course.level}
             </p>
           </div>
 
-          <div className="hidden md:flex items-center gap-4 text-xs text-gray-500">
+          <div className="hidden md:flex items-center gap-4 text-xs text-(--text-secondary)">
             <span className="flex items-center gap-1">
               <Clock size={12} />
               {course.duration}
             </span>
 
-            <span className="font-medium text-gray-700">
+            <span className="font-semibold text-(--text-primary)">
               {course.price}
             </span>
 

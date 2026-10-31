@@ -25,6 +25,7 @@ import StudentCourseLearning from "./components/students/StudentCourseLearning";
 import StudentPayments from "./components/studentPayment/StudentPayments";
 import StudentSettings from "./pages/setting/StudentSettings";
 import { DashboardProvider } from "./context/DashboardContext";
+import { useEffect} from "react";
 
 function RoleBasedCourses() {
     const storedUser =
@@ -105,7 +106,16 @@ function RoleBasedSettings() {
   return null;
 }
 function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+      const [sidebarOpen, setSidebarOpen] = useState(false);
+
+      const [theme, setTheme] = useState(() => {
+        return localStorage.getItem("theme") || "light";
+      });
+
+      useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+      }, [theme]);
 
   
 
@@ -125,12 +135,19 @@ function App() {
       <Route path="/reset-password/:token" element={<ResetPassword />}/>
 
       {/* Public website */}
-      <Route element={<PublicLayout />}>
-          <Route path="/" element={<PublicCourses />} />
-          <Route
-            path="/public/courses"
-            element={<PublicCourses />}
+      <Route
+        element={
+          <PublicLayout
+            theme={theme}
+            setTheme={setTheme}
           />
+        }
+      >
+        <Route path="/" element={<PublicCourses />} />
+        <Route
+          path="/public/courses"
+          element={<PublicCourses />}
+        />
       </Route>
 
 
@@ -145,7 +162,7 @@ function App() {
               <div className="contents lg:block">
                 <aside
                   className={`
-                    fixed inset-y-0 left-0 z-60
+                    fixed inset-y-0 left-0 z-60 border-r border-(--sidebar-border)
                     flex h-screen w-full flex-col items-center
                     bg-(--sidebar) text-white
                     md:w-1/2
@@ -173,10 +190,12 @@ function App() {
               {/* Content */}
               <div className="grid grid-rows-[76px_minmax(0,1fr)_56px] gap-0 bg-(--background) h-full w-full">
 
-                <nav className="sticky top-0 z-50 w-full bg-(--navbar) shadow-md">
+                <nav className="sticky  border-b border-(--border) top-0 z-50 w-full bg-(--navbar) shadow-md">
                   <Navbar
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
+                    theme={theme}
+                    setTheme={setTheme}
                   />
                 </nav>
 
@@ -277,7 +296,7 @@ function App() {
                   </Routes>
                 </main>
 
-                <div className="bg-(--footer) w-full">
+                <div className="border-t border-(--border) bg-(--footer) w-full">
                   <Footer />
                 </div>
 
