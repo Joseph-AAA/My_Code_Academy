@@ -172,25 +172,23 @@ export default function StudentsTable({
                           {student.activeEnrollmentCount}
                         </td>
 
-                        <td className="px-5 py-4">
+                        <td className="whitespace-nowrap px-5 py-4">
                           <span
-                            className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                            className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${
                               isEnrolled
                                 ? "bg-green-50 text-green-700"
                                 : "bg-gray-100 text-gray-600"
                             }`}
                           >
-                            {isEnrolled
-                              ? "Enrolled"
-                              : "Not enrolled"}
+                            {isEnrolled ? "Enrolled" : "Not enrolled"}
                           </span>
                         </td>
 
-                        <td className="px-5 py-4 text-right">
+                        <td className="whitespace-nowrap px-5 py-4 text-right">
                           <button
                             type="button"
                             onClick={() => onViewDetails(student.id)}
-                            className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-(--border) px-3 py-2 text-sm font-medium text-(--primary) transition hover:border-blue-300 hover:bg-(--primary-soft)"
+                            className="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border border-(--border) px-3 py-2 text-sm font-medium text-(--primary) transition hover:border-blue-300 hover:bg-(--primary-soft)"
                           >
                             <Eye size={16} />
                             View Details

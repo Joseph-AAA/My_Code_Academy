@@ -271,7 +271,8 @@ const filteredCourses = courses.filter((course) => {
               onCourseClick={setSelectedCourse}
             />
           ) : (
-            <div className="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid w-full min-w-0 grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3">
+      
               {visibleCourses.map((course) => (
                 <div
                   key={course.id}

@@ -108,7 +108,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4"
     >
         <div
           role="dialog"

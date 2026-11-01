@@ -170,7 +170,7 @@ function Navbar({  sidebarOpen, setSidebarOpen, theme, setTheme  }) {
     >
       <button
         className="flex size-10 cursor-pointer items-center justify-center rounded-md border border-(--border) text-(--text-primary) transition hover:bg-(--surface-secondary) lg:hidden"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
+        onClick={() => setSidebarOpen((prev) => !prev)}
         type="button"
       >
         <Menu />

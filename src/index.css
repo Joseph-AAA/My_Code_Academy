@@ -109,7 +109,6 @@ body {
 
 body,
 nav,
-aside,
 main,
 footer,
 div,
@@ -124,7 +123,6 @@ textarea {
     border-color 0.2s ease,
     color 0.2s ease;
 }
-
 .page-container {
   width: 95%;
   margin-inline: auto;
