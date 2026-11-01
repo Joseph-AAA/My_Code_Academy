@@ -558,7 +558,7 @@ async function handleChangePassword(event) {
   </div>
 </section>
 
-    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-1 xl:grid-cols-2">
            <section className="space-y-5 rounded-xl border border-(--border) bg-(--surface) p-6">
               <div>
                 <h2 className="text-lg font-semibold text-(--text-primary)">

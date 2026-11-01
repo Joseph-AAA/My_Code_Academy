@@ -182,7 +182,7 @@ const handleDeleteCourse = async (courseId) => {
           No courses found.
         </p>
       ) : viewMode === "grid" ? (
-                <div className="grid h-full w-full grid-cols-1 gap-3 lg:grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
+                <div className="grid h-full w-full grid-cols-1 gap-3 md:grid-cols-2 2xl:grid-cols-3">
                   {courses.map((course) => (
                     <div
                       key={course.id}
