@@ -17,38 +17,48 @@ const router = express.Router();
     const { name, email, password } = req.body;
 
     // 1. Validate required fields
-    if (!name || !email || !password) {
+    if (!name?.trim() || !email?.trim() || !password) {
       return res.status(400).json({
         message: "Name, email and password are required",
       });
     }
 
-    // 2. Check whether the email already exists
-    const existingUser = await prisma.user.findUnique({
-          where: {
-            email,
-          },
+    // 2. Validate email format
+    const normalizedEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(normalizedEmail)) {
+      return res.status(400).json({
+        message: "Please enter a valid email address",
       });
+    }
 
-        if (existingUser) {
-          return res.status(409).json({
-            message: "Email already exists",
-          });
-      }
+    // 3. Check whether the email already exists
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: normalizedEmail,
+      },
+    });
 
-    // 3. Hash the password
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Email already exists",
+      });
+    }
+
+    // 4. Hash the password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // 4. Create the user in Neon PostgreSQL
+    // 5. Create the user in Neon PostgreSQL
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: name.trim(),
+        email: normalizedEmail,
         password: hashedPassword,
       },
     });
 
-    // 5. Send a safe response to the frontend
+    // 6. Send a safe response to the frontend
     return res.status(201).json({
       message: "Account created successfully",
       user: {
@@ -66,7 +76,6 @@ const router = express.Router();
     });
   }
 });
-
 
 //********************************************Forgot Password **************************************/
 

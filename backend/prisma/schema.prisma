@@ -19,8 +19,16 @@ model User {
   email                    String    @unique
   password                 String
   role                     UserRole  @default(STUDENT)
+
+  // Email verification
+  isEmailVerified          Boolean   @default(false)
+  emailVerificationToken   String?   @unique
+  emailVerificationExpiry  DateTime?
+
+  // Password reset
   resetPasswordToken       String?   @unique
   resetPasswordTokenExpiry DateTime?
+
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
 
