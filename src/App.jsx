@@ -26,6 +26,7 @@ import StudentPayments from "./components/studentPayment/StudentPayments";
 import StudentSettings from "./pages/setting/StudentSettings";
 import { DashboardProvider } from "./context/DashboardContext";
 import { useEffect} from "react";
+import VerifyEmail from "./pages/signIn/VerifyEmail";
 
 function RoleBasedCourses() {
     const storedUser =
@@ -128,6 +129,10 @@ function App() {
 
       {/* Sign In - full screen */}
       <Route path="/signin" element={<SignIn />} />
+      <Route
+          path="/verify-email/:token"
+          element={<VerifyEmail />}
+        />
 
       {/* forget password - full screen */}
       <Route path="/forgot-password"element={<ForgotPassword />}/>
