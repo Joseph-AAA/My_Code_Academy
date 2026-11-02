@@ -72,12 +72,16 @@ const SignUp = () => {
 
 // ***********************************To redirect sign in page after verify mail*********************************
 
-       useEffect(() => {
+      useEffect(() => {
   const handleEmailVerified = (event) => {
+    console.log("Storage event received:", event.key, event.newValue);
+
     if (
       event.key === "signupEmailVerified" &&
       event.newValue !== null
     ) {
+      console.log("Verification signal received. Redirecting to Sign In...");
+
       localStorage.removeItem("signupEmailVerified");
       localStorage.removeItem("pendingVerificationEmail");
 
