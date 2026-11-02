@@ -12,54 +12,184 @@ import { sendEmail } from "../lib/sendEmail.js";
 const router = express.Router();
 // ********************************************For Sign up **************************************
 
-  router.post("/signup", async (req, res) => {
+//   router.post("/signup", async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+
+//     // 1. Validate required fields
+//     if (!name?.trim() || !email?.trim() || !password) {
+//       return res.status(400).json({
+//         message: "Name, email and password are required",
+//       });
+//     }
+
+//     // 2. Validate email format
+//     const normalizedEmail = email.trim().toLowerCase();
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+//     if (!emailRegex.test(normalizedEmail)) {
+//       return res.status(400).json({
+//         message: "Please enter a valid email address",
+//       });
+//     }
+
+//     // 3. Check whether the email already exists
+//     const existingUser = await prisma.user.findUnique({
+//       where: {
+//         email: normalizedEmail,
+//       },
+//     });
+
+//     if (existingUser) {
+//       return res.status(409).json({
+//         message: "Email already exists",
+//       });
+//     }
+
+//     // 4. Hash the password
+//     const hashedPassword = await bcrypt.hash(password, 12);
+
+//     // 5. Create the user in Neon PostgreSQL
+//     const user = await prisma.user.create({
+//       data: {
+//         name: name.trim(),
+//         email: normalizedEmail,
+//         password: hashedPassword,
+//       },
+//     });
+
+//     // 6. Send a safe response to the frontend
+//     return res.status(201).json({
+//       message: "Account created successfully",
+//       user: {
+//         id: user.id,
+//         name: user.name,
+//         email: user.email,
+//         role: user.role,
+//       },
+//     });
+//   } catch (error) {
+//     console.error(error);
+
+//     return res.status(500).json({
+//       message: "Server error",
+//     });
+//   }
+// });
+
+
+router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
     // 1. Validate required fields
-    if (!name || !email || !password) {
+    if (!name?.trim() || !email?.trim() || !password) {
       return res.status(400).json({
         message: "Name, email and password are required",
       });
     }
 
-    // 2. Check whether the email already exists
-    const existingUser = await prisma.user.findUnique({
-          where: {
-            email,
-          },
+    // 2. Validate email format
+    const normalizedEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(normalizedEmail)) {
+      return res.status(400).json({
+        message: "Please enter a valid email address",
       });
+    }
 
-        if (existingUser) {
-          return res.status(409).json({
-            message: "Email already exists",
-          });
-      }
+    // 3. Check existing email
+    const existingUser = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
 
-    // 3. Hash the password
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Email already exists",
+      });
+    }
+
+    // 4. Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // 4. Create the user in Neon PostgreSQL
+    // 5. Generate verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(verificationToken)
+      .digest("hex");
+
+    // 6. Set token expiry (15 minutes)
+    const verificationExpiry = new Date(
+      Date.now() + 15 * 60 * 1000
+    );
+
+    // 7. Create unverified user
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
+        name: name.trim(),
+        email: normalizedEmail,
         password: hashedPassword,
+        isEmailVerified: false,
+        emailVerificationToken: hashedToken,
+        emailVerificationExpiry: verificationExpiry,
       },
     });
 
-    // 5. Send a safe response to the frontend
+    // 8. Create verification link
+    const verificationLink =
+      `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+
+    // 9. Send verification email
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Verify Your MyCode Academy Email",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+            <h2>Verify Your Email Address</h2>
+
+            <p>Hello ${user.name},</p>
+
+            <p>Thank you for registering with MyCode Academy.</p>
+
+            <p>Please click the button below to verify your email address.</p>
+
+            <a
+              href="${verificationLink}"
+              style="display:inline-block;padding:12px 24px;background:#4f46e5;color:#ffffff;text-decoration:none;border-radius:8px;"
+            >
+              Verify Email
+            </a>
+
+            <p>This verification link expires in 15 minutes.</p>
+
+            <p>If you did not create this account, you can ignore this email.</p>
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      console.error("Verification email error:", emailError.message);
+
+      // Delete the account if email delivery fails
+      await prisma.user.delete({
+        where: { id: user.id },
+      });
+
+      return res.status(500).json({
+        message: "Unable to send verification email. Please try again.",
+      });
+    }
+
+    // 10. Return safe response
     return res.status(201).json({
-      message: "Account created successfully",
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      message: "Account created. Please check your email to verify your account.",
     });
+
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
 
     return res.status(500).json({
       message: "Server error",
@@ -67,6 +197,188 @@ const router = express.Router();
   }
 });
 
+
+
+
+
+// ******************************************** Verify Email ********************************************
+
+router.get("/verify-email/:token", async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    // 1. Validate token
+    if (!token) {
+      return res.status(400).json({
+        message: "Verification token is required",
+      });
+    }
+
+    // 2. Hash the token
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    // 3. Find user using the hashed token
+    const user = await prisma.user.findUnique({
+      where: {
+        emailVerificationToken: hashedToken,
+      },
+    });
+
+    // 4. Check token validity and expiry
+    if (
+      !user ||
+      !user.emailVerificationExpiry ||
+      user.emailVerificationExpiry <= new Date()
+    ) {
+      return res.status(400).json({
+        message: "Verification link is invalid or expired.",
+      });
+    }
+
+    // 5. Verify email and clear verification token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isEmailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpiry: null,
+      },
+    });
+
+    // 6. Return success
+    return res.status(200).json({
+      message: "Email verified successfully. You can now sign in.",
+    });
+
+  } catch (error) {
+    console.error("Email verification error:", error);
+
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
+
+
+
+
+
+ // ******************************************** Resend Verification Email ********************************************
+
+router.post("/resend-verification", async (req, res) => {
+  try {
+    const email = req.body.email?.trim().toLowerCase();
+
+    // 1. Validate email
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    // 2. Find existing user
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Account not found. Please sign up first.",
+      });
+    }
+
+    // 3. Check whether already verified
+    if (user.isEmailVerified) {
+      return res.status(400).json({
+        message: "Your email is already verified. Please sign in.",
+      });
+    }
+
+    // 4. Generate a new verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(verificationToken)
+      .digest("hex");
+
+    // 5. Set new expiry (15 minutes)
+    const verificationExpiry = new Date(
+      Date.now() + 15 * 60 * 1000
+    );
+
+    // 6. Update token in database
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerificationToken: hashedToken,
+        emailVerificationExpiry: verificationExpiry,
+      },
+    });
+
+    // 7. Create verification link
+    const verificationLink =
+      `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+
+    // 8. Send verification email
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Verify Your MyCode Academy Email",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+            <h2>Verify Your Email Address</h2>
+
+            <p>Hello ${user.name},</p>
+
+            <p>Please click the button below to verify your email address.</p>
+
+            <a
+              href="${verificationLink}"
+              style="display:inline-block;padding:12px 24px;background:#4f46e5;color:#ffffff;text-decoration:none;border-radius:8px;"
+            >
+              Verify Email
+            </a>
+
+            <p>This verification link expires in 15 minutes.</p>
+
+            <p>If you did not request this email, you can ignore it.</p>
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      console.error("Resend verification email error:", emailError.message);
+
+      // Invalidate the new token if email delivery fails
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerificationToken: null,
+          emailVerificationExpiry: null,
+        },
+      });
+
+      return res.status(500).json({
+        message: "Unable to send verification email. Please try again.",
+      });
+    }
+
+    // 9. Return success
+    return res.status(200).json({
+      message: "A new verification email has been sent. Please check your inbox.",
+    });
+
+  } catch (error) {
+    console.error("Resend verification error:", error);
+
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+});
 
 //********************************************Forgot Password **************************************/
 
@@ -293,6 +605,16 @@ router.post("/login", async (req, res) => {
       });
     }
 
+    // 5. Check email verification
+    if (!user.isEmailVerified) {
+      return res.status(403).json({
+        message: "Please verify your email before signing in.",
+      });
+    }
+
+
+console.log("Password match:", passwordMatch);
+console.log("Email verified:", user.isEmailVerified);
     // 5. Generate a JWT
     const expiresIn = rememberMe ? "1hr" : "15min";  //15min for lacal - 1min for seesion
     

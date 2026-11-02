@@ -1,9 +1,14 @@
 
 import CodeBackground from "../../components/Background/CodeBackground";
 import "./SignIn.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 
 const SignIn = () => {
       const navigate = useNavigate();
@@ -19,7 +24,27 @@ const SignIn = () => {
       const [touched, setTouched] = useState({});
       const [errors, setErrors] = useState({});
       const [authError, setAuthError] = useState("");
+      const [resendLoading, setResendLoading] = useState(false);
+      const [resendMessage, setResendMessage] = useState("");
 
+      
+          
+
+          useEffect(() => {
+          const handleEmailVerified = () => {
+            if (localStorage.getItem("emailVerified") === "true") {
+              setAuthError("");
+              setResendMessage("");
+              localStorage.removeItem("emailVerified");
+            }
+          };
+
+          window.addEventListener("focus", handleEmailVerified);
+
+          return () => {
+            window.removeEventListener("focus", handleEmailVerified);
+          };
+        }, []);
   // Handle input changes
       const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,6 +65,49 @@ const SignIn = () => {
           }));
         }
       };
+
+
+      // Resend Verification
+          
+    const handleResendVerification = async () => {
+      if (!input.email.trim()) {
+        setResendMessage("Please enter your email address first.");
+        return;
+      }
+
+      setResendLoading(true);
+      setResendMessage("");
+
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/resend-verification`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: input.email.trim(),
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setResendMessage(data.message || "Unable to resend verification email.");
+          return;
+        }
+
+        setResendMessage(data.message);
+      } catch (error) {
+        console.error("Resend verification error:", error);
+        setResendMessage("Unable to connect to the server. Please try again.");
+      } finally {
+        setResendLoading(false);
+      }
+    };
+
 
   // Validate a field when the user leaves it
       const handleBlur = (e) => {
@@ -106,10 +174,9 @@ const SignIn = () => {
 
       // Handle incorrect credentials or other login errors
       if (!response.ok) {
-        setAuthError("Invalid email or password");
+        setAuthError(data.message || "Unable to sign in. Please try again.");
         return;
       }
-
       // Login successful
      if (rememberMe) {
   // Remove old credentials from the other storage
@@ -271,6 +338,27 @@ const SignIn = () => {
                   Forgot password?
                 </a>
               </div>
+            
+              {authError === "Please verify your email before signing in." && (
+                <div className="verification-resend">
+                  <p>Didn't receive the verification email?</p>
+
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={resendLoading}
+                  >
+                    {resendLoading
+                      ? "Sending..."
+                      : "Resend Verification Email"}
+                  </button>
+
+                  {resendMessage && (
+                    <p role="status">{resendMessage}</p>
+                  )}
+                </div>
+              )}
+
 
               {/* Sign In Button */}
               <button
