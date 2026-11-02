@@ -72,33 +72,27 @@ const SignUp = () => {
 
 // ***********************************To redirect sign in page after verify mail*********************************
 
-        useEffect(() => {
-            const handleEmailVerified = (event) => {
-              if (
-                event.key === "signupEmailVerified" &&
-                event.newValue === "true"
-              ) {
-                const verifiedEmail = localStorage.getItem(
-                  "pendingVerificationEmail"
-                );
+       useEffect(() => {
+  const handleEmailVerified = (event) => {
+    if (
+      event.key === "signupEmailVerified" &&
+      event.newValue === "true"
+    ) {
+      localStorage.removeItem("signupEmailVerified");
+      localStorage.removeItem("pendingVerificationEmail");
 
-                if (verifiedEmail) {
-                  localStorage.removeItem("signupEmailVerified");
-                  localStorage.removeItem("pendingVerificationEmail");
+      navigate("/signin", {
+        replace: true,
+      });
+    }
+  };
 
-                  navigate("/signin", {
-                    replace: true,
-                  });
-                }
-              }
-            };
+  window.addEventListener("storage", handleEmailVerified);
 
-        window.addEventListener("storage", handleEmailVerified);
-
-        return () => {
-          window.removeEventListener("storage", handleEmailVerified);
-        };
-      }, [navigate]);
+  return () => {
+    window.removeEventListener("storage", handleEmailVerified);
+  };
+}, [navigate]);
 
 // ********************************************To receive input values***********************
 
