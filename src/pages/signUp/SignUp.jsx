@@ -76,7 +76,7 @@ const SignUp = () => {
   const handleEmailVerified = (event) => {
     if (
       event.key === "signupEmailVerified" &&
-      event.newValue === "true"
+      event.newValue !== null
     ) {
       localStorage.removeItem("signupEmailVerified");
       localStorage.removeItem("pendingVerificationEmail");

@@ -31,7 +31,10 @@ const VerifyEmail = () => {
 
       setStatus("success");
       setMessage(data.message);
-      localStorage.setItem("signupEmailVerified", "true");
+      localStorage.setItem(
+        "signupEmailVerified",
+        Date.now().toString()
+      );
     } catch (error) {
       console.error("Email verification error:", error);
       setStatus("error");
