@@ -1,6 +1,6 @@
 import CodeBackground from "../../components/Background/CodeBackground";
 import "./SignUp.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -12,12 +12,15 @@ const SignUp = () => {
       const [touched, setTouched] = useState({});
       const [errors, setErrors] = useState({});
       const [formError, setFormError] = useState("");
+      const [successMessage, setSuccessMessage] = useState("");
+
       
       const navigate = useNavigate();
       const [isSubmitting, setIsSubmitting] = useState(false);
       const [showPassword, setShowPassword] = useState(false);
       const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+      
   // ********************************************setup useState for input***********************
 
       const [input, setInput] = useState({
@@ -65,6 +68,38 @@ const SignUp = () => {
               return "";
           }
         };  
+
+
+// ***********************************To redirect sign in page after verify mail*********************************
+
+        useEffect(() => {
+            const handleEmailVerified = (event) => {
+              if (
+                event.key === "signupEmailVerified" &&
+                event.newValue === "true"
+              ) {
+                const verifiedEmail = localStorage.getItem(
+                  "pendingVerificationEmail"
+                );
+
+                if (verifiedEmail) {
+                  localStorage.removeItem("signupEmailVerified");
+                  localStorage.removeItem("pendingVerificationEmail");
+
+                  navigate("/signin", {
+                    replace: true,
+                    state: { email: verifiedEmail },
+                  });
+                }
+              }
+            };
+
+        window.addEventListener("storage", handleEmailVerified);
+
+        return () => {
+          window.removeEventListener("storage", handleEmailVerified);
+        };
+      }, [navigate]);
 
 // ********************************************To receive input values***********************
 
@@ -187,7 +222,14 @@ const SignUp = () => {
                       return;
                     }
 
-                  navigate("/signin");
+                  localStorage.setItem(
+                    "pendingVerificationEmail",
+                    input.email.trim().toLowerCase()
+                  );
+
+                  setSuccessMessage(
+                      "Please check your email to verify your account."
+                    );
                   
                 } catch (error) {
                   console.error("Signup error:", error);
@@ -200,39 +242,80 @@ const SignUp = () => {
               };
 
 
-  return (
-    <div className="signup-page">
 
-      {/* Background */}
-      <CodeBackground />
+return (
+  <div className="signup-page">
+    {/* Background */}
+    <CodeBackground />
 
-      {/* Form */}
-      <div className="signup-wrapper">
-        <div className="neon-card">
+    {/* Form */}
+    <div className="signup-wrapper">
+      <div className="neon-card">
+        <div className="signup-card">
 
-          <div className="signup-card">
-{/*********************************************Signup Header**********************************/}
-            <div className="signup-header">
-                  <span className="signup-badge">
-                        MYCODE ACADEMY
-                  </span>
+          {/* Signup Header */}
+          <div className="signup-header">
+            <span className="signup-badge">
+              MYCODE ACADEMY
+            </span>
 
-                  <h1>Create Account</h1>
+            <h1>Create Account</h1>
+            <p>Start your journey as a developer</p>
+          </div>
 
-                  <p>Start your journey as a developer</p>
-            </div>
+          {/* Success Screen OR Signup Form */}
+          {successMessage ? (
+            <>
+              {/* Success Message */}
+              <div className="signup-success" role="status">
+                <p>{successMessage}</p>
+              </div>
 
-{/*********************************************Signup Form ************************************/}
-            <form className="signup-form" onSubmit={handleSubmit}>
+              {/* Success Action Buttons */}
+              <div className="signup-success-actions">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSuccessMessage("");
+                    setInput({
+                      name: "",
+                      email: "",
+                      password: "",
+                      confirmPassword: "",
+                    });
+                    setTouched({});
+                    setErrors({});
+                    setFormError("");
+                  }}
+                >
+                  Back to Sign Up
+                </button>
 
-
-{/************************************************Full Name ************************************/}
-             <div className="input-group">
+                <button
+                  type="button"
+                  onClick={() => navigate("/signin")}
+                >
+                  Go to Sign In
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <form
+                className="signup-form"
+                onSubmit={handleSubmit}
+              >
+                {/* Full Name */}
+                <div className="input-group">
                   <div className="input-label-row">
-                    <label htmlFor="signup-name">Full Name</label>
+                    <label htmlFor="signup-name">
+                      Full Name
+                    </label>
 
                     {touched.name && errors.name && (
-                      <span className="field-error">{errors.name}</span>
+                      <span className="field-error">
+                        {errors.name}
+                      </span>
                     )}
                   </div>
 
@@ -246,42 +329,50 @@ const SignUp = () => {
                     placeholder="Enter your name"
                     aria-invalid={Boolean(touched.name && errors.name)}
                   />
-              </div>
-
-
-{/****************************************************Email**************************************/}
-              <div className="input-group">
-                      <div className="input-label-row">
-                          <label htmlFor="signup-email">Email</label>
-
-                          {touched.email && errors.email && (
-                            <span className="field-error">{errors.email}</span>
-                          )}
-                      </div>
-
-                      <input
-                        id="signup-email"
-                        type="email"
-                        name="email"
-                        value={input.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        placeholder="Enter your email"
-                        aria-invalid={Boolean(touched.email && errors.email)}
-                      />
                 </div>
-{/*************************************************Password*************************************/}
-              <div className="input-group">
+
+                {/* Email */}
+                <div className="input-group">
+                  <div className="input-label-row">
+                    <label htmlFor="signup-email">
+                      Email
+                    </label>
+
+                    {touched.email && errors.email && (
+                      <span className="field-error">
+                        {errors.email}
+                      </span>
+                    )}
+                  </div>
+
+                  <input
+                    id="signup-email"
+                    type="email"
+                    name="email"
+                    value={input.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Enter your email"
+                    aria-invalid={Boolean(touched.email && errors.email)}
+                  />
+                </div>
+
+                {/* Password */}
+                <div className="input-group">
                   <div className="input-label-row">
                     <label htmlFor="signup-password">
                       Password
-                      <span className="password-hint"> (e.g. Code@123)</span>
+                      <span className="password-hint">
+                        {" "} (e.g. Code@123)
+                      </span>
                     </label>
 
                     {touched.password && (
                       <span
                         className={`field-feedback ${
-                          errors.password ? "field-error" : "field-success"
+                          errors.password
+                            ? "field-error"
+                            : "field-success"
                         }`}
                       >
                         {errors.password || "Password is strong"}
@@ -306,15 +397,19 @@ const SignUp = () => {
                       type="button"
                       className="password-toggle"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      {showPassword
+                        ? <EyeOff size={20} />
+                        : <Eye size={20} />}
                     </button>
                   </div>
-              </div>
+                </div>
 
-{/**********************************************Confirm Passwork**********************************/}
-              <div className="input-group">
+                {/* Confirm Password */}
+                <div className="input-group">
                   <div className="input-label-row">
                     <label htmlFor="signup-confirm-password">
                       Confirm Password
@@ -345,52 +440,55 @@ const SignUp = () => {
                     <button
                       type="button"
                       className="password-toggle"
-                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      onClick={() =>
+                        setShowConfirmPassword((prev) => !prev)
+                      }
                       aria-label={
                         showConfirmPassword
                           ? "Hide confirm password"
                           : "Show confirm password"
                       }
                     >
-                      {showConfirmPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <Eye size={20} />
-                      )}
+                      {showConfirmPassword
+                        ? <EyeOff size={20} />
+                        : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
 
-{/*********************************************Submit Button*************************************/}
-                  
-              {formError && (
+                {/* Form Error */}
+                {formError && (
                   <p className="form-error" role="alert">
                     {formError}
                   </p>
-              )}
+                )}
 
-            <button
-                type="submit"
-                className="signup-button"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Creating Account..." : "Create Account"}
-            </button>
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="signup-button"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? "Creating Account..."
+                    : "Create Account"}
+                </button>
+              </form>
 
-            </form>
-
-            <p className="signin-text">
+              {/* Existing Sign In Link */}
+              <p className="signin-text">
                 Already have an account?{" "}
                 <a href="/signin">Sign In</a>
-            </p>
-
-          </div>
+              </p>
+            </>
+          )}
 
         </div>
       </div>
-
     </div>
-  );
+  </div>
+);
+
 };
 
 export default SignUp;
