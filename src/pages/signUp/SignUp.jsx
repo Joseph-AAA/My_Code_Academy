@@ -88,7 +88,6 @@ const SignUp = () => {
 
                   navigate("/signin", {
                     replace: true,
-                    state: { email: verifiedEmail },
                   });
                 }
               }
