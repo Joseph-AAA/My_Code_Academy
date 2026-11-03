@@ -111,39 +111,56 @@ const router = express.Router();
           orderBy = { price: "asc" };
         }
 
-        // 6. Filter and count BEFORE pagination
-        const [courses, totalCourses] = await prisma.$transaction([
-          prisma.course.findMany({
-            where,
-            skip,
-            take: limit,
-            include: {
-              instructor: true,
-            },
-            orderBy,
-          }),
+    
+       // 6. Filter and count BEFORE pagination
+              const [courses, totalCourses] = await prisma.$transaction([
+                prisma.course.findMany({
+                  where,
+                  skip,
+                  take: limit,
+                  include: {
+                    instructor: true,
+                    _count: {
+                      select: {
+                        enrollments: {
+                          where: {
+                            status: "ACTIVE",
+                          },
+                        },
+                      },
+                    },
+                  },
+                  orderBy,
+                }),
 
-          prisma.course.count({
-            where,
-          }),
-        ]);
+                prisma.course.count({
+                  where,
+                }),
+              ]);
 
-        // 7. Return results and pagination information
-        return res.status(200).json({
-          message: "Courses fetched successfully",
-          courses,
-          currentPage: page,
-          totalPages: Math.ceil(totalCourses / limit),
-          totalCourses,
-        });
-      } catch (error) {
-        console.error("Fetch courses error:", error);
+                const coursesWithStudentCount = courses.map(
+                  ({ _count, ...course }) => ({
+                    ...course,
+                    students: _count.enrollments,
+                  })
+                );
 
-        return res.status(500).json({
-          message: "Failed to fetch courses",
-        });
-      }
-    });
+                // 7. Return results and pagination information
+                return res.status(200).json({
+                  message: "Courses fetched successfully",
+                  courses: coursesWithStudentCount,
+                  currentPage: page,
+                  totalPages: Math.ceil(totalCourses / limit),
+                  totalCourses,
+                });
+                      } catch (error) {
+                        console.error("Fetch courses error:", error);
+
+                        return res.status(500).json({
+                          message: "Failed to fetch courses",
+                        });
+                      }
+                    });
 
 
 //*************************************** */ GET /api/courses/stats ******************************/
@@ -194,12 +211,24 @@ const router = express.Router();
 
         const skip = (page - 1) * limit;
 
+       
         const [courses, totalCourses] = await prisma.$transaction([
           prisma.course.findMany({
             where: { status: "Published" },
             skip,
             take: limit,
-            include: { instructor: true },
+            include: {
+              instructor: true,
+              _count: {
+                select: {
+                  enrollments: {
+                    where: {
+                      status: "ACTIVE",
+                    },
+                  },
+                },
+              },
+            },
             orderBy: { createdAt: "desc" },
           }),
           prisma.course.count({
@@ -207,13 +236,21 @@ const router = express.Router();
           }),
         ]);
 
-        return res.status(200).json({
-          message: "Published courses fetched successfully",
-          courses,
-          currentPage: page,
-          totalPages: Math.ceil(totalCourses / limit),
-          totalCourses,
-        });
+        // Replace the static students value with the actual active enrollment count
+        const coursesWithStudentCount = courses.map(
+          ({ _count, ...course }) => ({
+            ...course,
+            students: _count.enrollments,
+          })
+        );
+
+      return res.status(200).json({
+        message: "Published courses fetched successfully",
+        courses: coursesWithStudentCount,
+        currentPage: page,
+        totalPages: Math.ceil(totalCourses / limit),
+        totalCourses,
+      });
       } catch (error) {
         console.error("Fetch public courses error:", error);
 
@@ -389,9 +426,18 @@ router.post( "/", upload.fields([
 
       const course = await prisma.course.create({
         data: courseData,
-        include: {
-          instructor: true,
-        },
+       include: {
+            instructor: true,
+            _count: {
+              select: {
+                enrollments: {
+                  where: {
+                    status: "ACTIVE",
+                  },
+                },
+              },
+            },
+          },
       });
 
       return res.status(201).json({

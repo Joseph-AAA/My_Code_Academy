@@ -9,6 +9,8 @@ const router = express.Router();
 
 // Get the logged-in student's active enrollments
 
+
+// Get the logged-in student's active enrollments
 router.get("/my", authMiddleware, async (req, res) => {
   try {
     const userId = req.user.userId ?? req.user.id ?? req.user.sub;
@@ -31,14 +33,42 @@ router.get("/my", authMiddleware, async (req, res) => {
         status: "ACTIVE",
       },
       include: {
-        course: true,
+        course: {
+          include: {
+            _count: {
+              select: {
+                enrollments: {
+                  where: {
+                    status: "ACTIVE",
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       orderBy: {
         activatedAt: "desc",
       },
     });
 
-    return res.status(200).json({ enrollments });
+    const enrollmentsWithStudentCount = enrollments.map(
+      ({ course, ...enrollment }) => {
+        const { _count, ...courseData } = course;
+
+        return {
+          ...enrollment,
+          course: {
+            ...courseData,
+            students: _count.enrollments,
+          },
+        };
+      }
+    );
+
+    return res.status(200).json({
+      enrollments: enrollmentsWithStudentCount,
+    });
   } catch (error) {
     console.error("Get student enrollments error:", error);
 
@@ -47,5 +77,6 @@ router.get("/my", authMiddleware, async (req, res) => {
     });
   }
 });
+
 
 export default router;

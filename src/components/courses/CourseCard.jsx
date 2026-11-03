@@ -67,7 +67,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                           className="relative flex h-32 items-center justify-center overflow-visible rounded-t-2xl"
                         >
 
-        {/************************************ Course image or fallback icon ********************************/}
+{/************************************ Course image or fallback icon ********************************/}
                         {coursesData.imageUrl ? (
                           <img
                               src={coursesData.imageUrl}
@@ -95,7 +95,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                           })()
                         )}
 
-        {/************************************************ Three-dot button *********************************/}
+{/************************************************ Three-dot button *********************************/}
                             {
                               isAdmin && (
                                   <button
@@ -115,7 +115,7 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                             }
               
 
-        {/**************************************************** Dropdown *************************************/}
+{/**************************************************** Dropdown *************************************/}
                           {showMenu && (
                             <div
                               ref={menuRef}
@@ -202,19 +202,19 @@ function CourseCard({ coursesData,onDelete,onEdit,isAdmin = true,actionLabel,onA
                                             <span>{coursesData.students} students</span>
                                         </div>
                         </div>
-                        {actionLabel && onAction && (
-                          <button
-                            type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              onAction(coursesData);
-                            }}
-                            className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-(--primary) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-(--primary) focus:ring-offset-2"
-                          >
-                            {actionLabel}
-                            <ArrowRight size={16} />
-                          </button>
-                        )}
+                                  {actionLabel && onAction && (
+                                    <button
+                                      type="button"
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        onAction(coursesData);
+                                      }}
+                                      className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-(--primary) px-4 py-3 text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-(--primary) focus:ring-offset-2"
+                                    >
+                                      {actionLabel}
+                                      <ArrowRight size={16} />
+                                    </button>
+                                  )}
                 </div>
         </div>
     )
