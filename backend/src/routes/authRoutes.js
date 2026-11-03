@@ -263,9 +263,6 @@ router.get("/verify-email/:token", async (req, res) => {
 });
 
 
-
-
-
  // ******************************************** Resend Verification Email ********************************************
 
 router.post("/resend-verification", async (req, res) => {
