@@ -36,7 +36,32 @@ model User {
   profileImagePublicId     String?
 
   enrollments Enrollment[]
+  refreshSessions RefreshSession[]
 }
+
+//====================================== for RefreshSession =======================================
+
+model RefreshSession {
+  id         String    @id @default(cuid())
+  userId     String
+  familyId   String
+  tokenHash  String    @unique
+  rememberMe Boolean   @default(false)
+
+  expiresAt  DateTime
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+}
+
+
 
 //=============================================== for checkout =====================================
 enum EnrollmentStatus {
