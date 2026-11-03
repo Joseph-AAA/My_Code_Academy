@@ -62,7 +62,7 @@ const VerifyEmail = () => {
         <p>{message}</p>
 
         {status === "success" && (
-            <button onClick={() => window.close()}>
+            <button onClick={() => navigate("/signin", { replace: true })}>
                 Return to Sign In
             </button>
             )}
