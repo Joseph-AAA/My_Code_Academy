@@ -9,14 +9,13 @@ const router = express.Router();
 
 router.get("/my", authMiddleware, async (req, res) => {
   try {
-    // Only students can access their personal payment history.
+    // Only students can access their payment history.
     if (req.user.role !== "STUDENT") {
       return res.status(403).json({
         message: "Only students can view their payment history.",
       });
     }
 
-    // Get the logged-in student's ID from the JWT.
     const userId = String(
       req.user.userId ?? req.user.id ?? req.user.sub ?? ""
     );
@@ -27,7 +26,7 @@ router.get("/my", authMiddleware, async (req, res) => {
       });
     }
 
-    // Pagination: 10 transactions per page by default.
+    // Pagination
     const page = Math.max(
       1,
       Number.parseInt(req.query.page, 10) || 1
@@ -38,50 +37,87 @@ router.get("/my", authMiddleware, async (req, res) => {
       Math.max(1, Number.parseInt(req.query.limit, 10) || 10)
     );
 
-    // Only retrieve payments belonging to this student.
-    const where = {
-      enrollment: {
-        is: { userId },
+    // Retrieve all payment attempts for this student.
+    const allPayments = await prisma.payment.findMany({
+      where: {
+        enrollment: {
+          is: { userId },
+        },
       },
-    };
-
-    // Get this page of transactions and the overall summary.
-    const [payments, totalPayments, successfulSummary] =
-      await Promise.all([
-        prisma.payment.findMany({
-          where,
+      include: {
+        enrollment: {
           include: {
-            enrollment: {
-              include: {
-                course: true,
-              },
-            },
+            course: true,
           },
-          orderBy: {
-            createdAt: "desc",
-          },
-          skip: (page - 1) * limit,
-          take: limit,
-        }),
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
 
-        prisma.payment.count({ where }),
+    // Group payment attempts by enrollment.
+    const groupedPayments = new Map();
 
-        prisma.payment.aggregate({
-          where: {
-            ...where,
-            status: "SUCCEEDED",
-          },
-          _sum: {
-            amount: true,
-          },
-          _count: {
-            _all: true,
-          },
-        }),
-      ]);
+    for (const payment of allPayments) {
+      const enrollmentId = payment.enrollmentId;
+
+      if (!groupedPayments.has(enrollmentId)) {
+        groupedPayments.set(enrollmentId, []);
+      }
+
+      groupedPayments.get(enrollmentId).push(payment);
+    }
+
+    // Select one payment per course.
+    const visiblePayments = [];
+
+    for (const payments of groupedPayments.values()) {
+      const successfulPayment = payments.find(
+        (payment) => payment.status === "SUCCEEDED"
+      );
+
+      const pendingPayment = payments.find(
+        (payment) => payment.status === "PENDING"
+      );
+
+      // Prefer successful payment.
+      // Otherwise, show the latest pending payment.
+      // If neither exists, show the latest terminal attempt.
+      const selectedPayment =
+        successfulPayment || pendingPayment || payments[0];
+
+      if (selectedPayment) {
+        visiblePayments.push(selectedPayment);
+      }
+    }
+
+    // Sort selected payments newest first.
+    visiblePayments.sort(
+      (a, b) =>
+        new Date(b.createdAt) - new Date(a.createdAt)
+    );
+
+    // Calculate successful payment summary.
+    const successfulPayments = allPayments.filter(
+      (payment) => payment.status === "SUCCEEDED"
+    );
+
+    const totalSpent = successfulPayments.reduce(
+      (sum, payment) => sum + Number(payment.amount),
+      0
+    );
+
+    // Apply pagination after grouping.
+    const totalPayments = visiblePayments.length;
+
+    const paginatedPayments = visiblePayments.slice(
+      (page - 1) * limit,
+      page * limit
+    );
 
     return res.status(200).json({
-      payments: payments.map((payment) => ({
+      payments: paginatedPayments.map((payment) => ({
         id: payment.id,
         amount: Number(payment.amount),
         currency: payment.currency,
@@ -94,11 +130,8 @@ router.get("/my", authMiddleware, async (req, res) => {
       })),
 
       summary: {
-        totalSpent: Number(
-          successfulSummary._sum.amount ?? 0
-        ),
-        successfulPayments:
-          successfulSummary._count._all,
+        totalSpent: Number(totalSpent.toFixed(2)),
+        successfulPayments: successfulPayments.length,
       },
 
       pagination: {
@@ -336,7 +369,9 @@ router.post("/checkout-session", authMiddleware, async (req, res) => {
             courseId,
           },
         },
-        update: {},
+         update: {
+         updatedAt: new Date(),
+       },
         create: {
           userId,
           courseId,
@@ -444,6 +479,8 @@ router.post("/checkout-session", authMiddleware, async (req, res) => {
             quantity: 1,
           },
         ],
+
+        expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
 
         metadata,
         payment_intent_data: { metadata },

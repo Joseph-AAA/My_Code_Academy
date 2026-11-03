@@ -138,17 +138,6 @@ function CourseDetailModal({ selectedCourse, onClose }) {
             <span>Students: {selectedCourse.students}</span>
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center gap-3 text-(--text-secondary)">
-            <Star size={21} className="text-yellow-500" />
-            <span>Rating: {selectedCourse.rating ?? "N/A"}</span>
-          </div>
-
-          {/* Lessons */}
-          <div className="flex items-center gap-3 text-(--text-secondary)">
-            <BookOpen size={21} className="text-green-500" />
-            <span>Lessons: {selectedCourse.totalLessons ?? "N/A"}</span>
-          </div>
         </div>
 
         {/* Description */}
