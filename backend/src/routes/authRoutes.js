@@ -12,72 +12,6 @@ import { sendEmail } from "../lib/sendEmail.js";
 const router = express.Router();
 // ********************************************For Sign up **************************************
 
-//   router.post("/signup", async (req, res) => {
-//   try {
-//     const { name, email, password } = req.body;
-
-//     // 1. Validate required fields
-//     if (!name?.trim() || !email?.trim() || !password) {
-//       return res.status(400).json({
-//         message: "Name, email and password are required",
-//       });
-//     }
-
-//     // 2. Validate email format
-//     const normalizedEmail = email.trim().toLowerCase();
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-//     if (!emailRegex.test(normalizedEmail)) {
-//       return res.status(400).json({
-//         message: "Please enter a valid email address",
-//       });
-//     }
-
-//     // 3. Check whether the email already exists
-//     const existingUser = await prisma.user.findUnique({
-//       where: {
-//         email: normalizedEmail,
-//       },
-//     });
-
-//     if (existingUser) {
-//       return res.status(409).json({
-//         message: "Email already exists",
-//       });
-//     }
-
-//     // 4. Hash the password
-//     const hashedPassword = await bcrypt.hash(password, 12);
-
-//     // 5. Create the user in Neon PostgreSQL
-//     const user = await prisma.user.create({
-//       data: {
-//         name: name.trim(),
-//         email: normalizedEmail,
-//         password: hashedPassword,
-//       },
-//     });
-
-//     // 6. Send a safe response to the frontend
-//     return res.status(201).json({
-//       message: "Account created successfully",
-//       user: {
-//         id: user.id,
-//         name: user.name,
-//         email: user.email,
-//         role: user.role,
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-
-//     return res.status(500).json({
-//       message: "Server error",
-//     });
-//   }
-// });
-
-
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -123,7 +57,7 @@ router.post("/signup", async (req, res) => {
 
     // 6. Set token expiry (15 minutes)
     const verificationExpiry = new Date(
-      Date.now() + 15 * 60 * 1000
+      Date.now() + 1 * 60 * 1000
     );
 
     // 7. Create unverified user
@@ -196,9 +130,6 @@ router.post("/signup", async (req, res) => {
     });
   }
 });
-
-
-
 
 
 // ******************************************** Verify Email ********************************************
@@ -304,7 +235,7 @@ router.post("/resend-verification", async (req, res) => {
 
     // 5. Set new expiry (15 minutes)
     const verificationExpiry = new Date(
-      Date.now() + 15 * 60 * 1000
+      Date.now() + 1 * 60 * 1000
     );
 
     // 6. Update token in database

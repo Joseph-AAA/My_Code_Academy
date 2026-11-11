@@ -35,6 +35,20 @@ function getTokenExpiry(token) {
     return null;
   }
 }
+/*   getTokenExpiry can be replaced with this. but need istall jwtDecode 
+
+import { jwtDecode } from "jwt-decode";
+function getTokenExpiry(token) {
+    try {
+        const decoded = jwtDecode(token);
+
+        return typeof decoded.exp === "number"
+            ? decoded.exp * 1000
+            : null;
+    } catch {
+        return null;
+    }
+} */
 
 function clearAuthData() {
   localStorage.removeItem("token");
@@ -136,7 +150,7 @@ function ProtectedRoute({ children, allowedRoles }) {
     );
   }
 
-  return children;
+  return children;  // allowed to view children components
 }
 
 export default ProtectedRoute;
