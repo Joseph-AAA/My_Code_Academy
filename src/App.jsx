@@ -165,23 +165,23 @@ function App() {
 
               {/* Sidebar */}
              <div className="contents lg:block">
-<aside
-  className={`
-    fixed inset-y-0 left-0 z-60
-    flex h-screen w-full flex-col items-center
-    border-r border-(--sidebar-border)
-    bg-(--sidebar) text-white
-    md:w-1/2 lg:w-60
-    transition-[translate] duration-500 ease-in-out
-    ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-    lg:translate-x-0 lg:transition-none
-  `}
->
-  <Sidebar
-    sidebarOpen={sidebarOpen}
-    setSidebarOpen={setSidebarOpen}
-  />
-</aside>
+              <aside
+                className={`
+                  fixed inset-y-0 left-0 z-60
+                  flex h-screen w-full flex-col items-center
+                  border-r border-(--sidebar-border)
+                  bg-(--sidebar) text-white
+                  md:w-1/2 lg:w-60
+                  transition-[translate] duration-500 ease-in-out
+                  ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+                  lg:translate-x-0 lg:transition-none
+                `}
+              >
+                    <Sidebar
+                      sidebarOpen={sidebarOpen}
+                      setSidebarOpen={setSidebarOpen}
+                    />
+              </aside>
 
                   {/* Keep the overlay mounted so it can fade smoothly */}
                   <div
@@ -198,7 +198,7 @@ function App() {
                       }
                     `}
                   />
-                </div>
+              </div>
 
               {/* Content */}
               <div className="grid grid-rows-[76px_minmax(0,1fr)_56px] gap-0 bg-(--background) h-full w-full">
@@ -215,43 +215,44 @@ function App() {
                 <main className="main-container min-w-0 w-full flex">
                   <Routes>
                     {/* Admin-only pages */}
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN"]}>
-                          <DashboardProvider>
-                            <MainDashboard />
-                          </DashboardProvider>
-                        </ProtectedRoute>
-                      }
-                    />
-
-                    <Route
-                      path="/students"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN"]}>
-                          <Students />
-                        </ProtectedRoute>
-                      }
-                    />
+                        <Route
+                          path="/dashboard"
+                          element={
+                            <ProtectedRoute allowedRoles={["ADMIN"]}>
+                              <DashboardProvider>
+                                <MainDashboard />
+                              </DashboardProvider>
+                            </ProtectedRoute>
+                          }
+                        />
 
                       <Route
-                        path="/payment/checkout"
+                        path="/students"
                         element={
-                          <ProtectedRoute allowedRoles={["STUDENT"]}>
-                            <StudentCheckout />
+                          <ProtectedRoute allowedRoles={["ADMIN"]}>
+                            <Students />
                           </ProtectedRoute>
                         }
                       />
 
-                      <Route
-                          path="/my-enrollments"
+                        <Route
+                          path="/payment/checkout"
                           element={
                             <ProtectedRoute allowedRoles={["STUDENT"]}>
-                              <MyEnrollments />
+                              <StudentCheckout />
                             </ProtectedRoute>
                           }
                         />
+
+                        <Route
+                            path="/my-enrollments"
+                            element={
+                              <ProtectedRoute allowedRoles={["STUDENT"]}>
+                                <MyEnrollments />
+                              </ProtectedRoute>
+                            }
+                          />
+
                         <Route
                           path="/my-enrollments/:courseId"
                           element={
@@ -261,51 +262,51 @@ function App() {
                           }
                         />
 
-                    <Route
-                      path="/courses"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-                          <RoleBasedCourses />
-                        </ProtectedRoute>
-                      }
-                    />
+                        <Route
+                          path="/courses"
+                          element={
+                            <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                              <RoleBasedCourses />
+                            </ProtectedRoute>
+                          }
+                        />
 
                     {/* Shared pages */}
-                  <Route
-                    path="/payments"
-                    element={
-                      <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-                        <RoleBasedPayments />
-                      </ProtectedRoute>
-                    }
-                  />
+                      <Route
+                        path="/payments"
+                        element={
+                          <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                            <RoleBasedPayments />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                   <Route
-                      path="/setting"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-                          <RoleBasedSettings />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                          path="/setting"
+                          element={
+                            <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                              <RoleBasedSettings />
+                            </ProtectedRoute>
+                          }
+                        />
 
-                    <Route
-                      path="/about"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-                          <About />
-                        </ProtectedRoute>
-                      }
-                    />
+                      <Route
+                        path="/about"
+                        element={
+                          <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                            <About />
+                          </ProtectedRoute>
+                        }
+                      />
 
-                    <Route
-                      path="/contact"
-                      element={
-                        <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
-                          <Contact />
-                        </ProtectedRoute>
-                      }
-                    />
+                        <Route
+                          path="/contact"
+                          element={
+                            <ProtectedRoute allowedRoles={["ADMIN", "STUDENT"]}>
+                              <Contact />
+                            </ProtectedRoute>
+                          }
+                        />
                   </Routes>
                 </main>
 
