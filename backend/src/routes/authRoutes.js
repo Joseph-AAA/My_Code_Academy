@@ -57,7 +57,7 @@ router.post("/signup", async (req, res) => {
 
     // 6. Set token expiry (15 minutes)
     const verificationExpiry = new Date(
-      Date.now() + 1 * 60 * 1000
+      Date.now() + 15 * 60 * 1000
     );
 
     // 7. Create unverified user
@@ -235,7 +235,7 @@ router.post("/resend-verification", async (req, res) => {
 
     // 5. Set new expiry (15 minutes)
     const verificationExpiry = new Date(
-      Date.now() + 1 * 60 * 1000
+      Date.now() + 15 * 60 * 1000
     );
 
     // 6. Update token in database
